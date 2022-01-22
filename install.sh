@@ -20,6 +20,7 @@ mkdir -p $DATASRC $RECORDS;
 
 # ilsvrc_2012 (left)
 # https://github.com/jishnujayakumar/meta-dataset/blob/main/doc/dataset_conversion.md#ilsvrc_2012
+mkdir -p $DATASRC/ILSVRC2012_img_train;
 wget https://image-net.org/data/ILSVRC/2012/ILSVRC2012_img_train.tar;
 tar -xvf ILSVRC2012_img_train.tar --directory ./ILSVRC2012_img_train;
 
