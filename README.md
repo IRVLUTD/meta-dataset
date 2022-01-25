@@ -39,7 +39,7 @@ Validation <br>
   - Blue - Prototypical Network
 
 ### Evaluation results
-- Based on training done using the updated [data_config_common.gin](./meta-dataset/learn/gin/setups/data_config_common.gin) due to memory constraints on Lab PC. 
+- Based on training done using the updated [data_config_common.gin](./meta_dataset/learn/gin/setups/data_config_common.gin) due to memory constraints on Lab PC. 
 - **Best variant**: prototypical_imagenet. 
   - **Best valid acc**: 0.2996023893356323. 
   - **Best update num**: 69500.
