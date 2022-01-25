@@ -1,5 +1,5 @@
 - This a forked repository of [Meta-Dataset](https://github.com/google-research/meta-dataset/). (Commit: [c67dd2b](https://github.com/google-research/meta-dataset/commit/c67dd2bb66fb2a4ce7e4e9906878e13d9b851eb5))
-- Full documentation can be found [here](README-original.md)
+- Full documentation can be found [here](README-original.md).
 
 ### To run experiment, following commands can be used
 ```bash
