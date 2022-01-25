@@ -14,7 +14,7 @@ nvcr.io/nvidia/tensorflow:21.12-tf2-py3 # tensorflow 2
 pip install -r requirements.txt
 python setup.py install
 
-# bugs exists in the script, needs debugging
+# bugs exist in the script, needs debugging
 # hence download only required datasets
 # recommended: imagenet only
 bash install.sh
