@@ -28,17 +28,17 @@ bash reproduce_best_results.sh
 bash evaluate.sh
 ```
 
-### Graphs
-- Training
-  - <img src="./img/train_1_loss.svg" alt="Train-Loss" width="300"/><img src="./img/train_1_acc.svg" alt="Train-Accuracy" width="300"/>
+### Graphs (Loss/Accuracy)
+- Training 
+  <img src="./img/train_1_loss.svg" alt="Train-Loss" width="300"/><img src="./img/train_1_acc.svg" alt="Train-Accuracy" width="300"/>
 - Validation
-  - <img src="./img/valid_1_loss.svg" alt="Valid-Loss" width="300"/><img src="./img/valid_1_loss.svg" alt="Valid-Accuracy" width="300"/>
+  <img src="./img/valid_1_loss.svg" alt="Valid-Loss" width="300"/><img src="./img/valid_1_loss.svg" alt="Valid-Accuracy" width="300"/>
 
 ### Evaluation results
-- **Based** on training done using updated [data_config_common.gin](./meta-dataset/learn/gin/setups/data_config_common.gin) due to memory constraints on Lab PC. 
-- Best variant: prototypical_imagenet. 
-  - Best valid acc: 0.2996023893356323. 
-  - Best update num: 69500.
-- Best variant: matching_imagenet. 
-  - Best valid acc: 0.25817540287971497. 
-  - Best update num: 42500. 
+- Based on training done using the updated [data_config_common.gin](./meta-dataset/learn/gin/setups/data_config_common.gin) due to memory constraints on Lab PC. 
+- **Best variant**: prototypical_imagenet. 
+  - **Best valid acc**: 0.2996023893356323. 
+  - **Best update num**: 69500.
+- **Best variant**: matching_imagenet. 
+  - **Best valid acc**: 0.25817540287971497. 
+  - **Best update num**: 42500. 
