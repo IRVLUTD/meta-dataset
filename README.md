@@ -20,6 +20,10 @@ python setup.py install
 bash install.sh
 
 # reproduce the results
-# tested on prototypical/matching networks
+# trained on prototypical/matching networks
 bash reproduce_best_results.sh
+
+# evaluate the trained models
+# tested on prototypical/matching networks
+bash evaluate.sh
 ```
