@@ -30,7 +30,7 @@ bash evaluate.sh
 
 ### Graphs for Loss/Accuracy during reproduction attempt
 Training <br>
-<img src="./img/train_1_loss.svg" alt="Train-Loss" width="300"/><img src="./img/train_1_acc.svg" alt="Train-Accuracy" width="300"/>
+<img src="./img/train_1_loss.svg" alt="Train-Loss" width="300"/><img src="./img/train_1_acc.svg" alt="Train-Accuracy" width="300"/><br>
 Validation <br>
   <img src="./img/valid_1_loss.svg" alt="Valid-Loss" width="300"/><img src="./img/valid_1_loss.svg" alt="Valid-Accuracy" width="300"/>
 
