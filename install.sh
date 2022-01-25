@@ -2,9 +2,9 @@
 # Install useful libraries
 sudo apt-get install gcc python-dev python-setuptools libffi-dev;
 # Create an environment
-conda create --name 3d-obj-det-fsl;
+conda create --name meta-dataset;
 # Load the environment
-conda activate 3d-obj-det-fsl;
+conda activate meta-dataset;
 # Install required packages
 pip install -r requirements.txt;
 

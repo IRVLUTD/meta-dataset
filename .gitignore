@@ -2,3 +2,8 @@
 *.pyc
 __pycache__
 *.swp
+*.egg-info
+checkpoints/
+data/
+records/
+experiment_output/
