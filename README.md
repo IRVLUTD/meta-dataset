@@ -6,7 +6,7 @@
 # open docker container in interactive mode
 docker run \
 -it --rm --runtime=nvidia -p 7777:8888 \
--v ~/Documents/github/meta-dataset:/workspace \
+-v <cloned-meta-dataset-dir-path>:/workspace \
 --name meta-dataset__0 -e NVIDIA_VISIBLE_DEVICES=<list-of-gpu-ids> \
 nvcr.io/nvidia/tensorflow:21.12-tf2-py3 # tensorflow 2
 
