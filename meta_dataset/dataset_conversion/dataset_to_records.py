@@ -69,6 +69,11 @@ tf.flags.DEFINE_string(
     'Path to the root of the omniglot data.')
 
 tf.flags.DEFINE_string(
+    'fsl_syn2real_obj_det_data_root',
+    '',
+    'Path to the root of the FSL-Syn2Real-Obj-Det data.')
+
+tf.flags.DEFINE_string(
     'aircraft_data_root',
     '',
     'Path to the root of the FGVC-Aircraft Benchmark.')
