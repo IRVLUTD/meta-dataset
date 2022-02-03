@@ -87,6 +87,10 @@ def _dataset_name_to_converter_and_args(flags=FLAGS):
                    ConverterArgs(
                        data_root=flags.omniglot_data_root,
                        long_name='Omniglot')),
+      'rods': (dataset_to_records.RodsConverter,
+              ConverterArgs(
+                  data_root=flags.rods_data_root,
+                  long_name='RODS')),
       'aircraft': (dataset_to_records.AircraftConverter,
                    ConverterArgs(
                        data_root=flags.aircraft_data_root,
