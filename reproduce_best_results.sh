@@ -4,9 +4,9 @@
 
 source set_env.sh
 export BS=1;
-export SOURCE=imagenet;
+export SOURCE=mini_imagenet;
 # for MODEL in baselinefinetune prototypical matching maml maml_init_with_proto
-for MODEL in matching
+for MODEL in prototypical
 do
   export EXPNAME=${MODEL}_${SOURCE}
   python -m meta_dataset.train \
@@ -15,10 +15,9 @@ do
     --summary_dir=${EXPROOT}/summaries/${EXPNAME} \
     --gin_config=meta_dataset/learn/gin/best/${EXPNAME}.gin \
     --gin_bindings="Trainer.experiment_name='$EXPNAME'" \
-    --gin_bindings="Trainer.batch_size=$BS" 
-    # \
-    # --gin_bindings="Trainer.checkpoint_to_restore=''" \
-    # --gin_bindings="Trainer.pretrained_source='scratch'"
+    --gin_bindings="Trainer.batch_size=$BS" \
+    --gin_bindings="Trainer.checkpoint_to_restore=''" \
+    --gin_bindings="Trainer.pretrained_source='scratch'"
 done
 
 
