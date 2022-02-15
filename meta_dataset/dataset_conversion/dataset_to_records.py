@@ -201,7 +201,7 @@ def write_example(data_bytes,
     input_key: String used as key for the input (image of feature).
     label_key: String used as key for the label.
   """
-  # TODO: (jpad) should change (Image, label,) => (Image, label, set:{support/query})
+  # TODO: (jpad) should change (Image, label) => (Image, label, set;{support/query})
   example = make_example([(input_key, 'bytes', [data_bytes]),
                           (label_key, 'int64', [class_label]),
                           (set_key, 'bytes', [belongs_to_set])])
