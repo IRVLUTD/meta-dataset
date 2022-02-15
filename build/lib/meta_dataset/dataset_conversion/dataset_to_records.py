@@ -69,6 +69,11 @@ tf.flags.DEFINE_string(
     'Path to the root of the omniglot data.')
 
 tf.flags.DEFINE_string(
+    'rods_data_root',
+    '',
+    'Path to the root of the RODS data.')
+
+tf.flags.DEFINE_string(
     'aircraft_data_root',
     '',
     'Path to the root of the FGVC-Aircraft Benchmark.')
@@ -825,6 +830,129 @@ class OmniglotConverter(DatasetConverter):
                           data_path_trainval)
     self.parse_split_data(learning_spec.Split.TEST, test_alphabets,
                           data_path_test)
+
+
+
+class RodsConverter(DatasetConverter):
+  """Prepares RODS as required for integrating it in the benchmark.
+
+  RODS is organized into two high-level directories, referred to as
+  the trainig and test sets, respectively, with the former
+  intended for training and the latter for testing. Each of these contains a
+  number of sub-directories, corresponding to different objects.
+  Each object directory in turn has a number of sub-folders namely, support and query, each
+  corresponding to an object, which stores images of that object. Number of support and query samples might vary.
+  The following diagram illustrates this struture.
+
+  - RODS_root
+    - Training (Synthetic, 125 classes)
+        - OBject-Class
+            - Support (Synthetic)
+                - S-Img-1
+                - S-Img-2
+                - ...
+            - Query (Google Scenes)
+                - Q-Img-1
+                - Q-Img-2
+                - ...
+    - Test (Real, 198 classes, 52 classes have support + query images, 
+            11 classes are common between train and test which have support + query set)
+        - Object-Class = {Objecy-Class}'
+            - Support (Real Object)
+                - S'-Img-1
+                - S'-Img-2
+                - ...
+            - Query (OCID)
+                - Q'-Img-1
+                - Q'-Img-2
+                - ...
+  """
+
+  def __init__(self, *args, **kwargs):
+    """Initialize an RODSConverter."""
+    # Make has_superclasses default to True for the Omniglot dataset.
+    if 'has_superclasses' not in kwargs:
+      kwargs['has_superclasses'] = True
+    super(RodsConverter, self).__init__(*args, **kwargs)
+
+  def parse_split_data(self, split, objects, alphabets_path):
+    """Parse the data of the given split.
+
+    Specifically, update self.class_names, self.images_per_class, and
+    self.classes_per_split with the information for the given split, and
+    create and write records of the classes of the given split.
+
+    Args:
+      split: an instance of learning_spec.Split
+      alphabets: the list of names of alphabets belonging to split
+      alphabets_path: the directory with the folders corresponding to alphabets.
+    """
+    # Each alphabet is a superclass.
+    for alphabet_folder_name in alphabets:
+      alphabet_path = os.path.join(alphabets_path, alphabet_folder_name)
+      # Each character is a class.
+      for char_folder_name in sorted(tf.io.gfile.listdir(alphabet_path)):
+        class_path = os.path.join(alphabet_path, char_folder_name)
+        class_label = len(self.class_names)
+        class_records_path = os.path.join(
+            self.records_path,
+            self.dataset_spec.file_pattern.format(class_label))
+        self.class_names[class_label] = '{}-{}'.format(alphabet_folder_name,
+                                                       char_folder_name)
+        self.images_per_class[class_label] = len(
+            tf.io.gfile.listdir(class_path))
+
+        # Create and write the tf.Record of the examples of this class.
+        write_tfrecord_from_directory(
+            class_path, class_label, class_records_path, invert_img=True)
+
+        # Add this character to the count of subclasses of this superclass.
+        superclass_label = len(self.superclass_names)
+        self.classes_per_superclass[superclass_label] += 1
+
+      # Add this alphabet as a superclass.
+      self.superclasses_per_split[split] += 1
+      self.superclass_names[superclass_label] = alphabet_folder_name
+
+  def create_dataset_specification_and_records(self):
+    """Implements DatasetConverter.create_dataset_specification_and_records().
+
+    We use Lake's original train/test splits as we believe this is a more
+    challenging setup and because we like that it's hierarchically structured.
+    We also held out a subset of that train split to act as our validation set.
+    Specifically, the 5 alphabets from that set with the least number of
+    characters were chosen for this purpose.
+    """
+
+    # We chose the 5 smallest alphabets (i.e. those with the least characters)
+    # out of the 'background' set of alphabets that are intended for train/val
+    # We keep the 'evaluation' set of alphabets for testing exclusively
+    # The chosen alphabets have 14, 14, 16, 17, and 20 characters, respectively.
+    validation_alphabets = [
+        'Blackfoot_(Canadian_Aboriginal_Syllabics)',
+        'Ojibwe_(Canadian_Aboriginal_Syllabics)',
+        'Inuktitut_(Canadian_Aboriginal_Syllabics)', 'Tagalog',
+        'Alphabet_of_the_Magi'
+    ]
+
+    training_alphabets = []
+    data_path_trainval = os.path.join(self.data_root, 'images_background')
+    for alphabet_name in sorted(tf.io.gfile.listdir(data_path_trainval)):
+      if alphabet_name not in validation_alphabets:
+        training_alphabets.append(alphabet_name)
+    assert len(training_alphabets) + len(validation_alphabets) == 30
+
+    data_path_test = os.path.join(self.data_root, 'images_evaluation')
+    test_alphabets = sorted(tf.io.gfile.listdir(data_path_test))
+    assert len(test_alphabets) == 20
+
+    self.parse_split_data(learning_spec.Split.TRAIN, training_alphabets,
+                          data_path_trainval)
+    self.parse_split_data(learning_spec.Split.VALID, validation_alphabets,
+                          data_path_trainval)
+    self.parse_split_data(learning_spec.Split.TEST, test_alphabets,
+                          data_path_test)
+
 
 
 class QuickdrawConverter(DatasetConverter):
