@@ -183,8 +183,10 @@ def make_example(features):
 def write_example(data_bytes,
                   class_label,
                   writer,
+                  belongs_to_set=None,
                   input_key='image',
-                  label_key='label'):
+                  label_key='label',
+                  set_key='set'):
   """Create and write an Example protocol buffer for the given image.
 
   Create a protocol buffer with an integer feature for the class label, and a
@@ -199,9 +201,10 @@ def write_example(data_bytes,
     input_key: String used as key for the input (image of feature).
     label_key: String used as key for the label.
   """
-  # TODO: (jpad) should change (Image, label) => (Image, label, set;{support/query})
+  # TODO: (jpad) should change (Image, label,) => (Image, label, set:{support/query})
   example = make_example([(input_key, 'bytes', [data_bytes]),
-                          (label_key, 'int64', [class_label])])
+                          (label_key, 'int64', [class_label]),
+                          (set_key, 'bytes', [belongs_to_set])])
   writer.write(example)
 
 
@@ -1090,7 +1093,7 @@ class CUBirdsConverter(DatasetConverter):
     self.classes_per_split[learning_spec.Split.TEST] = len(test_classes)
 
     image_root_folder = os.path.join(self.data_root, 'images')
-    all_classes = list(
+    all_classes = list(  
         itertools.chain(train_classes, valid_classes, test_classes))
     for class_id, class_label in enumerate(all_classes):
       logging.info('Creating record for class ID %d (%s)...', class_id,
