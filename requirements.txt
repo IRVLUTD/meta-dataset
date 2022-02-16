@@ -12,4 +12,3 @@ gdown
 gsutil
 simclr
 tqdm
-tfrecord
