@@ -11,3 +11,5 @@ tensorflow-datasets
 gdown
 gsutil
 simclr
+tqdm
+tfrecord

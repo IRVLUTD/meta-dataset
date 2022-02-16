@@ -54,6 +54,7 @@ import six
 from six.moves import range
 import six.moves.cPickle as pkl
 import tensorflow.compat.v1 as tf
+from tqdm import tqdm
 
 # Datasets in the same order as reported in the article.
 # 'ilsvrc_2012_data_root' is already defined in imagenet_specification.py.
@@ -183,10 +184,12 @@ def make_example(features):
 def write_example(data_bytes,
                   class_label,
                   writer,
-                  belongs_to_set=None,
+                  belongs_to_set=b'', #UPDATE: null string in binary format
                   input_key='image',
                   label_key='label',
-                  set_key='set'):
+                  set_key='set'): # UPDATE: 'set' key for belongs_to_set value
+                                  # will indicate  whether the image belongs to
+                                  # "support" / "query" / "both" indicated by b''
   """Create and write an Example protocol buffer for the given image.
 
   Create a protocol buffer with an integer feature for the class label, and a
@@ -201,7 +204,7 @@ def write_example(data_bytes,
     input_key: String used as key for the input (image of feature).
     label_key: String used as key for the label.
   """
-  # TODO: (jpad) should change (Image, label) => (Image, label, set;{support/query})
+  # UPDATE: (jpad) should change (Image, label) => (Image, label, set;{support/query})
   example = make_example([(input_key, 'bytes', [data_bytes]),
                           (label_key, 'int64', [class_label]),
                           (set_key, 'bytes', [belongs_to_set])])
@@ -395,6 +398,175 @@ def write_tfrecord_from_image_files(class_files,
   return written_images_count
 
 
+# UPDATE: Made using write_tfrecord_from_image_files function
+def write_tfrecord_from_image_files_with_set_info(class_files,
+                                                  class_label,
+                                                  output_path,
+                                                  invert_img=False,
+                                                  bboxes=None,
+                                                  output_format='JPEG',
+                                                  skip_on_error=False):
+  """Create and write a tf.record file for the images corresponding to a class.
+
+  Args:
+    class_files: the list of paths to images of class class_label with class_set 
+      info, i.e. support/query.
+    class_label: the label of the class that a record is being made for.
+    output_path: the location to write the record.
+    invert_img: change black pixels to white ones and vice versa. Used for
+      Omniglot for example to change the black-background-white-digit images
+      into more conventional-looking white-background-black-digit ones.
+    bboxes: list of bounding boxes, one for each filename passed as input. If
+      provided, images are cropped to those bounding box values.
+    output_format: a string representing a PIL.Image encoding type: how the
+      image data is encoded inside the tf.record. This needs to be consistent
+      with the record_decoder of the DataProvider that will read the file.
+    skip_on_error: whether to skip an image if there is an issue in reading it.
+      The default it to crash and report the original exception.
+
+  Returns:
+    The number of images written into the records file.
+  """
+
+  def load_and_process_image(path, bbox=None):
+    """Process the image living at path if necessary.
+
+    If the image does not need any processing (inverting, converting to RGB
+    for instance), and is in the desired output_format, then the original
+    byte representation is returned.
+
+    If that is not the case, the resulting image is encoded to output_format.
+
+    Args:
+      path: the path to an image file (e.g. a .png file).
+      bbox: bounding box to crop the image to.
+
+    Returns:
+      A bytes representation of the encoded image.
+    """
+    with tf.io.gfile.GFile(path, 'rb') as f:
+      image_bytes = f.read()
+    try:
+      img = Image.open(io.BytesIO(image_bytes))
+    except:
+      logging.warn('Failed to open image: %s', path)
+      raise
+
+    img_needs_encoding = False
+
+    if img.format != output_format:
+      img_needs_encoding = True
+    if img.mode != 'RGB':
+      img = img.convert('RGB')
+      img_needs_encoding = True
+    if bbox is not None:
+      img = img.crop(bbox)
+      img_needs_encoding = True
+    if invert_img:
+      img = ImageOps.invert(img)
+      img_needs_encoding = True
+
+    if img_needs_encoding:
+      # Convert the image into output_format
+      buf = io.BytesIO()
+      img.save(buf, format=output_format)
+      buf.seek(0)
+      image_bytes = buf.getvalue()
+    return image_bytes
+
+  writer = tf.python_io.TFRecordWriter(output_path)
+  written_images_count = 0
+  for i, path_with_set_info in enumerate(class_files):
+    path, set_info = path_with_set_info
+    bbox = bboxes[i] if bboxes is not None else None
+    try:
+      img = load_and_process_image(path, bbox)
+    except (IOError, tf.errors.PermissionDeniedError) as e:
+      if skip_on_error:
+        logging.warn('While trying to load file %s, got error: %s', path, e)
+      else:
+        raise
+    else:
+      # This gets executed only if no Exception was raised
+      write_example(img, 
+                    class_label, 
+                    writer, 
+                    belongs_to_set=bytes(set_info, 'utf-8'))
+      written_images_count += 1
+
+  writer.close()
+  return written_images_count
+
+
+# UPDATE: Made using write_tfrecord_from_directory function
+def write_tfrecord_from_tesla_directory_structure(class_directory,
+                                                  class_label,
+                                                  output_path,
+                                                  invert_img=False,
+                                                  files_to_skip=None,
+                                                  skip_on_error=False,
+                                                  shuffle_with_seed=None):
+  """Create and write a tf.record file for the images corresponding to a class.
+
+  Args:
+    class_directory: the home of the class class_label.
+    class_label: the label of the class that a record is being made for.
+    output_path: the location to write the record.
+    invert_img: change black pixels to white ones and vice versa. Used for
+      Omniglot for example to change the black-background-white-digit images
+      into more conventional-looking white-background-black-digit ones.
+    files_to_skip: a set containing names of files that should be skipped if
+      present in class_directory.
+    skip_on_error: whether to skip an image if there is an issue in reading it.
+      The default is to crash and report the original exception.
+    shuffle_with_seed: An integer, optional. If provided, the images will be
+      shuffled using that seed.
+
+  Returns:
+    The number of images written into the records file.
+  """
+
+  def get_classes_with_set_info(class_directory, class_set):
+    class_files = []
+    filenames = sorted(tf.io.gfile.listdir(
+      os.path.join(class_directory, class_set)
+    ))
+
+    for filename in filenames:
+      if filename in files_to_skip:
+        logging.info('skipping file %s', filename)
+        continue
+      filepath = os.path.join(class_directory, class_set, filename)
+      if tf.io.gfile.isdir(filepath):
+        continue
+      class_files.append(
+        (filepath, class_set)
+      )
+    return class_files
+
+  if files_to_skip is None:
+    files_to_skip = set()
+  class_files = []
+  for class_set in ["support", "query"]:
+    class_files.extend(get_classes_with_set_info(class_directory, class_set))
+
+  if shuffle_with_seed is not None:
+    rng = np.random.RandomState(shuffle_with_seed)
+    rng.shuffle(class_files)
+
+  written_images_count = write_tfrecord_from_image_files_with_set_info(
+      class_files,
+      class_label,
+      output_path,
+      invert_img,
+      skip_on_error=skip_on_error)
+
+  if not skip_on_error:
+    assert len(class_files) == written_images_count
+  return written_images_count
+
+
+
 def write_tfrecord_from_directory(class_directory,
                                   class_label,
                                   output_path,
@@ -414,7 +586,7 @@ def write_tfrecord_from_directory(class_directory,
     files_to_skip: a set containing names of files that should be skipped if
       present in class_directory.
     skip_on_error: whether to skip an image if there is an issue in reading it.
-      The default it to crash and report the original exception.
+      The default is to crash and report the original exception.
     shuffle_with_seed: An integer, optional. If provided, the images will be
       shuffled using that seed.
 
@@ -580,6 +752,8 @@ class DatasetConverter(object):
     # First initialize the fields that are common to both types of data specs.
     # Maps each class id to its number of images.
     self.images_per_class = collections.defaultdict(int)
+    self.support_images_per_class = collections.defaultdict(int)
+    self.query_images_per_class = collections.defaultdict(int)
 
     # Maps each class id to the name of its class.
     self.class_names = {}
@@ -825,7 +999,7 @@ class OmniglotConverter(DatasetConverter):
     assert len(training_alphabets) + len(validation_alphabets) == 30
 
     data_path_test = os.path.join(self.data_root, 'images_evaluation')
-    test_alphabets = sorted(tf.io.gfile.listdir(data_path_test))
+    test_alphabets = sorted(tf.io.gfile.listdir(data_path_test))  
     assert len(test_alphabets) == 20
 
     self.parse_split_data(learning_spec.Split.TRAIN, training_alphabets,
@@ -841,16 +1015,16 @@ class TeslaConverter(DatasetConverter):
   """Prepares TESLA as required for integrating it in the benchmark.
 
   TESLA is organized into two high-level directories, referred to as
-  the trainig and test sets, respectively, with the former
+  the training and test sets, respectively, with the former
   intended for training and the latter for testing. Each of these contains a
   number of sub-directories, corresponding to different objects.
   Each object directory in turn has a number of sub-folders namely, support and query, each
   corresponding to an object, which stores images of that object. Number of support and query samples might vary.
-  The following diagram illustrates this struture.
+  The following illustrates this struture.
 
   - TESLA_root
     - Training (Synthetic, 125 classes)
-        - OBject-Class
+        - Object-Class
             - Support (Synthetic)
                 - S-Img-1
                 - S-Img-2
@@ -861,7 +1035,7 @@ class TeslaConverter(DatasetConverter):
                 - ...
     - Test (Real, 198 classes, 52 classes have support + query images, 
             11 classes are common between train and test which have support + query set)
-        - Object-Class = {Objecy-Class}'
+        - Object-Class ∈ {Object-Class}'
             - Support (Real Object)
                 - S'-Img-1
                 - S'-Img-2
@@ -876,10 +1050,10 @@ class TeslaConverter(DatasetConverter):
     """Initialize an TESLAConverter."""
     # Make has_superclasses default to True for the Omniglot dataset.
     if 'has_superclasses' not in kwargs:
-      kwargs['has_superclasses'] = True
+      kwargs['has_superclasses'] = False
     super(TeslaConverter, self).__init__(*args, **kwargs)
 
-  def parse_split_data(self, split, objects, objects_path):
+  def parse_split_data(self, classes, train_or_test_path):
     """Parse the data of the given split.
 
     Specifically, update self.class_names, self.images_per_class, and
@@ -888,73 +1062,73 @@ class TeslaConverter(DatasetConverter):
 
     Args:
       split: an instance of learning_spec.Split
-      alphabets: the list of names of alphabets belonging to split
-      alphabets_path: the directory with the folders corresponding to alphabets.
+      classes: the list of names of classes belonging to split
+      train_or_test_path: the directory with the folders corresponding to various classes.
     """
-    # Each alphabet is a superclass.
-    for alphabet_folder_name in alphabets:
-      alphabet_path = os.path.join(alphabets_path, alphabet_folder_name)
-      # Each character is a class.
-      for char_folder_name in sorted(tf.io.gfile.listdir(alphabet_path)):
-        class_path = os.path.join(alphabet_path, char_folder_name)
-        class_label = len(self.class_names)
-        class_records_path = os.path.join(
+    for class_name in tqdm(classes):
+      class_path = os.path.join(train_or_test_path, class_name)
+      class_label = len(self.class_names)
+      class_records_path = os.path.join(
             self.records_path,
             self.dataset_spec.file_pattern.format(class_label))
-        self.class_names[class_label] = '{}-{}'.format(alphabet_folder_name,
-                                                       char_folder_name)
-        self.images_per_class[class_label] = len(
-            tf.io.gfile.listdir(class_path))
+      self.class_names[class_label] = class_name
+      self.support_images_per_class[class_label] = len(
+          tf.io.gfile.listdir(
+            os.path.join(class_path, "support")
+          ))
+      self.query_images_per_class[class_label] = len(
+          tf.io.gfile.listdir(
+            os.path.join(class_path, "query")
+          ))
 
-        # Create and write the tf.Record of the examples of this class.
-        write_tfrecord_from_directory(
-            class_path, class_label, class_records_path, invert_img=True)
+      # Create and write the tf.Record of the examples of this class.
+      write_tfrecord_from_tesla_directory_structure(
+          class_path, class_label, class_records_path, invert_img=True)
 
-        # Add this character to the count of subclasses of this superclass.
-        superclass_label = len(self.superclass_names)
-        self.classes_per_superclass[superclass_label] += 1
 
-      # Add this alphabet as a superclass.
-      self.superclasses_per_split[split] += 1
-      self.superclass_names[superclass_label] = alphabet_folder_name
 
   def create_dataset_specification_and_records(self):
     """Implements DatasetConverter.create_dataset_specification_and_records().
 
-    We use Lake's original train/test splits as we believe this is a more
-    challenging setup and because we like that it's hierarchically structured.
-    We also held out a subset of that train split to act as our validation set.
-    Specifically, the 5 alphabets from that set with the least number of
-    characters were chosen for this purpose.
+    We held out a subset of that train split to act as our validation set.
+    Specifically, the 13 classes from that set with the least number of
+    support images were chosen for this purpose.
     """
 
-    # We chose the 5 smallest alphabets (i.e. those with the least characters)
-    # out of the 'background' set of alphabets that are intended for train/val
-    # We keep the 'evaluation' set of alphabets for testing exclusively
-    # The chosen alphabets have 14, 14, 16, 17, and 20 characters, respectively.
-    validation_alphabets = [
-        'Blackfoot_(Canadian_Aboriginal_Syllabics)',
-        'Ojibwe_(Canadian_Aboriginal_Syllabics)',
-        'Inuktitut_(Canadian_Aboriginal_Syllabics)', 'Tagalog',
-        'Alphabet_of_the_Magi'
+    # UPDATE: We chose the 13 smallest classes (i.e. those with the least support images)
+    # Found using a preprocessing script
+    validation_classes = [
+      "eagle",
+      "sponge",
+      "wood tower",
+      "cream box",
+      "cake pan",
+      "screwdriver",
+      "food can",
+      "bottle",
+      "paper roll",
+      "honey dipper",
+      "racoon",
+      "hard drive",
+      "rubber band"
     ]
 
-    training_alphabets = []
-    data_path_trainval = os.path.join(self.data_root, 'images_background')
-    for alphabet_name in sorted(tf.io.gfile.listdir(data_path_trainval)):
-      if alphabet_name not in validation_alphabets:
-        training_alphabets.append(alphabet_name)
-    assert len(training_alphabets) + len(validation_alphabets) == 30
+    training_classes = []
+    data_path_trainval = os.path.join(self.data_root, 'training_data')
+    for class_name in sorted(tf.io.gfile.listdir(data_path_trainval)):
+      if class_name not in validation_classes:
+        training_classes.append(class_name)
+    assert len(training_classes) + len(validation_classes) == 125
 
-    data_path_test = os.path.join(self.data_root, 'images_evaluation')
-    test_alphabets = sorted(tf.io.gfile.listdir(data_path_test))
-    assert len(test_alphabets) == 20
+    data_path_test = os.path.join(self.data_root, 'test_data')
+    test_classes = sorted(tf.io.gfile.listdir(data_path_test))
+    assert len(test_classes) == 41
 
-    self.parse_split_data(learning_spec.Split.TRAIN, training_alphabets,
+    self.parse_split_data(training_classes,
                           data_path_trainval)
-    self.parse_split_data(learning_spec.Split.VALID, validation_alphabets,
+    self.parse_split_data(validation_classes,
                           data_path_trainval)
-    self.parse_split_data(learning_spec.Split.TEST, test_alphabets,
+    self.parse_split_data(test_classes,
                           data_path_test)
 
 
