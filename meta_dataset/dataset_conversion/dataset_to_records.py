@@ -750,11 +750,12 @@ class DatasetConverter(object):
     replaced with other ones, see self._create_data_spec() to create a new spec.
     """
     # First initialize the fields that are common to both types of data specs.
-    # Maps each class id to its number of images.
-    self.images_per_class = collections.defaultdict(int)
-    self.support_images_per_class = collections.defaultdict(int)
-    self.query_images_per_class = collections.defaultdict(int)
-
+    
+      # TESLA: Maps each class id to its number of support/query images.
+      # OTHERS: Maps each class id to its number of images.
+    
+    self.images_per_class = collections.defaultdict(dict if self.name == 'tesla' else int)
+    
     # Maps each class id to the name of its class.
     self.class_names = {}
 
@@ -782,8 +783,7 @@ class DatasetConverter(object):
       if self.name == 'tesla':
         self.dataset_spec = ds_spec.TeslaDatasetSpecification(
             self.name, self.classes_per_split, self.images_per_class,
-            self.class_names, self.records_path, self.file_pattern,
-            self.support_images_per_class, self.query_images_per_class)
+            self.class_names, self.records_path, self.file_pattern)
       else:
         self.dataset_spec = ds_spec.DatasetSpecification(
             self.name, self.classes_per_split, self.images_per_class,
@@ -1072,6 +1072,7 @@ class TeslaConverter(DatasetConverter):
       classes: the list of names of classes belonging to split
       train_or_test_path: the directory with the folders corresponding to various classes.
     """
+
     for class_name in tqdm(classes):
       self.classes_per_split[split] += 1
       class_path = os.path.join(train_or_test_path, class_name)
@@ -1080,14 +1081,11 @@ class TeslaConverter(DatasetConverter):
             self.records_path,
             self.dataset_spec.file_pattern.format(class_label))
       self.class_names[class_label] = class_name
-      self.support_images_per_class[class_label] = len(
-          tf.io.gfile.listdir(
-            os.path.join(class_path, "support")
-          ))
-      self.query_images_per_class[class_label] = len(
-          tf.io.gfile.listdir(
-            os.path.join(class_path, "query")
-          ))
+      for class_set in ['support', 'query']:
+        self.images_per_class[class_label][class_set] = len(
+            tf.io.gfile.listdir(
+              os.path.join(class_path, class_set)
+            ))
 
       # Create and write the tf.Record of the examples of this class.
       write_tfrecord_from_tesla_directory_structure(
