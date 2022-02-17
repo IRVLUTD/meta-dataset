@@ -17,11 +17,26 @@ python setup.py install
 # bugs exist in the script, needs debugging
 # hence download only required datasets
 # recommended: imagenet only
-bash install.sh
+# bash install.sh
+
+source set_env.sh
+export BS=1;
+
+# Download the TESLA dataset
+# TODO: populate url after paper publication
+wget <dataset-url>
+7za x FSL-Sim2Real-IRVL-2022.7z # decompress
+
+python -m meta_dataset.dataset_conversion.convert_datasets_to_records   \
+--dataset=tesla --tesla_data_root=$DATASRC/TESLA --splits_root=$SPLITS \
+--records_root=$RECORDS
 
 # reproduce the results
 # trained on prototypical/matching networks
-bash reproduce_best_results.sh
+# bash reproduce_best_results.sh
+
+# Train using TESLA
+bash __run_using_tesla.sh
 
 # evaluate the trained models
 # tested on prototypical/matching networks

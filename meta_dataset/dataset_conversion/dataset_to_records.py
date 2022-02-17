@@ -779,9 +779,16 @@ class DatasetConverter(object):
           self.images_per_class, self.superclass_names, self.class_names,
           self.records_path, self.file_pattern)
     else:
-      self.dataset_spec = ds_spec.DatasetSpecification(
-          self.name, self.classes_per_split, self.images_per_class,
-          self.class_names, self.records_path, self.file_pattern)
+      if self.name == 'tesla':
+        self.dataset_spec = ds_spec.TeslaDatasetSpecification(
+            self.name, self.classes_per_split, self.images_per_class,
+            self.class_names, self.records_path, self.file_pattern,
+            self.support_images_per_class, self.query_images_per_class)
+      else:
+        self.dataset_spec = ds_spec.DatasetSpecification(
+            self.name, self.classes_per_split, self.images_per_class,
+            self.class_names, self.records_path, self.file_pattern)
+            
 
   def convert_dataset(self):
     """Converts dataset as required to integrate it in the benchmark.
@@ -1053,7 +1060,7 @@ class TeslaConverter(DatasetConverter):
       kwargs['has_superclasses'] = False
     super(TeslaConverter, self).__init__(*args, **kwargs)
 
-  def parse_split_data(self, classes, train_or_test_path):
+  def parse_split_data(self, split, classes, train_or_test_path):
     """Parse the data of the given split.
 
     Specifically, update self.class_names, self.images_per_class, and
@@ -1066,6 +1073,7 @@ class TeslaConverter(DatasetConverter):
       train_or_test_path: the directory with the folders corresponding to various classes.
     """
     for class_name in tqdm(classes):
+      self.classes_per_split[split] += 1
       class_path = os.path.join(train_or_test_path, class_name)
       class_label = len(self.class_names)
       class_records_path = os.path.join(
@@ -1124,11 +1132,14 @@ class TeslaConverter(DatasetConverter):
     test_classes = sorted(tf.io.gfile.listdir(data_path_test))
     assert len(test_classes) == 41
 
-    self.parse_split_data(training_classes,
+    self.parse_split_data(learning_spec.Split.TRAIN,
+                          training_classes,
                           data_path_trainval)
-    self.parse_split_data(validation_classes,
+    self.parse_split_data(learning_spec.Split.VALID,
+                          validation_classes,
                           data_path_trainval)
-    self.parse_split_data(test_classes,
+    self.parse_split_data(learning_spec.Split.TEST,
+                          test_classes,
                           data_path_test)
 
 
