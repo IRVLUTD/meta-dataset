@@ -1,2 +1,2 @@
-benchmark.train_datasets = 'omniglot'
-benchmark.eval_datasets = 'omniglot'
+benchmark.train_datasets = 'tesla'
+benchmark.eval_datasets = 'tesla'
