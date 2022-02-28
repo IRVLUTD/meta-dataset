@@ -233,7 +233,8 @@ def main(unused_argv):
     record_operative_gin_configurations(FLAGS.train_checkpoint_dir)
   elif not FLAGS.is_training and FLAGS.summary_dir:
     record_operative_gin_configurations(FLAGS.summary_dir)
-
+  from meta_dataset.data.utils import debug as d
+  d("TRAIN.py", train_datasets)
   datasets = train_datasets if FLAGS.is_training else eval_datasets
   logging.info('Starting %s for dataset(s) %s...',
                'training' if FLAGS.is_training else 'evaluation', datasets)

@@ -290,7 +290,6 @@ class Reader(object):
 
       example_string_dataset = tf.data.TFRecordDataset(
           filename, buffer_size=self.read_buffer_size_bytes)
-
       # Create a dataset containing only num_to_take elements from
       # example_string_dataset. By default, takes all elements.
       example_string_dataset = example_string_dataset.take(self.num_to_take)
@@ -397,7 +396,6 @@ class EpisodeReaderMixin(object):
     dataset = dataset.batch(sum(sampler.compute_chunk_sizes()))
     # Overlap batching and episode processing.
     dataset = dataset.prefetch(1)
-
     return dataset
 
 
@@ -522,7 +520,6 @@ class BatchReaderMixin(object):
 
     # Overlap batching and episode processing.
     dataset = dataset.prefetch(1)
-
     return dataset
 
 

@@ -1270,7 +1270,6 @@ class Trainer(object):
     # TODO(lamblinp): pass specs directly to the pipeline builder.
     # TODO(lamblinp): move the special case directly in make_..._pipeline
     if len(dataset_spec_list) == 1:
-
       use_dag_ontology = has_dag_ontology[0]
       if self.eval_finegrainedness or self.eval_imbalance_dataset:
         use_dag_ontology = False

@@ -355,7 +355,7 @@ class DatasetSpecification(
 
 # UPDATE: Created using DatasetSpecification
 class TeslaDatasetSpecification(
-    collections.namedtuple('DatasetSpecification',
+    collections.namedtuple('TeslaDatasetSpecification',
                            ('name, classes_per_split, images_per_class, '
                             'class_names, path, file_pattern'))):
   """The specification of a dataset.
@@ -424,7 +424,10 @@ class TeslaDatasetSpecification(
         - incorrect value for pool.
       RuntimeError: the DatasetSpecification is out of date (missing info).
     """
-    return get_total_images_per_class(self, class_id, pool=pool)
+    
+    num_images = 0
+    
+    return self.images_per_class[class_id]['support'] + self.images_per_class[class_id]['query']
 
   def get_classes(self, split):
     """Gets the sequence of class labels for a split.
@@ -868,7 +871,6 @@ def as_dataset_spec(dct):
     
   elif dct['__class__'] == 'TeslaDatasetSpecification':
     images_per_class = {}
-    print(dct['images_per_class'])
 
     for class_id, n_images_set_dict in six.iteritems(dct['images_per_class']):
       # If n_images is a dict, it maps each class ID to a string->int

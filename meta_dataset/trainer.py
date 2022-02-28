@@ -703,6 +703,7 @@ class Trainer(object):
         regularizer = self.learners[split].compute_regularizer
 
       def run(data_local):
+
         """Run the forward pass of the model."""
         predictions_dist = self.learners[split].forward_pass(data_local)
 
