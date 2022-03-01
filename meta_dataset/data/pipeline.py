@@ -367,14 +367,24 @@ def process_batch(example_strings, class_ids, image_size, batch_decoder):
     batch_decoder.image_size = image_size
 
   images = example_strings
-
-  if batch_decoder:
-    images = tf.map_fn(
-        batch_decoder,
-        example_strings,
-        dtype=batch_decoder.out_type,
-        back_prop=False)
   labels = class_ids
+  
+  if batch_decoder:
+    images, _, image_set_info = tf.map_fn(
+      batch_decoder.decode_with_label_and_set,
+      example_strings,
+      dtype=(batch_decoder.out_type, tf.int32, tf.string),
+      back_prop=False
+    )
+
+    keep = tf.math.logical_or(
+      tf.equal(image_set_info, tf.constant("query")),
+      tf.equal(image_set_info, tf.constant(""))
+    )
+
+    images = tf.boolean_mask(images, keep)
+    labels = tf.boolean_mask(class_ids, keep) 
+
   return (images, labels)
 
 
