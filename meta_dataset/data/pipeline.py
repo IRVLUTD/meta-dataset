@@ -314,7 +314,7 @@ def process_episode(example_strings, class_ids, chunk_sizes, image_size,
     support_class_ids = tf.boolean_mask(support_class_ids, support_keep)
 
   if query_decoder:
-    query_images, query_labels, query_image_set = tf.map_fn(
+    query_images, query_labels, image_set_info = tf.map_fn(
         query_decoder.decode_with_label_and_set,
         query_strings,
         dtype=(query_decoder.out_type, tf.int32, tf.string),
