@@ -42,8 +42,7 @@ def read_example_and_parse_image(example_string):
 @gin.configurable
 class ImageDecoder(object):
   """Image decoder."""
-  # out_type = (tf.float32, tf.int32, tf.string)
-  out_type = tf.string
+  out_type = tf.float32
 
   def __init__(self,
                image_size=None,
@@ -79,7 +78,7 @@ class ImageDecoder(object):
       rescaled to [-1, 1]. Note that Gaussian data augmentation may cause values
       to go beyond this range.
     """
-    return self.decode_with_label_and_set(example_string)[2]
+    return self.decode_with_label(example_string)[0]
   
   def decode_with_label_and_set(self, example_string):
     """Processes a single example string.

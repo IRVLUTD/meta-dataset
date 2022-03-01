@@ -6,4 +6,4 @@ __pycache__
 checkpoints/
 data/
 records/
-experiment_output/
+experiment_output*/

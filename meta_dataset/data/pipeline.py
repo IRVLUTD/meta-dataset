@@ -45,6 +45,7 @@ import tensorflow.compat.v1 as tf
 tf.flags.DEFINE_float('color_jitter_strength', 1.0,
                       'The strength of color jittering for SimCLR episodes.')
 
+
 def filter_placeholders(example_strings, class_ids):
   """Returns tensors with only actual examples, filtering out the placeholders.
 
@@ -172,21 +173,6 @@ def process_dumped_episode(support_strings, query_strings, image_size,
   return (support_images, support_labels, support_labels, query_images,
           query_labels, query_labels)
 
-# UPDATE
-def filter_based_on_set(decoder, example_string, image_set):
-  set_info = tf.map_fn(
-    decoder,
-    example_string,
-    dtype=decoder.out_type,
-    back_prop=False)
-  
-  # from meta_dataset.data.utils import debug, tf_print
-  # debug(image_set, set_info)
-
-  return tf.math.logical_or(
-    tf.equal(set_info, tf.constant(image_set)),
-    tf.equal(set_info, tf.constant(""))
-  )
 
 def add_simclr_episodes(simclr_episode_fraction, *episode):
   """Convert simclr_episode_fraction of episodes into SimCLR Episodes."""
@@ -259,6 +245,7 @@ def simclr_augment(image_batch, blur=False):
   image_batch = image_batch * 2.0 - 1.0
   return image_batch
 
+
 @gin.configurable(allowlist=['support_decoder', 'query_decoder'])
 def process_episode(example_strings, class_ids, chunk_sizes, image_size,
                     support_decoder, query_decoder, simclr_episode_fraction):
@@ -311,18 +298,34 @@ def process_episode(example_strings, class_ids, chunk_sizes, image_size,
   support_images = support_strings
   query_images = query_strings
 
-
-  # UPDATE START
   if support_decoder:
-    support_keep = filter_based_on_set(support_decoder, support_strings, "support")
+    support_images, support_labels, image_set_info = tf.map_fn(
+        support_decoder.decode_with_label_and_set,
+        support_strings,
+        dtype=(support_decoder.out_type, tf.int32, tf.string),
+        back_prop=False)
+    
+    support_keep = tf.math.logical_or(
+      tf.equal(image_set_info, tf.constant("support")),
+      tf.equal(image_set_info, tf.constant(""))
+    )
+
     support_images = tf.boolean_mask(support_images, support_keep)
     support_class_ids = tf.boolean_mask(support_class_ids, support_keep)
 
   if query_decoder:
-    query_keep = filter_based_on_set(query_decoder, query_strings, "query")
+    query_images, query_labels, query_image_set = tf.map_fn(
+        query_decoder.decode_with_label_and_set,
+        query_strings,
+        dtype=(query_decoder.out_type, tf.int32, tf.string),
+        back_prop=False)
+    query_keep = tf.math.logical_or(
+      tf.equal(image_set_info, tf.constant("query")),
+      tf.equal(image_set_info, tf.constant(""))
+    )
+
     query_images = tf.boolean_mask(query_images, query_keep)
     query_class_ids = tf.boolean_mask(query_class_ids, query_keep) 
-  #  UPDATE END
 
   # Convert class IDs into labels in [0, num_ways).
   _, support_labels = tf.unique(support_class_ids)
@@ -333,9 +336,6 @@ def process_episode(example_strings, class_ids, chunk_sizes, image_size,
 
   if simclr_episode_fraction > 0.0:
     episode = add_simclr_episodes(simclr_episode_fraction, *episode)
-
-  # from meta_dataset.data.utils import debug, tf_print
-  # debug("EPISODE", tf_print(episode))
 
   return episode
 
