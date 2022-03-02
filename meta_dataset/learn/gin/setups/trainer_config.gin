@@ -14,6 +14,9 @@ Learner.backprop_through_moments = True
 # Intended for debugging tesla dataset
 # For other datasets, keep it as False
 Trainer.visualize_data = True
+
+# TODO: need to check for "" so that
+# this is consisitent with other datasets as well
 Trainer.visualize_image_set = "support"
 
 
