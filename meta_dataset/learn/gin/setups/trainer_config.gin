@@ -11,6 +11,9 @@ Trainer.enable_tf_optimizations = True
 Learner.transductive_batch_norm = False
 Learner.backprop_through_moments = True
 
+# Intended for debugging tesla dataset
+# For other datasets, keep it as False
 Trainer.visualize_data = True
+Trainer.visualize_image_set = "support"
 
 

@@ -48,19 +48,6 @@ import six
 from six.moves import range
 from six.moves import zip
 import tensorflow.compat.v1 as tf
-gui_backend = [
-  'GTK3Agg', 'GTK3Cairo', 'GTK4Agg', 
-  'GTK4Cairo', 'MacOSX', 'nbAgg', 
-  'QtAgg', 'QtCairo', 'Qt5Agg', 
-  'Qt5Cairo', 'TkAgg', 'TkCairo', 
-  'WebAgg', 'WX', 'WXAgg', 'WXCairo', 
-  'agg', 'cairo', 'pdf', 'pgf', 'ps', 
-  'svg', 'template'
-]
-import matplotlib
-matplotlib.use(gui_backend[10])
-import matplotlib.pyplot as plt
-from PIL import Image
 
 # Enable tf.data optimizations, which are applied to the input data pipeline.
 # It may be helpful to disable them when investigating regressions due to
@@ -271,7 +258,8 @@ class Trainer(object):
       data_config,
       distribute,
       enable_tf_optimizations,
-      visualize_data):
+      visualize_data,
+      visualize_image_set):
     # pyformat: disable
     """Initializes a Trainer.
 
@@ -350,7 +338,7 @@ class Trainer(object):
         few minutes to the first calls to session.run(), but decrease memory
         usage.
       visualize_data: bool indicating whether to visualize data before training.
-
+      visualize_image_set: "support", "query" or ""
     Raises:
       RuntimeError: If requested to meta-learn the initialization of the linear
           layer weights but they are unexpectedly omitted from saving/restoring.
@@ -379,9 +367,10 @@ class Trainer(object):
     self.eval_dataset_list = eval_dataset_list
     self.normalized_gradient_descent = normalized_gradient_descent
     self.enable_tf_optimizations = enable_tf_optimizations
+    self.visualize_data = visualize_data
+    self.visualize_image_set = visualize_image_set
     self.DATA = None
     self.data_spec = None
-    self.visualize_data = visualize_data
 
     # Currently we are supporting single dataset when we read from fixed
     # datasets like VTAB or dumped episodes.
@@ -764,6 +753,7 @@ class Trainer(object):
 
   def convert_to_pseudo_original_form(self, image):
     # uncomment to change channels
+    # from PIL import Image
     # image = (((image/2) + 0.5) * 255.0).astype(np.uint8)
     # image = Image.fromarray(image)
     # image = image.convert("RGBA")
@@ -839,10 +829,24 @@ class Trainer(object):
     
     
     if self.visualize_data:
+      gui_backend = [
+        'GTK3Agg', 'GTK3Cairo', 'GTK4Agg', 
+        'GTK4Cairo', 'MacOSX', 'nbAgg', 
+        'QtAgg', 'QtCairo', 'Qt5Agg', 
+        'Qt5Cairo', 'TkAgg', 'TkCairo', 
+        'WebAgg', 'WX', 'WXAgg', 'WXCairo', 
+        'agg', 'cairo', 'pdf', 'pgf', 'ps', 
+        'svg', 'template'
+      ]
+      import matplotlib
+      matplotlib.use(gui_backend[10])
+      import matplotlib.pyplot as plt
+      
       # setting values to rows and column variables
-      rows, columns, image_set = 5, 5, "query"
+      rows, columns = 5, 5
 
-      images, _ = self.get_data_and_label(image_set, split, rows*columns)
+      images, _ = self.get_data_and_label(
+        self.visualize_image_set, split, rows*columns)
 
       # create figure
       fig = plt.figure(figsize=(10, 7))
@@ -855,7 +859,7 @@ class Trainer(object):
         # showing image
         plt.imshow(im)
         plt.axis('off')
-        plt.title(f"{image_set}-{idx+1}")
+        plt.title(f"{self.visualize_image_set}-{idx+1}")
         plt.plot()
       plt.show()
       raise SystemExit("Stopping to see the plots")
