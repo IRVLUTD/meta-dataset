@@ -11,4 +11,6 @@ Trainer.enable_tf_optimizations = True
 Learner.transductive_batch_norm = False
 Learner.backprop_through_moments = True
 
+Trainer.visualize_data = True
+
 

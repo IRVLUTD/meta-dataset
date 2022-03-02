@@ -49,6 +49,7 @@ from six.moves import range
 from six.moves import zip
 import tensorflow.compat.v1 as tf
 
+
 # Enable tf.data optimizations, which are applied to the input data pipeline.
 # It may be helpful to disable them when investigating regressions due to
 # changes in tf.data (see b/121130181 for instance), but they seem to be helpful
@@ -367,6 +368,8 @@ class Trainer(object):
     self.eval_dataset_list = eval_dataset_list
     self.normalized_gradient_descent = normalized_gradient_descent
     self.enable_tf_optimizations = enable_tf_optimizations
+    self.DATA = None
+
     # Currently we are supporting single dataset when we read from fixed
     # datasets like VTAB or dumped episodes.
     # Check whether we evaluate on VTAB
@@ -626,6 +629,7 @@ class Trainer(object):
 
     with tf.name_scope(split):
       data_src = self.next_data[split]
+      self.DATA = self.next_data[split]
       if self.distribute:
         with self.strategy.scope():
           # We need to split both support and query sets across GPUs, and
@@ -746,6 +750,7 @@ class Trainer(object):
     return res
 
   def create_summary_writer(self):
+    
     """Create summaries and writer."""
     # Add summaries for the losses / accuracies of the different learners.
     standard_summaries = []
@@ -754,6 +759,72 @@ class Trainer(object):
         loss_summary = tf.summary.scalar('loss', self.losses[split])
         acc_summary = tf.summary.scalar('acc',
                                         tf.reduce_mean(self.accuracies[split]))
+        
+        ####################################################################
+        from matplotlib import pyplot as plt
+
+        s_iterator=self.DATA.map(
+          lambda episode: episode.support_images).make_one_shot_iterator()
+        q_iterator=self.DATA.map(
+          lambda episode: episode.query_images).make_one_shot_iterator()
+
+        def denorm(im):
+          return (((im/2) + 0.5) * 255.0).astype(int)
+        
+        get_next = s_iterator.get_next()
+        count_s, tot = 0, 0
+        s_imgs, q_imgs = [], []
+        limit = 12
+        with tf.Session() as sess:
+          while count_s < limit:
+            try:
+              tot += 1
+              x = sess.run(get_next)
+              if len(x):
+                count_s += 1
+                s_imgs.append(x[0])
+                print(f"support: {count_s}/{tot}")
+                # break
+            except tf.errors.OutOfRangeError:
+              break
+          
+        get_next = q_iterator.get_next()
+        count_q, tot = 0, 0
+        with tf.Session() as sess:
+          while count_q < limit:
+            try:
+              tot += 1
+              x = sess.run(get_next)
+              if len(x):
+                count_q += 1
+                q_imgs.append(x[0])
+                print(f"query: {count_q}/{tot}")
+            
+            except tf.errors.OutOfRangeError:
+              break
+      
+      # create figure
+      # fig = plt.figure(figsize=(10, 7))
+        
+      # setting values to rows and column variables
+      rows = 1
+      columns = 1
+
+      for idx, im in enumerate(s_imgs):
+        print(f"plotting {idx+1}")
+        # Adds a subplot at the nth position
+        # fig.add_subplot(rows, columns, idx+1)
+        im = denorm(im)
+        # print(im)
+        
+        # showing image
+        plt.imshow(im)
+        # plt.axis('off')
+        # plt.title(f"Support {idx+1}")
+        break
+      raise SystemExit("Stopping to see the plots")
+      ####################################################################
+      
       standard_summaries.append(loss_summary)
       standard_summaries.append(acc_summary)
 

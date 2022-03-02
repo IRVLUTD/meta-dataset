@@ -1,8 +1,10 @@
 benchmark.train_datasets = 'tesla'
 benchmark.eval_datasets = 'tesla'
 
+
 # Use the follwoing to check consistency with MS code state
 # as omniglot has been preprocessed to tfrecords contain 
 # with 'set' key and value=''
+
 # benchmark.train_datasets = 'omniglot'
 # benchmark.eval_datasets = 'omniglot'

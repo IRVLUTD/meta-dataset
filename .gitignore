@@ -4,6 +4,6 @@ __pycache__
 *.swp
 *.egg-info
 checkpoints/
-data/
+datasets/
 records/
-experiment_output*/
+*experiment_output*/*

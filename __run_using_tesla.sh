@@ -1,6 +1,5 @@
 # set the required env vars
 source set_env.sh
-export BS=1;
 
 # convert dataset to records
 # python -m meta_dataset.dataset_conversion.convert_datasets_to_records   \
@@ -9,7 +8,7 @@ export BS=1;
 
 # start training 
 export SOURCE=all
-export MODEL=prototypical
+export MODEL=matching #prototypical
 export EXPNAME=${MODEL}_${SOURCE}
 python -m meta_dataset.train \
 --records_root_dir=$RECORDS \

@@ -48,6 +48,19 @@ import six
 from six.moves import range
 from six.moves import zip
 import tensorflow.compat.v1 as tf
+gui_backend = [
+  'GTK3Agg', 'GTK3Cairo', 'GTK4Agg', 
+  'GTK4Cairo', 'MacOSX', 'nbAgg', 
+  'QtAgg', 'QtCairo', 'Qt5Agg', 
+  'Qt5Cairo', 'TkAgg', 'TkCairo', 
+  'WebAgg', 'WX', 'WXAgg', 'WXCairo', 
+  'agg', 'cairo', 'pdf', 'pgf', 'ps', 
+  'svg', 'template'
+]
+import matplotlib
+matplotlib.use(gui_backend[10])
+import matplotlib.pyplot as plt
+from PIL import Image
 
 # Enable tf.data optimizations, which are applied to the input data pipeline.
 # It may be helpful to disable them when investigating regressions due to
@@ -74,9 +87,6 @@ VALID_SPLIT = 'valid'
 TEST_SPLIT = 'test'
 
 FLAGS = tf.flags.FLAGS
-
-
-
 
 class UnexpectedSplitError(ValueError):
 
@@ -260,7 +270,8 @@ class Trainer(object):
       eval_episode_config,
       data_config,
       distribute,
-      enable_tf_optimizations):
+      enable_tf_optimizations,
+      visualize_data):
     # pyformat: disable
     """Initializes a Trainer.
 
@@ -338,6 +349,7 @@ class Trainer(object):
       enable_tf_optimizations: Enable TensorFlow optimizations. It can add a
         few minutes to the first calls to session.run(), but decrease memory
         usage.
+      visualize_data: bool indicating whether to visualize data before training.
 
     Raises:
       RuntimeError: If requested to meta-learn the initialization of the linear
@@ -367,6 +379,10 @@ class Trainer(object):
     self.eval_dataset_list = eval_dataset_list
     self.normalized_gradient_descent = normalized_gradient_descent
     self.enable_tf_optimizations = enable_tf_optimizations
+    self.DATA = None
+    self.data_spec = None
+    self.visualize_data = visualize_data
+
     # Currently we are supporting single dataset when we read from fixed
     # datasets like VTAB or dumped episodes.
     # Check whether we evaluate on VTAB
@@ -626,6 +642,7 @@ class Trainer(object):
 
     with tf.name_scope(split):
       data_src = self.next_data[split]
+      self.DATA = self.next_data[split]
       if self.distribute:
         with self.strategy.scope():
           # We need to split both support and query sets across GPUs, and
@@ -703,7 +720,6 @@ class Trainer(object):
         regularizer = self.learners[split].compute_regularizer
 
       def run(data_local):
-
         """Run the forward pass of the model."""
         predictions_dist = self.learners[split].forward_pass(data_local)
 
@@ -746,7 +762,70 @@ class Trainer(object):
     res['query_targets'] = query_targets_
     return res
 
+  def convert_to_pseudo_original_form(self, image):
+    # uncomment to change channels
+    # image = (((image/2) + 0.5) * 255.0).astype(np.uint8)
+    # image = Image.fromarray(image)
+    # image = image.convert("RGBA")
+    # image = np.array(image) 
+    # r, g, b, a = image.T 
+    # image = np.array([r, g, b])
+    # image = image.transpose()
+    # return np.array(image)
+
+    image = (((image/2) + 0.5) * 255.0).astype(np.uint8)
+    return image
+
+  def get_data_and_label(self, image_set, split, limit=50):
+    fn = {
+      "support_images": lambda episode: episode.support_images,
+      "support_labels": lambda episode: episode.support_labels,
+      "support_class_ids": lambda episode: episode.support_class_ids,
+      "query_images": lambda episode: episode.query_images,
+      "query_labels": lambda episode: episode.query_labels,
+      "query_class_ids": lambda episode: episode.query_class_ids,
+    }
+    
+    img_iterator = self.DATA.map(fn[f"{image_set}_images"]).make_one_shot_iterator()
+    label_iterator = self.DATA.map(fn[f"{image_set}_labels"]).make_one_shot_iterator()
+    class_id_iterator = self.DATA.map(fn[f"{image_set}_class_ids"]).make_one_shot_iterator()
+
+    get_next_im = img_iterator.get_next()
+    get_next_label = label_iterator.get_next()
+    get_next_class_id = class_id_iterator.get_next()
+    count, total = 0, 0
+    imgs, labels, class_ids = [], [], []
+    with tf.Session() as sess:
+      while count < limit:
+        try:
+          im = sess.run(get_next_im)
+          lbl = sess.run(get_next_label)
+          cls_id = sess.run(get_next_class_id)
+          
+          img_list_len = len(im)
+          # uncomment to see episode wise
+          # total += 1
+          # if img_list_len:
+          #   count += 1
+          #   imgs.append(self.convert_to_pseudo_original_form(im[0]))
+          if total + img_list_len > limit:
+            break
+          total += img_list_len
+          if img_list_len:
+            count += img_list_len
+            imgs.extend(self.convert_to_pseudo_original_form(im))
+            
+            print(im.shape, len(lbl), lbl, len(cls_id), cls_id)
+            # print(self.data_spec.class_names.get(y))
+            # class_ids.append(y)
+            print(f"{image_set} : {count}/{total}")
+            # break
+        except tf.errors.OutOfRangeError:
+          break
+    return (imgs, class_ids)
+
   def create_summary_writer(self):
+    
     """Create summaries and writer."""
     # Add summaries for the losses / accuracies of the different learners.
     standard_summaries = []
@@ -755,8 +834,31 @@ class Trainer(object):
         loss_summary = tf.summary.scalar('loss', self.losses[split])
         acc_summary = tf.summary.scalar('acc',
                                         tf.reduce_mean(self.accuracies[split]))
-      standard_summaries.append(loss_summary)
-      standard_summaries.append(acc_summary)
+        standard_summaries.append(loss_summary)
+        standard_summaries.append(acc_summary)
+    
+    
+    if self.visualize_data:
+      # setting values to rows and column variables
+      rows, columns, image_set = 5, 5, "query"
+
+      images, _ = self.get_data_and_label(image_set, split, rows*columns)
+
+      # create figure
+      fig = plt.figure(figsize=(10, 7))
+      
+      for idx, im in enumerate(images):
+        print(f"plotting label: {idx}")
+        # Adds a subplot at the nth position
+        fig.add_subplot(rows, columns, idx+1)
+      
+        # showing image
+        plt.imshow(im)
+        plt.axis('off')
+        plt.title(f"{image_set}-{idx+1}")
+        plt.plot()
+      plt.show()
+      raise SystemExit("Stopping to see the plots")
 
     # Add summaries for the way / shot / logits / targets of the learner.
     evaluation_summaries = self.add_eval_summaries()
@@ -857,6 +959,8 @@ class Trainer(object):
 
       dataset_records_path = os.path.join(dataset_records_root, dataset_name)
       data_spec = dataset_spec_lib.load_dataset_spec(dataset_records_path)
+      self.data_spec = data_spec
+
       # Only ImageNet has a DAG ontology.
       has_dag = (dataset_name.startswith('ilsvrc_2012'))
       # Only Omniglot has a bi-level ontology.
@@ -1271,7 +1375,6 @@ class Trainer(object):
     # TODO(lamblinp): pass specs directly to the pipeline builder.
     # TODO(lamblinp): move the special case directly in make_..._pipeline
     if len(dataset_spec_list) == 1:
-
       use_dag_ontology = has_dag_ontology[0]
       if self.eval_finegrainedness or self.eval_imbalance_dataset:
         use_dag_ontology = False
