@@ -752,17 +752,6 @@ class Trainer(object):
     return res
 
   def convert_to_pseudo_original_form(self, image):
-    # uncomment to change channels
-    # from PIL import Image
-    # image = (((image/2) + 0.5) * 255.0).astype(np.uint8)
-    # image = Image.fromarray(image)
-    # image = image.convert("RGBA")
-    # image = np.array(image) 
-    # r, g, b, a = image.T 
-    # image = np.array([r, g, b])
-    # image = image.transpose()
-    # return np.array(image)
-
     image = (((image/2) + 0.5) * 255.0).astype(np.uint8)
     return image
 
@@ -814,6 +803,42 @@ class Trainer(object):
           break
     return (imgs, class_ids)
 
+  def visualize(self, split):
+    gui_backend = [
+        'GTK3Agg', 'GTK3Cairo', 'GTK4Agg', 
+        'GTK4Cairo', 'MacOSX', 'nbAgg', 
+        'QtAgg', 'QtCairo', 'Qt5Agg', 
+        'Qt5Cairo', 'TkAgg', 'TkCairo', 
+        'WebAgg', 'WX', 'WXAgg', 'WXCairo', 
+        'agg', 'cairo', 'pdf', 'pgf', 'ps', 
+        'svg', 'template'
+      ]
+    import matplotlib
+    matplotlib.use(gui_backend[10])
+    import matplotlib.pyplot as plt
+    
+    # setting values to rows and column variables
+    rows, columns = 5, 5
+
+    images, _ = self.get_data_and_label(
+      self.visualize_image_set, split, rows*columns)
+
+    # create figure
+    fig = plt.figure(figsize=(10, 7))
+    
+    for idx, im in enumerate(images):
+      print(f"plotting label: {idx}")
+      # Adds a subplot at the nth position
+      fig.add_subplot(rows, columns, idx+1)
+    
+      # showing image
+      plt.imshow(im)
+      plt.axis('off')
+      plt.title(f"{self.visualize_image_set}-{idx+1}")
+      plt.plot()
+    plt.show()
+    raise SystemExit("Stopping to see the plots")
+
   def create_summary_writer(self):
     
     """Create summaries and writer."""
@@ -828,41 +853,8 @@ class Trainer(object):
         standard_summaries.append(acc_summary)
     
     
-    if self.visualize_data:
-      gui_backend = [
-        'GTK3Agg', 'GTK3Cairo', 'GTK4Agg', 
-        'GTK4Cairo', 'MacOSX', 'nbAgg', 
-        'QtAgg', 'QtCairo', 'Qt5Agg', 
-        'Qt5Cairo', 'TkAgg', 'TkCairo', 
-        'WebAgg', 'WX', 'WXAgg', 'WXCairo', 
-        'agg', 'cairo', 'pdf', 'pgf', 'ps', 
-        'svg', 'template'
-      ]
-      import matplotlib
-      matplotlib.use(gui_backend[10])
-      import matplotlib.pyplot as plt
-      
-      # setting values to rows and column variables
-      rows, columns = 5, 5
-
-      images, _ = self.get_data_and_label(
-        self.visualize_image_set, split, rows*columns)
-
-      # create figure
-      fig = plt.figure(figsize=(10, 7))
-      
-      for idx, im in enumerate(images):
-        print(f"plotting label: {idx}")
-        # Adds a subplot at the nth position
-        fig.add_subplot(rows, columns, idx+1)
-      
-        # showing image
-        plt.imshow(im)
-        plt.axis('off')
-        plt.title(f"{self.visualize_image_set}-{idx+1}")
-        plt.plot()
-      plt.show()
-      raise SystemExit("Stopping to see the plots")
+      if self.visualize_data:
+        self.visualize(split)
 
     # Add summaries for the way / shot / logits / targets of the learner.
     evaluation_summaries = self.add_eval_summaries()
