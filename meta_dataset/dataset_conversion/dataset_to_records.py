@@ -1089,7 +1089,7 @@ class TeslaConverter(DatasetConverter):
 
       # Create and write the tf.Record of the examples of this class.
       write_tfrecord_from_tesla_directory_structure(
-          class_path, class_label, class_records_path, invert_img=True)
+          class_path, class_label, class_records_path)
 
 
 
