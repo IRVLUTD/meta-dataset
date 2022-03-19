@@ -780,25 +780,35 @@ class Trainer(object):
           im = sess.run(get_next_im)
           lbl = sess.run(get_next_label)
           cls_id = sess.run(get_next_class_id)
-          
+
           img_list_len = len(im)
-          # uncomment to see episode wise
-          # total += 1
-          # if img_list_len:
-          #   count += 1
-          #   imgs.append(self.convert_to_pseudo_original_form(im[0]))
-          if total + img_list_len > limit:
-            break
-          total += img_list_len
-          if img_list_len:
-            count += img_list_len
-            imgs.extend(self.convert_to_pseudo_original_form(im))
-            
-            print(im.shape, len(lbl), lbl, len(cls_id), cls_id)
-            # print(self.data_spec.class_names.get(y))
-            # class_ids.append(y)
-            print(f"{image_set} : {count}/{total}")
-            # break
+          only_see_first_img_of_episode = False
+          is_first_access = True
+
+          if only_see_first_img_of_episode:
+            total += 1
+            if img_list_len:
+              count += 1
+              imgs.append(self.convert_to_pseudo_original_form(im[0]))
+          else:
+            sum = total + img_list_len
+            if sum > limit:
+              if is_first_access:
+                im = im[:limit]
+                img_list_len = limit
+                is_first_access=False
+              else:
+                break
+            total += img_list_len
+            if img_list_len:
+              count += img_list_len
+              imgs.extend(self.convert_to_pseudo_original_form(im))
+              
+              # print(im.shape, len(lbl), lbl, len(cls_id), cls_id)
+              # print(self.data_spec.class_names.get(y))
+              # class_ids.append(y)
+              print(f"{image_set} : {count}/{total}")
+            #   break
         except tf.errors.OutOfRangeError:
           break
     return (imgs, class_ids)
@@ -825,7 +835,6 @@ class Trainer(object):
 
     # create figure
     fig = plt.figure(figsize=(10, 7))
-    
     for idx, im in enumerate(images):
       print(f"plotting label: {idx}")
       # Adds a subplot at the nth position

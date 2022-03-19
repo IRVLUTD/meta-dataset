@@ -425,9 +425,8 @@ class TeslaDatasetSpecification(
       RuntimeError: the DatasetSpecification is out of date (missing info).
     """
     
-    num_images = 0
-    
-    return self.images_per_class[class_id]['support'] + self.images_per_class[class_id]['query']
+    num_images = self.images_per_class[class_id]['support'] + self.images_per_class[class_id]['query']
+    return num_images
 
   def get_classes(self, split):
     """Gets the sequence of class labels for a split.

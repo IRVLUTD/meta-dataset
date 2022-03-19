@@ -1,10 +1,14 @@
+# Use the follwoing to check consistency with MS code state
+# as 'fungi', vgg_flower, omniglot has been preprocessed 
+# i.e. all datasets except tesla
+# to tfrecords contain with 'set' key and value=''
+
+# Datasets ready for visualization:
+# 'fungi', vgg_flower, omniglot 
+# this may change based what the 
+# intended user has preprocessed
+# benchmark.train_datasets = 'fungi'
+# benchmark.eval_datasets = 'fungi'
+
 benchmark.train_datasets = 'tesla'
 benchmark.eval_datasets = 'tesla'
-
-
-# Use the follwoing to check consistency with MS code state
-# as omniglot has been preprocessed to tfrecords contain 
-# with 'set' key and value=''
-
-# benchmark.train_datasets = 'omniglot'
-# benchmark.eval_datasets = 'omniglot'

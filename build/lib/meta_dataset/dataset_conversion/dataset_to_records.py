@@ -55,6 +55,7 @@ from six.moves import range
 import six.moves.cPickle as pkl
 import tensorflow.compat.v1 as tf
 from tqdm import tqdm
+import math
 
 # Datasets in the same order as reported in the article.
 # 'ilsvrc_2012_data_root' is already defined in imagenet_specification.py.
@@ -139,6 +140,7 @@ VGGFLOWER_LABELS_PATH = os.path.join(AUX_DATA_PATH,
                                      'VggFlower_labels.txt')
 TRAFFICSIGN_LABELS_PATH = os.path.join(AUX_DATA_PATH, 'TrafficSign_labels.txt')
 
+SHUFFLE_SEED = 17032022
 
 def make_example(features):
   """Creates an Example protocol buffer.
@@ -402,6 +404,8 @@ def write_tfrecord_from_image_files(class_files,
 def write_tfrecord_from_image_files_with_set_info(class_files,
                                                   class_label,
                                                   output_path,
+                                                  k_support,
+                                                  k_query,
                                                   invert_img=False,
                                                   bboxes=None,
                                                   output_format='JPEG',
@@ -476,6 +480,7 @@ def write_tfrecord_from_image_files_with_set_info(class_files,
 
   writer = tf.python_io.TFRecordWriter(output_path)
   written_images_count = 0
+  real_images_count = 0
   for i, path_with_set_info in enumerate(class_files):
     path, set_info = path_with_set_info
     bbox = bboxes[i] if bboxes is not None else None
@@ -488,24 +493,33 @@ def write_tfrecord_from_image_files_with_set_info(class_files,
         raise
     else:
       # This gets executed only if no Exception was raised
-      write_example(img, 
-                    class_label, 
-                    writer, 
-                    belongs_to_set=bytes(set_info, 'utf-8'))
-      written_images_count += 1
+      
+      # UPDATE: Oversample support images by a factor of math.ceil(k_query/k_support)
+      # This is required as tensorflow's default shuffle operation don't allow
+      # custom randomization for data sampling
+      repeat = math.ceil(k_query/k_support) if set_info == "support" else 1
+      for _ in range(repeat):
+        write_example(img, 
+                      class_label, 
+                      writer, 
+                      belongs_to_set=bytes(set_info, 'utf-8'))
+        written_images_count += 1
+      real_images_count += 1
 
   writer.close()
-  return written_images_count
+  return written_images_count, real_images_count
 
 
 # UPDATE: Made using write_tfrecord_from_directory function
 def write_tfrecord_from_tesla_directory_structure(class_directory,
                                                   class_label,
                                                   output_path,
+                                                  k_support,
+                                                  k_query,
                                                   invert_img=False,
                                                   files_to_skip=None,
                                                   skip_on_error=False,
-                                                  shuffle_with_seed=None):
+                                                  shuffle_with_seed=SHUFFLE_SEED):
   """Create and write a tf.record file for the images corresponding to a class.
 
   Args:
@@ -551,19 +565,24 @@ def write_tfrecord_from_tesla_directory_structure(class_directory,
     class_files.extend(get_classes_with_set_info(class_directory, class_set))
 
   if shuffle_with_seed is not None:
+    # UPDATE: Shuffle is a must requirement so that support and query images 
+    # are mixed randomly instead of having support examples first and 
+    # query examples following it
     rng = np.random.RandomState(shuffle_with_seed)
     rng.shuffle(class_files)
 
-  written_images_count = write_tfrecord_from_image_files_with_set_info(
+  written_images_count, real_images_count = write_tfrecord_from_image_files_with_set_info(
       class_files,
       class_label,
       output_path,
+      k_support,
+      k_query,
       invert_img,
       skip_on_error=skip_on_error)
 
   if not skip_on_error:
-    assert len(class_files) == written_images_count
-  return written_images_count
+    assert len(class_files) == real_images_count
+  return real_images_count, output_path
 
 
 
@@ -641,6 +660,8 @@ def encode_image(img, image_format):
   img_bytes = buf.getvalue()
   buf.close()
   return img_bytes
+
+
 class DatasetConverter(object):
   """Converts a dataset to the format required to integrate it in the benchmark.
 
@@ -1088,9 +1109,10 @@ class TeslaConverter(DatasetConverter):
             ))
 
       # Create and write the tf.Record of the examples of this class.
-      write_tfrecord_from_tesla_directory_structure(
-          class_path, class_label, class_records_path, invert_img=True)
-
+      real_images_count, output_path = write_tfrecord_from_tesla_directory_structure(
+          class_path, class_label, class_records_path,
+          self.images_per_class[class_label]["support"],
+          self.images_per_class[class_label]["query"])
 
 
   def create_dataset_specification_and_records(self):
