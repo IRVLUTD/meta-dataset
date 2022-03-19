@@ -1,9 +1,9 @@
 Trainer.num_updates = 75000
 Trainer.batch_size = 256  # Only applicable to non-episodic models.
-Trainer.num_eval_episodes = 1 #600
+Trainer.num_eval_episodes = 600
 Trainer.checkpoint_every = 500
 Trainer.validate_every = 500
-Trainer.log_every = 1 #100
+Trainer.log_every = 100
 Trainer.distribute = False
 # Enable TensorFlow optimizations. It can add a few minutes to the first
 # calls to session.run(), but decrease memory usage.
