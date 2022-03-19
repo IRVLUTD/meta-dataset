@@ -61,8 +61,6 @@ def filter_placeholders(example_strings, class_ids):
   actual_example_strings = example_strings[:num_actual]
   actual_class_ids = class_ids[:num_actual]
 
-  # tf.print("total: ", len(actual_class_ids))
-
   return (actual_example_strings, actual_class_ids)
 
 
@@ -294,41 +292,29 @@ def process_episode(example_strings, class_ids, chunk_sizes, image_size,
     log_data_augmentation(query_decoder.data_augmentation, 'query')
     query_decoder.image_size = image_size
 
-  x = flush_and_chunk_episode(example_strings, class_ids, chunk_sizes)
-  tf.print("x", len(x[0][0]), len(x[1][0]))
-  (support_strings, support_class_ids), (query_strings, query_class_ids) = x
-    # flush_and_chunk_episode(example_strings, class_ids, chunk_sizes)
+  (support_strings, support_class_ids), (query_strings, query_class_ids) = \
+    flush_and_chunk_episode(example_strings, class_ids, chunk_sizes)
 
   support_images = support_strings
   query_images = query_strings
   
-  perform_filtration = True
-
   if support_decoder:
     support_images, support_labels, image_set_info = tf.map_fn(
         support_decoder.decode_with_label_and_set,
         support_strings,
         dtype=(support_decoder.out_type, tf.int32, tf.string),
         back_prop=False)
+
+    support_keep = tf.math.logical_or(
+      tf.equal(image_set_info, tf.constant("support")),
+      tf.equal(image_set_info, tf.constant(""))
+    )
+      
+    # support_discard = tf.map_fn(tf.math.logical_not, support_keep)
     
-    # tf.print("support", image_set_info)
-    # tf.print("pre_s", support_class_ids)
-    # for cid in support_class_ids:
-    #   tf.print("pre_s_cid ",cid)
-    # for cid in query_class_ids:
-    #   tf.print("pre_q_cid ",cid)
-    if perform_filtration:
-      support_keep = tf.math.logical_or(
-        tf.equal(image_set_info, tf.constant("support")),
-        tf.equal(image_set_info, tf.constant(""))
-      )
-      
-      support_discard = tf.map_fn(tf.math.logical_not, support_keep)
-      
-      support_images = tf.boolean_mask(support_images, support_keep)
-      support_class_ids = tf.boolean_mask(support_class_ids, support_keep)
-      # for cid in support_class_ids:
-      #   tf.print("post_s_cid ",cid)
+    support_images = tf.boolean_mask(support_images, support_keep)
+    support_class_ids = tf.boolean_mask(support_class_ids, support_keep)
+  
   if query_decoder:
     query_images, query_labels, image_set_info = tf.map_fn(
         query_decoder.decode_with_label_and_set,
@@ -336,39 +322,30 @@ def process_episode(example_strings, class_ids, chunk_sizes, image_size,
         dtype=(query_decoder.out_type, tf.int32, tf.string),
         back_prop=False)
     
-    if perform_filtration:
-      query_keep = tf.math.logical_or(
-        tf.equal(image_set_info, tf.constant("query")),
-        tf.equal(image_set_info, tf.constant(""))
-      )
+    query_keep = tf.math.logical_or(
+      tf.equal(image_set_info, tf.constant("query")),
+      tf.equal(image_set_info, tf.constant(""))
+    )
 
-      query_discard = tf.map_fn(tf.math.logical_not, query_keep)
-      
-      tf.print("support", tf.reduce_sum(tf.cast(support_keep, tf.float32)), tf.reduce_sum(tf.cast(support_discard, tf.float32)))
-      tf.print(support_keep, support_class_ids)
-      tf.print("query", tf.reduce_sum(tf.cast(query_keep, tf.float32)), tf.reduce_sum(tf.cast(query_discard, tf.float32)))
-      tf.print(simclr_episode_fraction > 0.0)
-      tf.print("******************************")
-      # tf.print("query", image_set_info)
-      unique_support_class_ids = tf.unique(support_class_ids)[0]
+    # query_discard = tf.map_fn(tf.math.logical_not, query_keep)
+    
+    # get unique class ids from support class_ids after filtration
+    unique_support_class_ids = tf.unique(support_class_ids)[0]
 
-      query_class_ids_present_in_support_class_ids = tf.map_fn(
-        lambda query_class_id: is_present(
-          query_class_id, unique_support_class_ids), 
-        query_class_ids, dtype=tf.bool)
+    # get query_class_ids_present_in_support_class_ids after filtration
+    query_class_ids_present_in_support_class_ids = tf.map_fn(
+      lambda query_class_id: is_present(query_class_id, unique_support_class_ids), 
+      query_class_ids, dtype=tf.bool)
 
-
-      query_keep = tf.math.logical_and(
-        query_keep,
-        query_class_ids_present_in_support_class_ids,
-      )
-      
-      # tf.print("xxxx", tf.map_fn(tf.math.logical_not, query_keep), query_keep,  query_class_ids_present_in_support_class_ids)
-      
-      query_images = tf.boolean_mask(query_images, query_keep)
-      query_class_ids = tf.boolean_mask(query_class_ids, query_keep) 
-      # for cid in query_class_ids:
-      #   tf.print("post_q_cid ",cid)
+    # get the final boolean mask for query artifacts
+    query_keep = tf.math.logical_and(
+      query_keep,
+      query_class_ids_present_in_support_class_ids,
+    )
+    
+    query_images = tf.boolean_mask(query_images, query_keep)
+    query_class_ids = tf.boolean_mask(query_class_ids, query_keep) 
+  
   # Convert class IDs into labels in [0, num_ways).
   _, support_labels = tf.unique(support_class_ids)
   _, query_labels = tf.unique(query_class_ids)
@@ -385,6 +362,10 @@ def process_episode(example_strings, class_ids, chunk_sizes, image_size,
 def is_present(x, tensor):
   '''
   Checks if x is present in a tensor
+  params:
+    x: value to checked
+    tensor: array in which x would be checked
+  returns: True/False depending on whether x is present in tensor
   '''
   return tf.math.reduce_any(tf.equal(tensor, x))
 
