@@ -1,6 +1,6 @@
 #!/bin/bash
 source set_env.sh
-export SOURCE=imagenet
+export SOURCE=all
 # for MODEL in baseline baselinefinetune prototypical matching maml maml_init_with_proto
 for MODEL in prototypical matching
 do

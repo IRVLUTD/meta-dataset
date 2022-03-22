@@ -755,7 +755,7 @@ class Trainer(object):
     image = (((image/2) + 0.5) * 255.0).astype(np.uint8)
     return image
 
-  def get_data_and_label(self, image_set, split, limit=50):
+  def get_data_and_label(self, image_set, limit=50):
     data_iterator = self.DATA.make_one_shot_iterator()
     count, total = 0, 0
     imgs, labels, class_names = [], [], []
@@ -824,30 +824,31 @@ class Trainer(object):
     # setting values to rows and column variables
     rows, columns = 8, 8
 
-    images, labels, class_ids = self.get_data_and_label(
-      self.visualize_image_set, split, rows*columns)
+    for image_set in self.visualize_image_set:
 
-    # create figure
-    fig = plt.figure(figsize=(10, 7))
+      images, labels, class_ids = self.get_data_and_label(image_set, rows*columns)
 
-    # set window title
-    fig.canvas.set_window_title(self.visualize_image_set)
-    for idx, im in enumerate(images):
-      try:
-        class_name = self.data_spec.class_names[class_ids[idx]]
-        print(f"plotting label: {idx}, label:{labels[idx]}, class_name:{class_name}")
-        # Adds a subplot at the nth position
-        fig.add_subplot(rows, columns, idx+1)
-      
-        # showing image
-        plt.imshow(im)
-        plt.axis('off')
-        plt.title(f"#{idx+1}; {labels[idx]}:{class_name}")
-        plt.plot()
-      except:
-        pass
-    plt.show()
-    raise SystemExit("Stopping to see the plots")
+      # create figure
+      fig = plt.figure(figsize=(10, 7))
+
+      # set window title
+      fig.canvas.set_window_title(f"{split}:{image_set}")
+      for idx, im in enumerate(images):
+        try:
+          class_name = self.data_spec.class_names[class_ids[idx]]
+          print(f"plotting label: {idx}, label:{labels[idx]}, class_name:{class_name}")
+          # Adds a subplot at the nth position
+          fig.add_subplot(rows, columns, idx+1)
+        
+          # showing image
+          plt.imshow(im)
+          plt.axis('off')
+          plt.title(f"#{idx+1}; {labels[idx]}:{class_name}")
+          plt.plot()
+        except:
+          pass
+      plt.show()
+      # raise SystemExit("Stopping to see the plots")
 
   def create_summary_writer(self):
     

@@ -13,9 +13,9 @@ Learner.backprop_through_moments = True
 
 # UPDATE
 # this is consistent with other datasets as well
-Trainer.visualize_data = True
+Trainer.visualize_data = False
 
 # UPDATE
 # visualize few-shot "support" or "query" images 
-Trainer.visualize_image_set = "support" # OR "query"
+Trainer.visualize_image_set = ["support", "query"]
 
