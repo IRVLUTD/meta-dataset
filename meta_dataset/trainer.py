@@ -631,7 +631,6 @@ class Trainer(object):
 
     with tf.name_scope(split):
       data_src = self.next_data[split]
-      self.DATA = self.next_data[split]
       if self.distribute:
         with self.strategy.scope():
           # We need to split both support and query sets across GPUs, and
@@ -706,6 +705,7 @@ class Trainer(object):
           self.data_initializeable_iterators.append(data)
       else:
         data = lambda: data_src
+        self.DATA = data_src
         regularizer = self.learners[split].compute_regularizer
 
       def run(data_local):
@@ -756,38 +756,27 @@ class Trainer(object):
     return image
 
   def get_data_and_label(self, image_set, split, limit=50):
-    fn = {
-      "support_images": lambda episode: episode.support_images,
-      "support_labels": lambda episode: episode.support_labels,
-      "support_class_ids": lambda episode: episode.support_class_ids,
-      "query_images": lambda episode: episode.query_images,
-      "query_labels": lambda episode: episode.query_labels,
-      "query_class_ids": lambda episode: episode.query_class_ids,
-    }
-    
-    img_iterator = self.DATA.map(fn[f"{image_set}_images"]).make_one_shot_iterator()
-    label_iterator = self.DATA.map(fn[f"{image_set}_labels"]).make_one_shot_iterator()
-    class_id_iterator = self.DATA.map(fn[f"{image_set}_class_ids"]).make_one_shot_iterator()
-
-    get_next_im = img_iterator.get_next()
-    get_next_label = label_iterator.get_next()
-    get_next_class_id = class_id_iterator.get_next()
+    data_iterator = self.DATA.make_one_shot_iterator()
     count, total = 0, 0
     imgs, labels, class_names = [], [], []
+    
     with tf.Session() as sess:
       while count < limit:
         try:
-          im = sess.run(get_next_im)
-          lbl = sess.run(get_next_label)
-          cls_id = sess.run(get_next_class_id)
-
+          data = sess.run(data_iterator.get_next())
+          if image_set == "support":
+            im = data.support_images
+            lbl = data.support_labels
+            cls_id = data.support_class_ids
+          else:
+            im = data.query_images
+            lbl = data.query_labels
+            cls_id = data.query_class_ids
+          
           img_list_len = len(im)
           only_see_first_img_of_episode = False
           is_first_access = True
           
-          print(len(im), len(cls_id), len(lbl))
-          print(cls_id, lbl)
-
           if only_see_first_img_of_episode:
             total += 1
             if img_list_len:
@@ -833,13 +822,16 @@ class Trainer(object):
     import matplotlib.pyplot as plt
     
     # setting values to rows and column variables
-    rows, columns = 5, 5
+    rows, columns = 8, 8
 
     images, labels, class_ids = self.get_data_and_label(
       self.visualize_image_set, split, rows*columns)
 
     # create figure
     fig = plt.figure(figsize=(10, 7))
+
+    # set window title
+    fig.canvas.set_window_title(self.visualize_image_set)
     for idx, im in enumerate(images):
       try:
         class_name = self.data_spec.class_names[class_ids[idx]]
@@ -850,7 +842,7 @@ class Trainer(object):
         # showing image
         plt.imshow(im)
         plt.axis('off')
-        plt.title(f"{self.visualize_image_set}-{idx+1};{labels[idx]}:{class_name}")
+        plt.title(f"#{idx+1}; {labels[idx]}:{class_name}")
         plt.plot()
       except:
         pass

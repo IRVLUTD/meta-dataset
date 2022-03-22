@@ -9,7 +9,7 @@ source set_env.sh
 # start training 
 export SOURCE=all
 # for MODEL in baselinefinetune prototypical matching maml maml_init_with_proto
-for MODEL in prototypical matching
+for MODEL in matching #prototypical
 do
     export EXPNAME=${MODEL}_${SOURCE}
     python -m meta_dataset.train \
