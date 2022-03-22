@@ -1,4 +1,4 @@
-source evaluate.sh
+source __select_best_model.sh
 # for MODEL in baseline baselinefinetune matching prototypical maml maml_init_with_proto
 for MODEL in matching prototypical
 do

@@ -39,9 +39,14 @@ python -m meta_dataset.dataset_conversion.convert_datasets_to_records   \
 # Train using TESLA
 bash __run_using_tesla.sh
 
+# To select and see the best model after training
+# _inference.sh does run __select_best_model.sh
+# hence use this just to see the best model specs
+# bash select_best_model.sh #uncomment this
+
 # evaluate the trained models
 # tested on prototypical/matching networks
-bash evaluate.sh
+bash __inference.sh
 ```
 
 ### Graphs for Loss/Accuracy during reproduction attempt
