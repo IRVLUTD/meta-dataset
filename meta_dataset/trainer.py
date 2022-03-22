@@ -773,7 +773,7 @@ class Trainer(object):
     get_next_label = label_iterator.get_next()
     get_next_class_id = class_id_iterator.get_next()
     count, total = 0, 0
-    imgs, labels, class_ids = [], [], []
+    imgs, labels, class_names = [], [], []
     with tf.Session() as sess:
       while count < limit:
         try:
@@ -784,17 +784,24 @@ class Trainer(object):
           img_list_len = len(im)
           only_see_first_img_of_episode = False
           is_first_access = True
+          
+          print(len(im), len(cls_id), len(lbl))
+          print(cls_id, lbl)
 
           if only_see_first_img_of_episode:
             total += 1
             if img_list_len:
               count += 1
               imgs.append(self.convert_to_pseudo_original_form(im[0]))
+              class_names.append(cls_id[0])
+              labels.append(lbl[0])
           else:
             sum = total + img_list_len
             if sum > limit:
               if is_first_access:
                 im = im[:limit]
+                cls_id = cls_id[:limit]
+                lbl = lbl[:limit]
                 img_list_len = limit
                 is_first_access=False
               else:
@@ -803,15 +810,13 @@ class Trainer(object):
             if img_list_len:
               count += img_list_len
               imgs.extend(self.convert_to_pseudo_original_form(im))
-              
-              # print(im.shape, len(lbl), lbl, len(cls_id), cls_id)
-              # print(self.data_spec.class_names.get(y))
-              # class_ids.append(y)
+              class_names.extend(cls_id)
+              labels.extend(lbl)
               print(f"{image_set} : {count}/{total}")
             #   break
         except tf.errors.OutOfRangeError:
           break
-    return (imgs, class_ids)
+    return (imgs, labels, class_names)
 
   def visualize(self, split):
     gui_backend = [
@@ -830,21 +835,25 @@ class Trainer(object):
     # setting values to rows and column variables
     rows, columns = 5, 5
 
-    images, _ = self.get_data_and_label(
+    images, labels, class_ids = self.get_data_and_label(
       self.visualize_image_set, split, rows*columns)
 
     # create figure
     fig = plt.figure(figsize=(10, 7))
     for idx, im in enumerate(images):
-      print(f"plotting label: {idx}")
-      # Adds a subplot at the nth position
-      fig.add_subplot(rows, columns, idx+1)
-    
-      # showing image
-      plt.imshow(im)
-      plt.axis('off')
-      plt.title(f"{self.visualize_image_set}-{idx+1}")
-      plt.plot()
+      try:
+        class_name = self.data_spec.class_names[class_ids[idx]]
+        print(f"plotting label: {idx}, label:{labels[idx]}, class_name:{class_name}")
+        # Adds a subplot at the nth position
+        fig.add_subplot(rows, columns, idx+1)
+      
+        # showing image
+        plt.imshow(im)
+        plt.axis('off')
+        plt.title(f"{self.visualize_image_set}-{idx+1};{labels[idx]}:{class_name}")
+        plt.plot()
+      except:
+        pass
     plt.show()
     raise SystemExit("Stopping to see the plots")
 

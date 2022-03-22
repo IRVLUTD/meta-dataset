@@ -1,3 +1,0 @@
-best_variant: prototypical_imagenet
-best_valid_acc: 0.2996023893356323
-best_update_num: 69500
