@@ -259,7 +259,8 @@ class Trainer(object):
       distribute,
       enable_tf_optimizations,
       visualize_data,
-      visualize_image_set):
+      visualize_image_set,
+      perform_filtration):
     # pyformat: disable
     """Initializes a Trainer.
 
@@ -339,6 +340,8 @@ class Trainer(object):
         usage.
       visualize_data: bool indicating whether to visualize data before training.
       visualize_image_set: "support", "query" or ""
+      perform_filtration: A boolean flag indicating whether filtration needs 
+      to be performed for tesla dataset
     Raises:
       RuntimeError: If requested to meta-learn the initialization of the linear
           layer weights but they are unexpectedly omitted from saving/restoring.
@@ -369,6 +372,7 @@ class Trainer(object):
     self.enable_tf_optimizations = enable_tf_optimizations
     self.visualize_data = visualize_data
     self.visualize_image_set = visualize_image_set
+    self.perform_filtration = perform_filtration
     self.DATA = None
     self.data_spec = None
 
@@ -1393,6 +1397,7 @@ class Trainer(object):
             use_bilevel_ontology=has_bilevel_ontology[0],
             split=dataset_split,
             episode_descr_config=episode_descr_config,
+            perform_filtration = self.perform_filtration,
             shuffle_buffer_size=shuffle_buffer_size,
             read_buffer_size_bytes=read_buffer_size_bytes,
             num_prefetch=num_prefetch,

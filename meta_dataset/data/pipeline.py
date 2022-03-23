@@ -247,8 +247,11 @@ def simclr_augment(image_batch, blur=False):
   return image_batch
   
 @gin.configurable(allowlist=['support_decoder', 'query_decoder'])
-def process_episode(example_strings, class_ids, dataset_name, chunk_sizes, image_size,
+def process_episode(example_strings, class_ids, dataset_name, data_split, 
+                    perform_filtration, chunk_sizes, image_size, 
                     support_decoder, query_decoder, simclr_episode_fraction):
+  # TODO: remove data_split, tf.print from this function and also in trainer.py
+  # call to this function
   """Processes an episode.
 
   This function:
@@ -299,6 +302,7 @@ def process_episode(example_strings, class_ids, dataset_name, chunk_sizes, image
   support_images = support_strings
   query_images = query_strings
   
+  
   # UPDATE: Decode raw information of support example strings
   if support_decoder:
     support_images, support_labels, support_images_set_info = tf.map_fn(
@@ -323,8 +327,10 @@ def process_episode(example_strings, class_ids, dataset_name, chunk_sizes, image
     - swap support_complement with query complement by
        - keeping the cardinality constraints in mind
   '''
-
-  if support_decoder and query_decoder and dataset_name == 'tesla':
+  perform_filtration = perform_filtration and \
+                      support_decoder and query_decoder and dataset_name == 'tesla'
+  
+  if perform_filtration:
     # filter support artifacts (pure-support)
     support_keep = get_keep_boolean_mask(support_images_set_info, "support")
     support_images = tf.boolean_mask(support_images, support_keep)
@@ -418,6 +424,14 @@ def process_episode(example_strings, class_ids, dataset_name, chunk_sizes, image
   episode = (support_images, support_labels, support_class_ids, query_images,
              query_labels, query_class_ids)
 
+  # a,_,b = tf.unique_with_counts(support_class_ids)
+  # c,_,d = tf.unique_with_counts(query_class_ids)
+  # tf.print("INSIDE process_episode", data_split, a, b,
+  # "sup_im:", tf.shape(support_images)[0],
+  # "q_im:", tf.shape(query_images)[0],
+  # c,d
+  # )
+
   if simclr_episode_fraction > 0.0:
     episode = add_simclr_episodes(simclr_episode_fraction, *episode)
 
@@ -493,6 +507,7 @@ def process_batch(example_strings, class_ids, image_size, batch_decoder):
       back_prop=False
     )
 
+    # TODO; remove if this function is not called in our experiment setup
     # keep = tf.math.logical_or(
     #   tf.equal(image_set_info, tf.constant("query")),
     #   tf.equal(image_set_info, tf.constant(""))
@@ -509,6 +524,7 @@ def make_one_source_episode_pipeline(dataset_spec,
                                      use_bilevel_ontology,
                                      split,
                                      episode_descr_config,
+                                     perform_filtration=False,
                                      pool=None,
                                      shuffle_buffer_size=None,
                                      read_buffer_size_bytes=None,
@@ -526,6 +542,8 @@ def make_one_source_episode_pipeline(dataset_spec,
     use_bilevel_ontology: Whether to use source's bilevel ontology (consisting
       of superclasses and subclasses) to sample episode classes.
     split: A learning_spec.Split object identifying the source (meta-)split.
+    perform_filtration: A boolean flag indicating whether filtration needs 
+      to be performed for tesla dataset
     episode_descr_config: An instance of EpisodeDescriptionConfig containing
       parameters relating to sampling shots and ways for episodes.
     pool: String (optional), for example-split datasets, which example split to
@@ -580,7 +598,9 @@ def make_one_source_episode_pipeline(dataset_spec,
   chunk_sizes = sampler.compute_chunk_sizes()
   map_fn = functools.partial(
       process_episode,
-      dataset_name = episode_reader.dataset_spec.name, #UPDATE
+      dataset_name = episode_reader.dataset_spec.name, #UPDATE,
+      data_split=split,
+      perform_filtration=perform_filtration,
       chunk_sizes=chunk_sizes,
       image_size=image_size,
       simclr_episode_fraction=simclr_episode_fraction)
@@ -683,7 +703,7 @@ def make_multisource_episode_pipeline(dataset_spec_list,
   # flushed examples, splits the episode into support and query sets, removes
   # the placeholder examples and decodes the example strings.
   chunk_sizes = sampler.compute_chunk_sizes()
-
+  tf.print("split", split)
   def map_fn(episode, source_id):
     return process_episode(
         *episode,
