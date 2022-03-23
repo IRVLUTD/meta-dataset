@@ -564,7 +564,7 @@ def write_tfrecord_from_image_files_with_set_info(class_files,
   # query examples following it. This might aid in sampling more 
   # views instead of having same view image in the support set of an episode
     if shuffle_with_seed is not None \
-      and dataset_is_tesla and len(example_strings) != 0:
+      and dataset_is_tesla and len(example_strings) > 1:
       rng = np.random.RandomState(shuffle_with_seed)
       rng.shuffle(example_strings)
   
