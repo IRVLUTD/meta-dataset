@@ -482,6 +482,7 @@ def write_tfrecord_from_image_files_with_set_info(class_files,
 
     Returns:
       A bytes representation of the encoded image.
+      Size (width, height) of an image
     """
     with tf.io.gfile.GFile(path, 'rb') as f:
       image_bytes = f.read()
@@ -511,7 +512,7 @@ def write_tfrecord_from_image_files_with_set_info(class_files,
       img.save(buf, format=output_format)
       buf.seek(0)
       image_bytes = buf.getvalue()
-    return image_bytes
+    return image_bytes, img.size
 
   writer = tf.python_io.TFRecordWriter(output_path)
   written_images_count = 0
@@ -523,7 +524,7 @@ def write_tfrecord_from_image_files_with_set_info(class_files,
     path, set_info = path_with_set_info
     bbox = bboxes[i] if bboxes is not None else None
     try:
-      img = load_and_process_image(path, bbox)
+      img, width, height = load_and_process_image(path, bbox)
     except (IOError, tf.errors.PermissionDeniedError) as e:
       if skip_on_error:
         logging.warn('While trying to load file %s, got error: %s', path, e)
@@ -531,37 +532,40 @@ def write_tfrecord_from_image_files_with_set_info(class_files,
         raise
     else:
       # This gets executed only if no Exception was raised
-      
-      # UPDATE: Oversample tesla support images by a factor of math.ceil(k_query/k_support)
-      # This is required as tensorflow's default shuffle operation don't allow
-      # custom randomization for data sampling
 
-      # do oversampling for tesla dataset's support set
-      set_is_support = set_info == "support"
-      do_oversampling = dataset_is_tesla and set_is_support
-      repeat = math.ceil(k_query/k_support) if do_oversampling else 1
-      example = get_example(img, 
-                            class_label, 
-                            belongs_to_set=bytes(set_info, 'utf-8'))
+      # UPDATE: Include an image if it's width or height is < 25 pixels
+      if width < 25 and height < 25:
+        # UPDATE: Oversample tesla support images by a factor of math.ceil(k_query/k_support)
+        # This is required as tensorflow's default shuffle operation don't allow
+        # custom randomization for data sampling
 
-      for _ in range(repeat):        
-        if dataset_is_tesla:
-          # if dataset is tesla then store in example_strings array 
-          # to shuffle before writing them (oth support and query samples)
-          example_strings.append(example)
-        else:
-          # if dataset is other than tesla write sample directly
-          writer.write(example)
-          written_images_count += 1
+        # do oversampling for tesla dataset's support set
+        set_is_support = set_info == "support"
+        do_oversampling = dataset_is_tesla and set_is_support
+        repeat = math.ceil(k_query/k_support) if do_oversampling else 1
+        example = get_example(img, 
+                              class_label, 
+                              belongs_to_set=bytes(set_info, 'utf-8'))
+
+        for _ in range(repeat):        
+          if dataset_is_tesla:
+            # if dataset is tesla then store in example_strings array 
+            # to shuffle before writing them (oth support and query samples)
+            example_strings.append(example)
+          else:
+            # if dataset is other than tesla write sample directly
+            writer.write(example)
+            written_images_count += 1
       real_images_count += 1
 
   # UPDATE: Shuffle is a "must" requirement so that support and query images 
   # are mixed randomly instead of having support examples first and 
   # query examples following it. This might aid in sampling more 
   # views instead of having same view image in the support set of an episode
-  if shuffle_with_seed is not None and dataset_is_tesla:
-    rng = np.random.RandomState(shuffle_with_seed)
-    rng.shuffle(example_strings)
+    if shuffle_with_seed is not None \
+      and dataset_is_tesla and len(example_strings) != 0:
+      rng = np.random.RandomState(shuffle_with_seed)
+      rng.shuffle(example_strings)
   
   # write tesla class samples to tfrecords
   for example_string in example_strings:
