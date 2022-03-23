@@ -534,7 +534,8 @@ def write_tfrecord_from_image_files_with_set_info(class_files,
       # This gets executed only if no Exception was raised
 
       # UPDATE: Include an image if it's width or height is < 25 pixels
-      if width < 25 and height < 25:
+      inclusion_threshold = 25
+      if width < inclusion_threshold and height < inclusion_threshold:
         # UPDATE: Oversample tesla support images by a factor of math.ceil(k_query/k_support)
         # This is required as tensorflow's default shuffle operation don't allow
         # custom randomization for data sampling
