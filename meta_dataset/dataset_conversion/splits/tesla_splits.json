@@ -111,11 +111,11 @@
     "snack box",
     "bowl",
     "towel",
-    "product box"
+    "sponge"
   ],
   "valid": [
+    "product box",
     "eagle",
-    "sponge",
     "wood tower",
     "cream box",
     "cake pan",

@@ -34,16 +34,16 @@ bash __create_tesla_tfrecords.sh
 # bash reproduce_best_results.sh
 
 # Train using TESLA
-bash __run_using_tesla.sh
+bash __train.sh
 
 # To select and see the best model after training
 # _inference.sh does run __select_best_model.sh
 # hence use this just to see the best model specs
-# bash select_best_model.sh #uncomment this
+# bash __select_best_model.sh #uncomment this
 
 # evaluate the trained models
 # tested on prototypical/matching networks
-bash __inference.sh
+bash __test.sh
 ```
 
 ### Graphs for Loss/Accuracy during reproduction attempt

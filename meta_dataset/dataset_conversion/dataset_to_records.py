@@ -1196,11 +1196,19 @@ class TeslaConverter(DatasetConverter):
     support images were chosen for this purpose.
     """
 
-    # UPDATE: We chose the 13 smallest classes (i.e. those with the least support images)
-    # Found using a preprocessing script
+    """
+    UPDATE: We chose the 13 smallest classes (i.e. those with the least support images)
+    Found using a preprocessing script
+    The only swap which happens is as follows
+    train: "product box", validation: "sponge"
+    as sponge overlaps with training classes it had to be swapped with one train class
+    which is "product box" in our case as "product box" was the last element in 
+    train class list which made it a suitable candidate to swap with validation's "sponge"
+    """
+    
     validation_classes = [
+      "product box",
       "eagle",
-      "sponge",
       "wood tower",
       "cream box",
       "cake pan",
