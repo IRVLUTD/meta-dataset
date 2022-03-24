@@ -482,7 +482,8 @@ def write_tfrecord_from_image_files_with_set_info(class_files,
 
     Returns:
       A bytes representation of the encoded image.
-      Size (width, height) of an image
+      Width of an image
+      Height of an image
     """
     with tf.io.gfile.GFile(path, 'rb') as f:
       image_bytes = f.read()
@@ -512,7 +513,8 @@ def write_tfrecord_from_image_files_with_set_info(class_files,
       img.save(buf, format=output_format)
       buf.seek(0)
       image_bytes = buf.getvalue()
-    return image_bytes, img.size
+    width, height = img.size
+    return image_bytes, width, height
 
   writer = tf.python_io.TFRecordWriter(output_path)
   written_images_count = 0
@@ -539,7 +541,6 @@ def write_tfrecord_from_image_files_with_set_info(class_files,
         # UPDATE: Oversample tesla support images by a factor of math.ceil(k_query/k_support)
         # This is required as tensorflow's default shuffle operation don't allow
         # custom randomization for data sampling
-
         # do oversampling for tesla dataset's support set
         set_is_support = set_info == "support"
         do_oversampling = dataset_is_tesla and set_is_support
