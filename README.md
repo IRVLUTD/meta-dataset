@@ -55,11 +55,10 @@ mv rubik\'s_cube/ $(echo "rubik\'s_cube" | sed -e 's/[^A-Za-z0-9._-]//g')
 # move back to meta-dataset root
 cd $ROOT_DIR
 
-# filter variant classes to represent
-# mixture(52), unseen(41), seen(11)
+# filter variant classes to represent mixture(52), unseen(41), seen(11)
 python __select_and_create_test_classes_for_variants.py
 
-# Assumption TESLA is decompressed to $DATASRC/TESLA directory
+# create tfrecords
 bash __create_tesla_tfrecords.sh
 
 # reproduce the results
