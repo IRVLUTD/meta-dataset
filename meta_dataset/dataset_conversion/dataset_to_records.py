@@ -535,9 +535,11 @@ def write_tfrecord_from_image_files_with_set_info(class_files,
     else:
       # This gets executed only if no Exception was raised
 
-      # UPDATE: Include an image if it's width or height is < 25 pixels
-      inclusion_threshold = 25
-      if width < inclusion_threshold and height < inclusion_threshold:
+      # UPDATE: Exclude an image if it's width or height is < 25 pixels
+      inclusion_threshold = 15
+      include_image = not (width < inclusion_threshold or height < inclusion_threshold)
+      
+      if include_image:
         # UPDATE: Oversample tesla support images by a factor of math.ceil(k_query/k_support)
         # This is required as tensorflow's default shuffle operation don't allow
         # custom randomization for data sampling
@@ -548,8 +550,7 @@ def write_tfrecord_from_image_files_with_set_info(class_files,
         example = get_example(img, 
                               class_label, 
                               belongs_to_set=bytes(set_info, 'utf-8'))
-
-        for _ in range(repeat):        
+        for _ in range(repeat):    
           if dataset_is_tesla:
             # if dataset is tesla then store in example_strings array 
             # to shuffle before writing them (oth support and query samples)
@@ -557,7 +558,7 @@ def write_tfrecord_from_image_files_with_set_info(class_files,
           else:
             # if dataset is other than tesla write sample directly
             writer.write(example)
-            written_images_count += 1
+          written_images_count += 1
       real_images_count += 1
 
   # UPDATE: Shuffle is a "must" requirement so that support and query images 
@@ -574,6 +575,8 @@ def write_tfrecord_from_image_files_with_set_info(class_files,
     writer.write(example_string)
   
   writer.close()
+
+  print(written_images_count, real_images_count)
   return written_images_count, real_images_count
 
 
@@ -1205,7 +1208,7 @@ class TeslaConverter(DatasetConverter):
     which is "product box" in our case as "product box" was the last element in 
     train class list which made it a suitable candidate to swap with validation's "sponge"
     """
-    
+
     validation_classes = [
       "product_box",
       "eagle",

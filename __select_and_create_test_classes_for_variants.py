@@ -48,7 +48,7 @@ def mkdirp(dir):
 dataset_directory = os.environ['DATASET_DOWNLOAD_DIR']
 uncompressed_dataset_directory = os.environ['UNCOMPRESSED_DATASET_DIR_NAME']
 
-tesla_classes_info_dir = f"{os.environ['ROOT_DIR']}/meta_dataset/dataset_conversion/tesla_classes_info"
+tesla_classes_info_dir = f"{os.environ['ROOT_DIR']}/meta_dataset/dataset_conversion/tesla_info/txt"
 
 # maps variant to required classes' file
 # For creating more variants (only applicable to test_data as of 03/24/2022) 
