@@ -1231,7 +1231,7 @@ class TeslaConverter(DatasetConverter):
 
     data_path_test = os.path.join(self.data_root, 'test_data')
     test_classes = sorted(tf.io.gfile.listdir(data_path_test))
-    assert len(test_classes) == 41 or len(test_classes) == 52
+    assert len(test_classes) in [11, 41, 52] # for variants
 
     self.parse_split_data(learning_spec.Split.TRAIN,
                           training_classes,
