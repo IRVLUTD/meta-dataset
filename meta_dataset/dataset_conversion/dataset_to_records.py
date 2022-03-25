@@ -1200,7 +1200,7 @@ class TeslaConverter(DatasetConverter):
 
     """
     UPDATE: We chose the 13 smallest classes (i.e. those with the least support images)
-    Found using a preprocessing script
+    Found using a preprocessing script (number 13 was taken by 90/10% split of training_data)
     The only swap which happens is as follows
     train: "product box", validation: "sponge"
     as sponge overlaps with training classes it had to be swapped with one train class

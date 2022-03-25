@@ -4,7 +4,7 @@
 
 # TODO: REMOVE this after all experiments
 export DATASET_DOWNLOAD_DIR="/home/jishnu/Desktop" # NOTE: DATASET_DOWNLOAD_DIR shouldn't have a "/" at the end
-export UNCOMPRESSED_DATASET_DIR_NAME="tesla-mixture"
+export UNCOMPRESSED_DATASET_DIR_NAME="tesla-seen"
 
 # TODO: populate after publication
 # export DATASET_URL=<dataset-url>
