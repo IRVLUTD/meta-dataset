@@ -1,6 +1,9 @@
 - This a forked repository of [Meta-Dataset](https://github.com/google-research/meta-dataset/). (Commit: [c67dd2b](https://github.com/google-research/meta-dataset/commit/c67dd2bb66fb2a4ce7e4e9906878e13d9b851eb5))
 - Full documentation can be found [here](README-original.md).
 
+### Before starting
+  - Be sure to set the env variables in [set_env.sh](set_env.sh)
+
 ### To run experiment, following commands can be used
 ```bash
 # open docker container in interactive mode
@@ -19,12 +22,41 @@ python setup.py install
 # recommended: imagenet only
 # bash install.sh
 
+# set required env variables
+# change as per your need
 source set_env.sh
 
 # Download the TESLA dataset
-# TODO: populate url after paper publication
-wget <dataset-url>
-7za x FSL-Sim2Real-IRVL-2022.7z # decompress
+# NOTE: make sure that the download directory
+# has ample amount of disk space as the following
+# 2 steps after download will also need additional space
+
+# move to DATASET_DOWNLOAD_DIR
+cd $DATASET_DOWNLOAD_DIR
+
+# download dataset
+wget $DATASET_URL
+
+# uncompress to TESLA directory: this might take a while
+7za x FSL-Sim2Real-IRVL-2022.7z -o$DATASET_DOWNLOAD_DIR/$UNCOMPRESSED_DATASET_DIR_NAME
+
+# replace " " in class names with "_"
+for data in training_data test_data seen
+do
+  cd $data; for file in *; do mv "$file" `echo $file | tr ' ' '_'` ; done; cd ..
+done
+
+# rename m&m's package class in test_set
+mv m\&m\'s_package/ $(echo "m\&m\'s_package/" | sed -e 's/[^A-Za-z0-9._-]//g')
+# rename m&m's package class in test_set
+mv rubik\'s_cube/ $(echo "rubik\'s_cube" | sed -e 's/[^A-Za-z0-9._-]//g')
+
+# move back to meta-dataset root
+cd $ROOT_DIR
+
+# filter variant classes to represent
+# mixture(52), unseen(41), seen(11)
+python __select_and_create_test_classes_for_variants.py
 
 # Assumption TESLA is decompressed to $DATASRC/TESLA directory
 bash __create_tesla_tfrecords.sh
