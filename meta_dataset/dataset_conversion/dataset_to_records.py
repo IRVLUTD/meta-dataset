@@ -1207,19 +1207,19 @@ class TeslaConverter(DatasetConverter):
     """
     
     validation_classes = [
-      "product box",
+      "product_box",
       "eagle",
-      "wood tower",
-      "cream box",
-      "cake pan",
+      "wood_tower",
+      "cream_box",
+      "cake_pan",
       "screwdriver",
-      "food can",
+      "food_can",
       "bottle",
-      "paper roll",
-      "honey dipper",
+      "paper_roll",
+      "honey_dipper",
       "racoon",
-      "hard drive",
-      "rubber band"
+      "hard_drive",
+      "rubber_band"
     ]
 
     training_classes = []

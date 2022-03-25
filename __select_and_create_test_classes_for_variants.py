@@ -6,8 +6,9 @@ from tqdm import tqdm
 logging.basicConfig(level=logging.INFO)
 
 """
-Once tfrecords for the 3 variants are produced and when the raw datasets are no longer
-needed, then they could be deleted at user's discretion as training works uses tfrecords
+Once tfrecords for the 3 variants are produced and when the variant datasets 
+are no longer needed, then they could be deleted at user's discretion as 
+training/validation/test uses tfrecords
 """
 
 def log(message :str):
@@ -50,6 +51,9 @@ uncompressed_dataset_directory = os.environ['UNCOMPRESSED_DATASET_DIR_NAME']
 tesla_classes_info_dir = f"{os.environ['ROOT_DIR']}/meta_dataset/dataset_conversion/tesla_classes_info"
 
 # maps variant to required classes' file
+# For creating more variants (only applicable to test_data as of 03/24/2022) 
+# just add a key: value pair with name as key and file path of text file 
+# containing classes to be included in the variaint 
 variants = {
     "seen": 'train_test_comm_classes_with_query_set-11-seen.txt', # seen
     "unseen": 'train_test_disjoint_classes_with_query_set-41-unseen.txt', # unseen
@@ -65,7 +69,7 @@ for variant in variants.keys():
     new_dataset_dir = os.path.join(dataset_directory, dataset)
     
     # remove old dataset dir if exists
-    shutil.rmtree(new_dataset_dir, ignore_errors=True)
+    shutil.rmtree(new_dataset_dir, ignore_errors=True   )
     
     # create new dataset dir
     mkdirp(new_dataset_dir)
