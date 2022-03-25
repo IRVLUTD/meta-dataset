@@ -576,7 +576,6 @@ def write_tfrecord_from_image_files_with_set_info(class_files,
   
   writer.close()
 
-  print(written_images_count, real_images_count)
   return written_images_count, real_images_count
 
 
