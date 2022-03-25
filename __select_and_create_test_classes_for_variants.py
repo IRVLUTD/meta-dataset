@@ -65,7 +65,7 @@ for variant in variants.keys():
     new_dataset_dir = os.path.join(dataset_directory, dataset)
     
     # remove old dataset dir if exists
-    shutil.rmtree(new_dataset_dir)
+    shutil.rmtree(new_dataset_dir, ignore_errors=True)
     
     # create new dataset dir
     mkdirp(new_dataset_dir)
