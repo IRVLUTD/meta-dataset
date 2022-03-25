@@ -17,6 +17,7 @@ nvcr.io/nvidia/tensorflow:21.12-tf2-py3 # tensorflow 2
 pip install -r requirements.txt
 python setup.py install
 
+# TODO: remove/archive install.sh before paper submission
 # bugs exist in the script, needs debugging
 # hence download only required datasets
 # recommended: imagenet only
@@ -41,7 +42,7 @@ wget $DATASET_URL
 7za x FSL-Sim2Real-IRVL-2022.7z -o$DATASET_DOWNLOAD_DIR/$UNCOMPRESSED_DATASET_DIR_NAME
 
 # replace " " in class names with "_"
-for data in training_data test_data seen
+for data in training_data test_data
 do
   cd $data; for file in *; do mv "$file" `echo $file | tr ' ' '_'` ; done; cd ..
 done
