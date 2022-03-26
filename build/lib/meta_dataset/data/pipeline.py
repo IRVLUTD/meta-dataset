@@ -247,8 +247,11 @@ def simclr_augment(image_batch, blur=False):
   return image_batch
   
 @gin.configurable(allowlist=['support_decoder', 'query_decoder'])
-def process_episode(example_strings, class_ids, chunk_sizes, image_size,
+def process_episode(example_strings, class_ids, dataset_name, data_split, 
+                    perform_filtration, chunk_sizes, image_size, 
                     support_decoder, query_decoder, simclr_episode_fraction):
+  # TODO: remove data_split, tf.print from this function and also in trainer.py
+  # call to this function
   """Processes an episode.
 
   This function:
@@ -265,6 +268,7 @@ def process_episode(example_strings, class_ids, chunk_sizes, image_size,
     example_strings: 1-D Tensor of dtype str, tf.train.Example protocol buffers.
     class_ids: 1-D Tensor of dtype int, class IDs (absolute wrt the original
       dataset).
+    dataset_name: Name of the dataset, e.g. 'tesla'
     chunk_sizes: Tuple of ints representing the sizes the flush and additional
       chunks.
     image_size: int, desired image size used during decoding.
@@ -298,54 +302,123 @@ def process_episode(example_strings, class_ids, chunk_sizes, image_size,
   support_images = support_strings
   query_images = query_strings
   
+  
+  # UPDATE: Decode raw information of support example strings
   if support_decoder:
-    support_images, support_labels, image_set_info = tf.map_fn(
+    support_images, support_labels, support_images_set = tf.map_fn(
         support_decoder.decode_with_label_and_set,
         support_strings,
         dtype=(support_decoder.out_type, tf.int32, tf.string),
         back_prop=False)
 
-    support_keep = tf.math.logical_or(
-      tf.equal(image_set_info, tf.constant("support")),
-      tf.equal(image_set_info, tf.constant(""))
-    )
-      
-    # support_discard = tf.map_fn(tf.math.logical_not, support_keep)
-    
-    support_images = tf.boolean_mask(support_images, support_keep)
-    support_class_ids = tf.boolean_mask(support_class_ids, support_keep)
-  
+  # UDPATE: Decode raw information of query example strings
   if query_decoder:
-    query_images, query_labels, image_set_info = tf.map_fn(
+    query_images, query_labels, query_images_set = tf.map_fn(
         query_decoder.decode_with_label_and_set,
         query_strings,
         dtype=(query_decoder.out_type, tf.int32, tf.string),
         back_prop=False)
-    
-    query_keep = tf.math.logical_or(
-      tf.equal(image_set_info, tf.constant("query")),
-      tf.equal(image_set_info, tf.constant(""))
-    )
-
-    # query_discard = tf.map_fn(tf.math.logical_not, query_keep)
-    
-    # get unique class ids from support class_ids after filtration
-    unique_support_class_ids = tf.unique(support_class_ids)[0]
-
-    # get query_class_ids_present_in_support_class_ids after filtration
-    query_class_ids_present_in_support_class_ids = tf.map_fn(
-      lambda query_class_id: is_present(query_class_id, unique_support_class_ids), 
-      query_class_ids, dtype=tf.bool)
-
-    # get the final boolean mask for query artifacts
-    query_keep = tf.math.logical_and(
-      query_keep,
-      query_class_ids_present_in_support_class_ids,
-    )
-    
-    query_images = tf.boolean_mask(query_images, query_keep)
-    query_class_ids = tf.boolean_mask(query_class_ids, query_keep) 
   
+  # UPDATE STARTS
+  '''
+  If dataset is 'tesla' and perform_fitration is True in gin file
+  then do necessary filtration as follows:
+    - support = pure-support + support_complement (query samples)
+    - query = pure-query + query_complement (support samples)
+    - swap support_complement with query complement by
+       - keeping the cardinality constraints in mind
+  '''
+  perform_filtration = perform_filtration and \
+                      support_decoder and query_decoder and dataset_name == 'tesla'
+  
+  if perform_filtration:
+    # filter support artifacts (pure-support)
+    support_keep = get_keep_boolean_mask(support_images_set, "support")
+    support_keep_images = tf.boolean_mask(support_images, support_keep)
+    support_keep_class_ids = tf.boolean_mask(support_class_ids, support_keep)
+    
+    # filter non support artifacts (support_complement)
+    support_discard = tf.map_fn(tf.math.logical_not, support_keep, back_prop=False)
+    support_discard_size = tf.reduce_sum(tf.cast(support_discard, tf.int32))
+
+    support_discard_images = tf.boolean_mask(support_images, support_discard)
+    support_discard_class_ids = tf.boolean_mask(support_class_ids, support_discard)
+
+    # query artifact filter-1 based on image_set_info
+    query_keep = get_keep_boolean_mask(query_images_set, "query")
+    query_keep_images = tf.boolean_mask(query_images, query_keep)
+    query_keep_class_ids = tf.boolean_mask(query_class_ids, query_keep)
+    
+    # filter query complement artifacts
+    query_discard = tf.map_fn(tf.math.logical_not, query_keep, back_prop=False)
+    query_discard_size = tf.reduce_sum(tf.cast(query_discard, tf.int32))
+    query_discard_images = tf.boolean_mask(query_images, query_discard)
+    query_discard_class_ids = tf.boolean_mask(query_class_ids, query_discard)
+
+    # Minimum of support_discard_size and query_discard_size will be 
+    # the number of samples which can be swaped/transfer from
+    # support_complement to query_complement and vice-versa
+    transfer_size = tf.math.minimum(support_discard_size, query_discard_size)
+    # tf.print(query_class_ids, query_discard_size, support_discard_size, transfer_size)
+    indices = tf.transpose([tf.range(transfer_size)])
+
+    is_support_discard_bigger = True if tf.math.greater(support_discard_size, transfer_size) else False
+    is_query_discard_bigger = not is_support_discard_bigger
+
+    # Get query_complement samples w.r.t. transfer_size
+    if is_query_discard_bigger: #pick transfer_size elements
+      tf.print("1", support_discard_size, query_discard_size , tf.shape(support_keep_class_ids), transfer_size, tf.shape(indices)[0])
+      query_discard_images = tf.gather_nd(query_discard_images,indices=indices)
+      query_discard_class_ids = tf.gather_nd(query_discard_class_ids,indices=indices)
+    
+    # append query_complement to support artifacts
+    support_keep_images = tf.concat([support_keep_images, query_discard_images], 0)
+    support_keep_class_ids = tf.concat([support_keep_class_ids, query_discard_class_ids], 0)
+
+    tf.print(
+      tf.shape(support_class_ids),
+      tf.shape(support_keep_class_ids),
+      tf.shape(query_discard_class_ids),
+      tf.shape(query_keep_class_ids),
+      tf.shape(query_class_ids),
+    )
+
+    # get support_complement samples w.r.t. transfer_size
+    if is_support_discard_bigger: #pick transfer_size elements
+      tf.print("2", support_discard_size, query_discard_size , tf.shape(support_keep_class_ids), transfer_size, tf.shape(indices)[0])
+      support_discard_images = tf.gather_nd(support_discard_images,indices=indices)
+      support_discard_class_ids = tf.gather_nd(support_discard_class_ids,indices=indices)
+    
+    # append support_complement to query artifacts
+    query_keep_images = tf.concat([query_keep_images, support_discard_images], 0)
+    query_keep_class_ids = tf.concat([query_keep_class_ids, support_discard_class_ids], 0)
+
+    # # get unique class ids from support class_ids after filtration
+    # _, unique_support_class_ids = tf.unique(support_keep_class_ids)
+    # is_present_map_fn = functools.partial(is_present, tensor=unique_support_class_ids)
+
+    # # tf.print("psot", query_keep, tf.size(query_keep), tf.size(query_class_ids), true_bools, tf.size(true_bools), transfer_size)
+
+    # # get query_class_ids_present_in_support_class_ids after filtration
+    # query_class_ids_present_in_support_class_ids = tf.map_fn(
+    #   is_present_map_fn,
+    #   query_keep_class_ids,
+    #   dtype=tf.bool,
+    #   back_prop=False)
+
+    # # get the final boolean mask for query artifacts
+    # query_images = tf.boolean_mask(query_keep_images, query_class_ids_present_in_support_class_ids)
+    # query_class_ids = tf.boolean_mask(query_keep_class_ids, query_class_ids_present_in_support_class_ids) 
+    
+    # support_images = support_keep_images
+    # support_class_ids = support_keep_class_ids
+    # UPDATE ENDS
+
+  support_images = support_keep_images
+  support_class_ids = support_keep_class_ids
+  query_images = query_keep_images
+  query_class_ids = query_keep_class_ids
+
   # Convert class IDs into labels in [0, num_ways).
   _, support_labels = tf.unique(support_class_ids)
   _, query_labels = tf.unique(query_class_ids)
@@ -353,21 +426,51 @@ def process_episode(example_strings, class_ids, chunk_sizes, image_size,
   episode = (support_images, support_labels, support_class_ids, query_images,
              query_labels, query_class_ids)
 
+  # a,_,b = tf.unique_with_counts(support_class_ids)
+  # c,_,d = tf.unique_with_counts(query_class_ids)
+  # tf.print("INSIDE process_episode", data_split, a, b,
+  # "sup_im:", tf.shape(support_images)[0],
+  # "q_im:", tf.shape(query_images)[0],
+  # c,d
+  # )
+
   if simclr_episode_fraction > 0.0:
     episode = add_simclr_episodes(simclr_episode_fraction, *episode)
 
   return episode
 
+
+# UPDATE
+def get_keep_boolean_mask(image_set_info, class_set):
+  '''
+  Returns boolean mask of image_set_info tensor 
+  using class_set: "support/query" info
+  NOTE: this is required only when dealing with 'tesla' dataset
+  Args:
+    image_set_info: tensor containing corresdponding example string's set info
+    class_set: string "support" or "query"
+  Returns: 
+    True/False depending on whether class_set matches image_set_info
+  '''
+  keep = tf.math.logical_or(
+      tf.equal(image_set_info, tf.constant(class_set)),
+      tf.equal(image_set_info, tf.constant(""))
+  )
+  return keep
+
+
 # UPDATE
 def is_present(x, tensor):
   '''
   Checks if x is present in a tensor
-  params:
+  Args:
     x: value to checked
     tensor: array in which x would be checked
-  returns: True/False depending on whether x is present in tensor
+  Returns: 
+    True/False depending on whether x is present in tensor
   '''
   return tf.math.reduce_any(tf.equal(tensor, x))
+
 
 @gin.configurable(allowlist=['batch_decoder'])
 def process_batch(example_strings, class_ids, image_size, batch_decoder):
@@ -406,6 +509,7 @@ def process_batch(example_strings, class_ids, image_size, batch_decoder):
       back_prop=False
     )
 
+    # TODO; remove if this function is not called in our experiment setup
     # keep = tf.math.logical_or(
     #   tf.equal(image_set_info, tf.constant("query")),
     #   tf.equal(image_set_info, tf.constant(""))
@@ -422,6 +526,7 @@ def make_one_source_episode_pipeline(dataset_spec,
                                      use_bilevel_ontology,
                                      split,
                                      episode_descr_config,
+                                     perform_filtration=False,
                                      pool=None,
                                      shuffle_buffer_size=None,
                                      read_buffer_size_bytes=None,
@@ -439,6 +544,8 @@ def make_one_source_episode_pipeline(dataset_spec,
     use_bilevel_ontology: Whether to use source's bilevel ontology (consisting
       of superclasses and subclasses) to sample episode classes.
     split: A learning_spec.Split object identifying the source (meta-)split.
+    perform_filtration: A boolean flag indicating whether filtration needs 
+      to be performed for tesla dataset
     episode_descr_config: An instance of EpisodeDescriptionConfig containing
       parameters relating to sampling shots and ways for episodes.
     pool: String (optional), for example-split datasets, which example split to
@@ -493,6 +600,9 @@ def make_one_source_episode_pipeline(dataset_spec,
   chunk_sizes = sampler.compute_chunk_sizes()
   map_fn = functools.partial(
       process_episode,
+      dataset_name=episode_reader.dataset_spec.name, #UPDATE,
+      data_split=split,
+      perform_filtration=perform_filtration,
       chunk_sizes=chunk_sizes,
       image_size=image_size,
       simclr_episode_fraction=simclr_episode_fraction)
@@ -595,7 +705,7 @@ def make_multisource_episode_pipeline(dataset_spec_list,
   # flushed examples, splits the episode into support and query sets, removes
   # the placeholder examples and decodes the example strings.
   chunk_sizes = sampler.compute_chunk_sizes()
-
+  tf.print("split", split)
   def map_fn(episode, source_id):
     return process_episode(
         *episode,

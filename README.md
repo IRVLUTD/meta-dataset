@@ -2,7 +2,7 @@
 - Full documentation can be found [here](README-original.md).
 
 ### Before starting
-  - Be sure to set the env variables in [set_env.sh](set_env.sh)
+  - Be sure to set the env variables in [set_env.sh](set_env.sh) and [usr.env](usr.env)
 
 ### To run experiment, following commands can be used
 ```bash
@@ -39,7 +39,7 @@ cd $DATASET_DOWNLOAD_DIR
 wget $DATASET_URL
 
 # uncompress to TESLA directory: this might take a while
-7za x FSL-Sim2Real-IRVL-2022.7z -o$DATASET_DOWNLOAD_DIR/$UNCOMPRESSED_DATASET_DIR_NAME
+7za x FSL-Sim2Real-IRVL-2022.7z -o$DATASRC
 
 # replace " " in class names with "_"
 for data in training_data test_data
@@ -66,16 +66,20 @@ bash __create_tesla_tfrecords.sh
 # bash reproduce_best_results.sh
 
 # Train using TESLA
-bash __train.sh
+bash __train.sh <models> <gpu-ids>
+# e.g. bash __train.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0"
 
 # To select and see the best model after training
 # _inference.sh does run __select_best_model.sh
 # hence use this just to see the best model specs
-# bash __select_best_model.sh #uncomment this
+# bash __select_best_model.sh <models> <gpu-ids> #uncomment this
+# e.g. bash __select_best_model.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0"
+
 
 # evaluate the trained models
 # tested on prototypical/matching networks
-bash __test.sh
+bash __test.sh <models> <gpu-ids>
+# e.g. bash __test.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0"
 ```
 
 ### Graphs for Loss/Accuracy during reproduction attempt

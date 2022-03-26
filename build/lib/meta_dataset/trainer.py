@@ -259,7 +259,8 @@ class Trainer(object):
       distribute,
       enable_tf_optimizations,
       visualize_data,
-      visualize_image_set):
+      visualize_image_set,
+      perform_filtration):
     # pyformat: disable
     """Initializes a Trainer.
 
@@ -339,6 +340,8 @@ class Trainer(object):
         usage.
       visualize_data: bool indicating whether to visualize data before training.
       visualize_image_set: "support", "query" or ""
+      perform_filtration: A boolean flag indicating whether filtration needs 
+      to be performed for tesla dataset
     Raises:
       RuntimeError: If requested to meta-learn the initialization of the linear
           layer weights but they are unexpectedly omitted from saving/restoring.
@@ -369,6 +372,7 @@ class Trainer(object):
     self.enable_tf_optimizations = enable_tf_optimizations
     self.visualize_data = visualize_data
     self.visualize_image_set = visualize_image_set
+    self.perform_filtration = perform_filtration
     self.DATA = None
     self.data_spec = None
 
@@ -631,7 +635,6 @@ class Trainer(object):
 
     with tf.name_scope(split):
       data_src = self.next_data[split]
-      self.DATA = self.next_data[split]
       if self.distribute:
         with self.strategy.scope():
           # We need to split both support and query sets across GPUs, and
@@ -706,6 +709,7 @@ class Trainer(object):
           self.data_initializeable_iterators.append(data)
       else:
         data = lambda: data_src
+        self.DATA = data_src
         regularizer = self.learners[split].compute_regularizer
 
       def run(data_local):
@@ -755,46 +759,42 @@ class Trainer(object):
     image = (((image/2) + 0.5) * 255.0).astype(np.uint8)
     return image
 
-  def get_data_and_label(self, image_set, split, limit=50):
-    fn = {
-      "support_images": lambda episode: episode.support_images,
-      "support_labels": lambda episode: episode.support_labels,
-      "support_class_ids": lambda episode: episode.support_class_ids,
-      "query_images": lambda episode: episode.query_images,
-      "query_labels": lambda episode: episode.query_labels,
-      "query_class_ids": lambda episode: episode.query_class_ids,
-    }
-    
-    img_iterator = self.DATA.map(fn[f"{image_set}_images"]).make_one_shot_iterator()
-    label_iterator = self.DATA.map(fn[f"{image_set}_labels"]).make_one_shot_iterator()
-    class_id_iterator = self.DATA.map(fn[f"{image_set}_class_ids"]).make_one_shot_iterator()
-
-    get_next_im = img_iterator.get_next()
-    get_next_label = label_iterator.get_next()
-    get_next_class_id = class_id_iterator.get_next()
+  def get_data_and_label(self, image_set, limit=50):
+    data_iterator = self.DATA.make_one_shot_iterator()
     count, total = 0, 0
-    imgs, labels, class_ids = [], [], []
+    imgs, labels, class_names = [], [], []
+    
     with tf.Session() as sess:
       while count < limit:
         try:
-          im = sess.run(get_next_im)
-          lbl = sess.run(get_next_label)
-          cls_id = sess.run(get_next_class_id)
-
+          data = sess.run(data_iterator.get_next())
+          if image_set == "support":
+            im = data.support_images
+            lbl = data.support_labels
+            cls_id = data.support_class_ids
+          else:
+            im = data.query_images
+            lbl = data.query_labels
+            cls_id = data.query_class_ids
+          
           img_list_len = len(im)
           only_see_first_img_of_episode = False
           is_first_access = True
-
+          
           if only_see_first_img_of_episode:
             total += 1
             if img_list_len:
               count += 1
               imgs.append(self.convert_to_pseudo_original_form(im[0]))
+              class_names.append(cls_id[0])
+              labels.append(lbl[0])
           else:
             sum = total + img_list_len
             if sum > limit:
               if is_first_access:
                 im = im[:limit]
+                cls_id = cls_id[:limit]
+                lbl = lbl[:limit]
                 img_list_len = limit
                 is_first_access=False
               else:
@@ -803,15 +803,13 @@ class Trainer(object):
             if img_list_len:
               count += img_list_len
               imgs.extend(self.convert_to_pseudo_original_form(im))
-              
-              # print(im.shape, len(lbl), lbl, len(cls_id), cls_id)
-              # print(self.data_spec.class_names.get(y))
-              # class_ids.append(y)
+              class_names.extend(cls_id)
+              labels.extend(lbl)
               print(f"{image_set} : {count}/{total}")
             #   break
         except tf.errors.OutOfRangeError:
           break
-    return (imgs, class_ids)
+    return (imgs, labels, class_names)
 
   def visualize(self, split):
     gui_backend = [
@@ -828,25 +826,33 @@ class Trainer(object):
     import matplotlib.pyplot as plt
     
     # setting values to rows and column variables
-    rows, columns = 5, 5
+    rows, columns = 8, 8
 
-    images, _ = self.get_data_and_label(
-      self.visualize_image_set, split, rows*columns)
+    for image_set in self.visualize_image_set:
 
-    # create figure
-    fig = plt.figure(figsize=(10, 7))
-    for idx, im in enumerate(images):
-      print(f"plotting label: {idx}")
-      # Adds a subplot at the nth position
-      fig.add_subplot(rows, columns, idx+1)
-    
-      # showing image
-      plt.imshow(im)
-      plt.axis('off')
-      plt.title(f"{self.visualize_image_set}-{idx+1}")
-      plt.plot()
-    plt.show()
-    raise SystemExit("Stopping to see the plots")
+      images, labels, class_ids = self.get_data_and_label(image_set, rows*columns)
+
+      # create figure
+      fig = plt.figure(figsize=(10, 7))
+
+      # set window title
+      fig.canvas.set_window_title(f"{split}:{image_set}")
+      for idx, im in enumerate(images):
+        try:
+          class_name = self.data_spec.class_names[class_ids[idx]]
+          print(f"plotting label: {idx}, label:{labels[idx]}, class_name:{class_name}")
+          # Adds a subplot at the nth position
+          fig.add_subplot(rows, columns, idx+1)
+        
+          # showing image
+          plt.imshow(im)
+          plt.axis('off')
+          plt.title(f"#{idx+1}; {labels[idx]}:{class_name}")
+          plt.plot()
+        except:
+          pass
+      plt.show()
+      # raise SystemExit("Stopping to see the plots")
 
   def create_summary_writer(self):
     
@@ -1391,6 +1397,7 @@ class Trainer(object):
             use_bilevel_ontology=has_bilevel_ontology[0],
             split=dataset_split,
             episode_descr_config=episode_descr_config,
+            perform_filtration = self.perform_filtration,
             shuffle_buffer_size=shuffle_buffer_size,
             read_buffer_size_bytes=read_buffer_size_bytes,
             num_prefetch=num_prefetch,

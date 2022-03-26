@@ -40,7 +40,7 @@ def mkdirp(dir):
     Works similar to shell's mkdir -p
     """
     try:
-            os.makedirs(dir)
+        os.makedirs(dir)
     except:
         pass
 

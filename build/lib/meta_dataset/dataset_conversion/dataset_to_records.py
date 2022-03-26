@@ -140,7 +140,7 @@ VGGFLOWER_LABELS_PATH = os.path.join(AUX_DATA_PATH,
                                      'VggFlower_labels.txt')
 TRAFFICSIGN_LABELS_PATH = os.path.join(AUX_DATA_PATH, 'TrafficSign_labels.txt')
 
-SHUFFLE_SEED = 17032022
+SHUFFLE_SEED = 22032022
 
 def make_example(features):
   """Creates an Example protocol buffer.
@@ -194,8 +194,8 @@ def write_example(data_bytes,
                                   # "support" / "query" / "both" indicated by b''
   """Create and write an Example protocol buffer for the given image.
 
-  Create a protocol buffer with an integer feature for the class label, and a
-  bytes feature for the image.
+  Create a protocol buffer with an integer feature for the class label, bytes feature for set info
+  and a bytes feature for the image.
 
   Args:
     data_bytes: bytes, an encoded image representation or serialized feature.
@@ -206,11 +206,41 @@ def write_example(data_bytes,
     input_key: String used as key for the input (image of feature).
     label_key: String used as key for the label.
   """
-  # UPDATE: (jpad) should change (Image, label) => (Image, label, set;{support/query})
+  # UPDATE
   example = make_example([(input_key, 'bytes', [data_bytes]),
                           (label_key, 'int64', [class_label]),
                           (set_key, 'bytes', [belongs_to_set])])
   writer.write(example)
+
+
+# UPDATE
+def get_example(data_bytes,
+                class_label,
+                belongs_to_set=b'', #UPDATE: null string in binary format
+                input_key='image',
+                label_key='label',
+                set_key='set'): # UPDATE: 'set' key for belongs_to_set value
+                                # will indicate  whether the image belongs to
+                                # "support" / "query" / "both" indicated by b''
+  """Create and return an Example protocol buffer for the given image.
+
+  Returns a protocol buffer with an integer feature for the class label, bytes feature for set info
+  and a bytes feature for the image.
+
+  Args:
+    data_bytes: bytes, an encoded image representation or serialized feature.
+      For images, the usual encoding is JPEG, but could be different
+      as long as the DataProvider's record_decoder accepts it.
+    class_label: the integer class label of the image.
+    writer: a TFRecordWriter
+    input_key: String used as key for the input (image of feature).
+    label_key: String used as key for the label.
+  """
+  # UPDATE
+  example = make_example([(input_key, 'bytes', [data_bytes]),
+                          (label_key, 'int64', [class_label]),
+                          (set_key, 'bytes', [belongs_to_set])])
+  return example
 
 
 def gen_rand_split_inds(num_train_classes, num_valid_classes, num_test_classes):
@@ -404,12 +434,14 @@ def write_tfrecord_from_image_files(class_files,
 def write_tfrecord_from_image_files_with_set_info(class_files,
                                                   class_label,
                                                   output_path,
+                                                  dataset_name,
                                                   k_support,
                                                   k_query,
                                                   invert_img=False,
                                                   bboxes=None,
                                                   output_format='JPEG',
-                                                  skip_on_error=False):
+                                                  skip_on_error=False,
+                                                  shuffle_with_seed=SHUFFLE_SEED):
   """Create and write a tf.record file for the images corresponding to a class.
 
   Args:
@@ -417,6 +449,9 @@ def write_tfrecord_from_image_files_with_set_info(class_files,
       info, i.e. support/query.
     class_label: the label of the class that a record is being made for.
     output_path: the location to write the record.
+    dataset_name: the name of the dataset
+    k_support: num of support examples (shots)
+    k_query: num of query examples (shots)
     invert_img: change black pixels to white ones and vice versa. Used for
       Omniglot for example to change the black-background-white-digit images
       into more conventional-looking white-background-black-digit ones.
@@ -447,6 +482,8 @@ def write_tfrecord_from_image_files_with_set_info(class_files,
 
     Returns:
       A bytes representation of the encoded image.
+      Width of an image
+      Height of an image
     """
     with tf.io.gfile.GFile(path, 'rb') as f:
       image_bytes = f.read()
@@ -476,16 +513,20 @@ def write_tfrecord_from_image_files_with_set_info(class_files,
       img.save(buf, format=output_format)
       buf.seek(0)
       image_bytes = buf.getvalue()
-    return image_bytes
+    width, height = img.size
+    return image_bytes, width, height
 
   writer = tf.python_io.TFRecordWriter(output_path)
   written_images_count = 0
   real_images_count = 0
+  example_strings = []
+  dataset_is_tesla = dataset_name == "tesla"
+
   for i, path_with_set_info in enumerate(class_files):
     path, set_info = path_with_set_info
     bbox = bboxes[i] if bboxes is not None else None
     try:
-      img = load_and_process_image(path, bbox)
+      img, width, height = load_and_process_image(path, bbox)
     except (IOError, tf.errors.PermissionDeniedError) as e:
       if skip_on_error:
         logging.warn('While trying to load file %s, got error: %s', path, e)
@@ -493,20 +534,48 @@ def write_tfrecord_from_image_files_with_set_info(class_files,
         raise
     else:
       # This gets executed only if no Exception was raised
-      
-      # UPDATE: Oversample support images by a factor of math.ceil(k_query/k_support)
-      # This is required as tensorflow's default shuffle operation don't allow
-      # custom randomization for data sampling
-      repeat = math.ceil(k_query/k_support) if set_info == "support" else 1
-      for _ in range(repeat):
-        write_example(img, 
-                      class_label, 
-                      writer, 
-                      belongs_to_set=bytes(set_info, 'utf-8'))
-        written_images_count += 1
+
+      # UPDATE: Exclude an image if it's width or height is < 15 pixels
+      inclusion_threshold = 15
+      include_image = not (width < inclusion_threshold or height < inclusion_threshold)
+      include_image = True
+      if include_image:
+        # UPDATE: Oversample tesla support images by a factor of math.ceil(k_query/k_support)
+        # This is required as tensorflow's default shuffle operation don't allow
+        # custom randomization for data sampling
+        # do oversampling for tesla dataset's support set
+        set_is_support = set_info == "support"
+        do_oversampling = dataset_is_tesla and set_is_support
+        repeat = math.ceil(k_query/k_support) if do_oversampling else 1
+        example = get_example(img, 
+                              class_label, 
+                              belongs_to_set=bytes(set_info, 'utf-8'))
+        for _ in range(repeat):    
+          if dataset_is_tesla:
+            # if dataset is tesla then store in example_strings array 
+            # to shuffle before writing them (oth support and query samples)
+            example_strings.append(example)
+          else:
+            # if dataset is other than tesla write sample directly
+            writer.write(example)
+          written_images_count += 1
       real_images_count += 1
 
+  # UPDATE: Shuffle is a "must" requirement so that support and query images 
+  # are mixed randomly instead of having support examples first and 
+  # query examples following it. This might aid in sampling more 
+  # views instead of having same view image in the support set of an episode
+    if shuffle_with_seed is not None \
+      and dataset_is_tesla and len(example_strings) > 1:
+      rng = np.random.RandomState(shuffle_with_seed)
+      rng.shuffle(example_strings)
+  
+  # write tesla class samples to tfrecords
+  for example_string in example_strings:
+    writer.write(example_string)
+  
   writer.close()
+
   return written_images_count, real_images_count
 
 
@@ -514,6 +583,7 @@ def write_tfrecord_from_image_files_with_set_info(class_files,
 def write_tfrecord_from_tesla_directory_structure(class_directory,
                                                   class_label,
                                                   output_path,
+                                                  dataset_name,
                                                   k_support,
                                                   k_query,
                                                   invert_img=False,
@@ -526,6 +596,9 @@ def write_tfrecord_from_tesla_directory_structure(class_directory,
     class_directory: the home of the class class_label.
     class_label: the label of the class that a record is being made for.
     output_path: the location to write the record.
+    dataset_name: the name of the dataset
+    k_support: num of support examples (shots)
+    k_query: num of query examples (shots)
     invert_img: change black pixels to white ones and vice versa. Used for
       Omniglot for example to change the black-background-white-digit images
       into more conventional-looking white-background-black-digit ones.
@@ -537,7 +610,8 @@ def write_tfrecord_from_tesla_directory_structure(class_directory,
       shuffled using that seed.
 
   Returns:
-    The number of images written into the records file.
+    The number of images (without replication which is done for tesla dataset) 
+    written into the records file.
   """
 
   def get_classes_with_set_info(class_directory, class_set):
@@ -575,6 +649,7 @@ def write_tfrecord_from_tesla_directory_structure(class_directory,
       class_files,
       class_label,
       output_path,
+      dataset_name,
       k_support,
       k_query,
       invert_img,
@@ -1110,7 +1185,7 @@ class TeslaConverter(DatasetConverter):
 
       # Create and write the tf.Record of the examples of this class.
       real_images_count, output_path = write_tfrecord_from_tesla_directory_structure(
-          class_path, class_label, class_records_path,
+          class_path, class_label, class_records_path, self.name, 
           self.images_per_class[class_label]["support"],
           self.images_per_class[class_label]["query"])
 
@@ -1123,22 +1198,30 @@ class TeslaConverter(DatasetConverter):
     support images were chosen for this purpose.
     """
 
-    # UPDATE: We chose the 13 smallest classes (i.e. those with the least support images)
-    # Found using a preprocessing script
+    """
+    UPDATE: We chose the 13 smallest classes (i.e. those with the least support images)
+    Found using a preprocessing script (number 13 was taken by 90/10% split of training_data)
+    The only swap which happens is as follows
+    train: "product box", validation: "sponge"
+    as sponge overlaps with training classes it had to be swapped with one train class
+    which is "product box" in our case as "product box" was the last element in 
+    train class list which made it a suitable candidate to swap with validation's "sponge"
+    """
+
     validation_classes = [
+      "product_box",
       "eagle",
-      "sponge",
-      "wood tower",
-      "cream box",
-      "cake pan",
+      "wood_tower",
+      "cream_box",
+      "cake_pan",
       "screwdriver",
-      "food can",
+      "food_can",
       "bottle",
-      "paper roll",
-      "honey dipper",
+      "paper_roll",
+      "honey_dipper",
       "racoon",
-      "hard drive",
-      "rubber band"
+      "hard_drive",
+      "rubber_band"
     ]
 
     training_classes = []
@@ -1150,7 +1233,7 @@ class TeslaConverter(DatasetConverter):
 
     data_path_test = os.path.join(self.data_root, 'test_data')
     test_classes = sorted(tf.io.gfile.listdir(data_path_test))
-    assert len(test_classes) == 41 or len(test_classes) == 52
+    assert len(test_classes) in [11, 41, 52] # for variants
 
     self.parse_split_data(learning_spec.Split.TRAIN,
                           training_classes,

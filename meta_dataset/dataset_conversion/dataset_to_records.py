@@ -535,7 +535,7 @@ def write_tfrecord_from_image_files_with_set_info(class_files,
     else:
       # This gets executed only if no Exception was raised
 
-      # UPDATE: Exclude an image if it's width or height is < 25 pixels
+      # UPDATE: Exclude an image if it's width or height is < 15 pixels
       inclusion_threshold = 15
       include_image = not (width < inclusion_threshold or height < inclusion_threshold)
       

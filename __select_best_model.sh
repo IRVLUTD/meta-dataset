@@ -1,8 +1,11 @@
-#!/bin/bash
+# set the required env vars
 source set_env.sh
-export SOURCE=all
-# for MODEL in baseline baselinefinetune prototypical matching maml maml_init_with_proto
-for MODEL in prototypical matching
+models=$1
+gpu_ids=$2
+export SOURCE=all #tesla
+export CUDA_VISIBLE_DEVICES=$gpu_ids
+
+for MODEL in $models
 do
   export EXPNAME=${MODEL}_${SOURCE}
   python -m meta_dataset.analysis.select_best_model \

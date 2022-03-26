@@ -1,20 +1,16 @@
 # set the required env vars
 source set_env.sh
+models=$1
+gpu_ids=$2
+export SOURCE=all #tesla
+export CUDA_VISIBLE_DEVICES=$gpu_ids
 
-# convert dataset to records
-# python -m meta_dataset.dataset_conversion.convert_datasets_to_records   \
-# --dataset=tesla --tesla_data_root=$DATASRC/TESLA --splits_root=$SPLITS \
-# --records_root=$RECORDS
-
-# start training 
-export SOURCE=all
-# for MODEL in baselinefinetune prototypical matching maml maml_init_with_proto
-for MODEL in matching #prototypical
+for MODEL in $models 
 do
     export EXPNAME=${MODEL}_${SOURCE}
     python -m meta_dataset.train \
     --records_root_dir=$RECORDS \
-    --train_checkpoint_dir=${EXPROOT}/checkpoints/${EXPNAME} \
+    --train_checkpoint_dir=${EXPROOT}/checkpoints/${DATASET_DIR_NAME}-${EXPNAME} \
     --summary_dir=${EXPROOT}/summaries/${EXPNAME} \
     --gin_config=meta_dataset/learn/gin/best/${EXPNAME}.gin \
     --gin_bindings="Trainer.experiment_name='$EXPNAME'" \

@@ -1,7 +1,11 @@
+# set the required env vars
 source set_env.sh
+models=$1
+gpu_ids=$2
 export SOURCE=all #tesla
-# for MODEL in baseline baselinefinetune matching prototypical maml maml_init_with_proto
-for MODEL in prototypical
+export CUDA_VISIBLE_DEVICES=$gpu_ids
+
+for MODEL in $models
 do
   export EXPNAME=${MODEL}_${SOURCE}
   # set BESTNUM to the "best_update_num" field in the corresponding best_....txt

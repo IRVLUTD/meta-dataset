@@ -1,4 +1,6 @@
+# set the required env vars
 source set_env.sh
+
 OUTPUT_DIR="DUMPED_EPISODES"
 for DATASET in tesla; do \
     python -m meta_dataset.data.dump_episodes \
