@@ -39,7 +39,7 @@ cd $DATASET_DOWNLOAD_DIR
 wget $DATASET_URL
 
 # uncompress to TESLA directory: this might take a while
-7za x FSL-Sim2Real-IRVL-2022.7z -o$DATASRC
+7za x FSL-Sim2Real-IRVL-2022.7z -o$DATASET_DOWNLOAD_DIR/$UNCOMPRESSED_DATASET_DIR_NAME
 
 # replace " " in class names with "_"
 for data in training_data test_data
