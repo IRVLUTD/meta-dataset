@@ -76,19 +76,21 @@ bash __create_tesla_tfrecords.sh
 # trained on prototypical/matching networks
 # bash reproduce_best_results.sh
 
-# Train using TESLA
+# Train TESLA; For other md-datasets, always set <perform-filtration-flag> as False
 bash __train.sh <models> <gpu-ids> <perform-filtration-flag>
 # e.g. bash __train.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" "True/False"
 
 # To select and see the best model after training
 # __test.sh does run __select_best_model.sh
 # hence use this just to see the best model specs
+# For datasets other than TESLA, always set <perform-filtration-flag> as False
 # bash __select_best_model.sh <models> <gpu-ids>  <perform-filtration-flag> #uncomment this
 # e.g. bash __select_best_model.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" "True/False"
 
 
 # evaluate the trained models
 # tested on prototypical/matching networks
+# For datasets other than TESLA, always set <perform-filtration-flag> as False
 bash __test.sh <models> <gpu-ids> <perform-filtration-flag>
 # e.g. bash __test.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" "True/False"
 ```

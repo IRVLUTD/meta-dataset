@@ -4,7 +4,7 @@ source usr.env
 # DATASET_URL=<dataset-url>
 
 ROOT_DIR=$PWD;
-DATASRC="$DATASET_DOWNLOAD_DIR/$DATASET_DIR_NAME";
+DATASRC="$DATASET_DOWNLOAD_DIR/$DATASET_DIR_NAME"; # Used for creating TESLA tfrecords only
 RECORDS="$ROOT_DIR/records";
 SPLITS="$ROOT_DIR/meta_dataset/dataset_conversion";
 EXPROOT="$ROOT_DIR/experiment_output/${DATASET_DIR_NAME}${suffix}";
