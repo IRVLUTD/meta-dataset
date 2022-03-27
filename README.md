@@ -2,10 +2,11 @@
 - Full documentation can be found [here](README-original.md).
 
 ### Before starting
-  - Be sure to set the env variables in [set_env.sh](set_env.sh) and [usr.env](usr.env)
+  - Be sure to set the env variables in [set_env.sh](set_env.sh) and [usr.env](usr.env).
+  - Set respective dataset names in [all_datasets.gin](meta_dataset/learn/gin/setups/all_datasets.gin).
   - **NOTE**: Any gin parameter initialized via the script files starting with "__" will override them. Please be careful about the parameters initialized via script files. Use the mandatory ones in scripts and keep the rest inside respective gin configs.
 
-### To run experiment, following commands can be used
+### Setup
 ```bash
 # clone and cd
 git clone https://github.com/IRVLUTD/meta-dataset.git && cd "$_"
@@ -25,7 +26,10 @@ python setup.py install
 # as per https://github.com/google-research/meta-dataset#adding-task_adaptation-code-to-the-path
 git clone https://github.com/google-research/task_adaptation.git
 export PYTHONPATH=$PYTHONPATH:$PWD
+```
 
+### To run experiments with tesla dataset, following commands can be used
+```bash
 # TODO: remove/archive install.sh before paper submission
 # bugs exist in the script, needs debugging
 # hence download only required datasets
@@ -93,4 +97,25 @@ bash __train.sh <models> <gpu-ids> <perform-filtration-flag>
 # For datasets other than TESLA, always set <perform-filtration-flag> as False
 bash __test.sh <models> <gpu-ids> <perform-filtration-flag>
 # e.g. bash __test.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" "True/False"
+```
+
+### To run experiments with other datasets
+#### NOTE: Set DATASET_DIR_NAME to predefined dataset alias (E.g. omniglot, fungi) from Meta-Dataset in [usr.env](usr.env). Set respective dataset names in [all_datasets.gin](meta_dataset/learn/gin/setups/all_datasets.gin). 
+
+```bash
+# For other md-datasets, always set <perform-filtration-flag> as False
+bash __train.sh <models> <gpu-ids> False
+# e.g. bash __train.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" False
+
+# To select and see the best model after training
+# __test.sh does run __select_best_model.sh
+# hence use this just to see the best model specs
+# bash __select_best_model.sh <models> <gpu-ids>  False #uncomment this
+# e.g. bash __select_best_model.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" False
+
+
+# evaluate the trained models
+# tested on prototypical/matching networks
+bash __test.sh <models> <gpu-ids> False
+# e.g. bash __test.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" False
 ```
