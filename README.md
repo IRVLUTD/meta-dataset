@@ -29,6 +29,8 @@ git clone https://github.com/google-research/task_adaptation.git
 export PYTHONPATH=$PYTHONPATH:$PWD
 ```
 
+- For testing any dataset, set perform_filtration=True/False in (trainer_config.gin)[meta_dataset/learn/gin/setups/trainer_config.gin]
+  - TODO: BUG; Shell scripts lacks the functionality of setting perform_filtration=True from sys args during testing.
 ### To run experiments with tesla dataset, following commands can be used
 ```bash
 # TODO: remove/archive install.sh before paper submission
