@@ -1,3 +1,4 @@
+### TODO: Give a suitable title
 - This a forked repository of [Meta-Dataset](https://github.com/google-research/meta-dataset/). (Commit: [c67dd2b](https://github.com/google-research/meta-dataset/commit/c67dd2bb66fb2a4ce7e4e9906878e13d9b851eb5))
 - Full documentation can be found [here](README-original.md).
 
@@ -102,8 +103,10 @@ bash __test.sh <models> <gpu-ids> <perform-filtration-flag>
 ### To run experiments with other datasets
 #### NOTE: 
   - Set DATASET_DIR_NAME to predefined dataset alias (E.g. omniglot, fungi) from Meta-Dataset in [usr.env](usr.env).
+    - The only variables that need to be changed are DATASET_DIR_NAME and BS (as per user's need).
   - Set respective dataset names in [all_datasets.gin](meta_dataset/learn/gin/setups/all_datasets.gin). 
-  - Run the following commands after dataset download and conversion. Refer [this](meta-dataset/doc/dataset_conversion.md) for more details.
+    - The only variables that need to be changed are DATASET_DIR_NAME and BS (as per user's need).
+  - Run the following commands after dataset download and conversion. Refer [this](doc/dataset_conversion.md) for more details.
 ```bash
 # For other md-datasets, always set <perform-filtration-flag> as False
 bash __train.sh <models> <gpu-ids> False
