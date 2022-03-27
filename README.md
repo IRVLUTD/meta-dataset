@@ -105,7 +105,6 @@ bash __test.sh <models> <gpu-ids> <perform-filtration-flag>
   - Set DATASET_DIR_NAME to predefined dataset alias (E.g. omniglot, fungi) from Meta-Dataset in [usr.env](usr.env).
     - The only variables that need to be changed are DATASET_DIR_NAME and BS (as per user's need).
   - Set respective dataset names in [all_datasets.gin](meta_dataset/learn/gin/setups/all_datasets.gin). 
-    - The only variables that need to be changed are DATASET_DIR_NAME and BS (as per user's need).
   - Run the following commands after dataset download and conversion. Refer [this](doc/dataset_conversion.md) for more details.
 ```bash
 # For other md-datasets, always set <perform-filtration-flag> as False
