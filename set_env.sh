@@ -7,7 +7,7 @@ ROOT_DIR=$PWD;
 DATASRC="$DATASET_DOWNLOAD_DIR/$DATASET_DIR_NAME";
 RECORDS="$ROOT_DIR/records";
 SPLITS="$ROOT_DIR/meta_dataset/dataset_conversion";
-EXPROOT="$ROOT_DIR/experiment_output/$DATASET_DIR_NAME";
+EXPROOT="$ROOT_DIR/experiment_output/${DATASET_DIR_NAME}${suffix}";
 
 # append to .env file to recover the info
 # if environment variables are lost

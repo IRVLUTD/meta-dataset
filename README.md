@@ -7,16 +7,24 @@
 
 ### To run experiment, following commands can be used
 ```bash
-# open docker container in interactive mode
+# clone and cd
+git clone https://github.com/IRVLUTD/meta-dataset.git && cd "$_"
+
+# If you want to use docker, open docker container in interactive mode
 docker run \
 -it --rm --runtime=nvidia -p 7777:8888 \
 -v <cloned-meta-dataset-dir-path>:/workspace \
---name meta-dataset__0 -e NVIDIA_VISIBLE_DEVICES=<list-of-gpu-ids> \
+--name meta-dataset -e NVIDIA_VISIBLE_DEVICES=<list-of-gpu-ids> \
 nvcr.io/nvidia/tensorflow:21.12-tf2-py3 # tensorflow 2
 
 # install dependencies
 pip install -r requirements.txt
 python setup.py install
+
+# In order to use data.read_episodes module, task_adaptation code is required
+# as per https://github.com/google-research/meta-dataset#adding-task_adaptation-code-to-the-path
+git clone https://github.com/google-research/task_adaptation.git
+export PYTHONPATH=$PYTHONPATH:$PWD
 
 # TODO: remove/archive install.sh before paper submission
 # bugs exist in the script, needs debugging

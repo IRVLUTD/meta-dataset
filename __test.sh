@@ -9,10 +9,10 @@ do
     python -m meta_dataset.train \
       --is_training=False \
       --records_root_dir=$RECORDS \
-      --summary_dir=${EXPROOT}/summaries/${EXPNAME}_eval_$DATASET \
+      --summary_dir=${EXPROOT}/summaries/${EXPNAME} \
       --gin_config=meta_dataset/learn/gin/best/${EXPNAME}.gin \
       --gin_bindings="Trainer.experiment_name='${EXPNAME}'" \
-      --gin_bindings="Trainer.checkpoint_to_restore='${EXPROOT}/checkpoints/${DATASET_DIR_NAME}-${EXPNAME}${suffix}/model_${BESTNUM}.ckpt'" \
+      --gin_bindings="Trainer.checkpoint_to_restore='${EXPROOT}/checkpoints/${EXPNAME}/model_${BESTNUM}.ckpt'" \
       --gin_bindings="benchmark.eval_datasets='$DATASET'"
   done
 done
