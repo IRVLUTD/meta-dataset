@@ -100,8 +100,10 @@ bash __test.sh <models> <gpu-ids> <perform-filtration-flag>
 ```
 
 ### To run experiments with other datasets
-#### NOTE: Set DATASET_DIR_NAME to predefined dataset alias (E.g. omniglot, fungi) from Meta-Dataset in [usr.env](usr.env). Set respective dataset names in [all_datasets.gin](meta_dataset/learn/gin/setups/all_datasets.gin). 
-
+#### NOTE: 
+  - Set DATASET_DIR_NAME to predefined dataset alias (E.g. omniglot, fungi) from Meta-Dataset in [usr.env](usr.env).
+  - Set respective dataset names in [all_datasets.gin](meta_dataset/learn/gin/setups/all_datasets.gin). 
+  - Run the following commands after dataset download and conversion. Refer [this](meta-dataset/doc/dataset_conversion.md) for more details.
 ```bash
 # For other md-datasets, always set <perform-filtration-flag> as False
 bash __train.sh <models> <gpu-ids> False
