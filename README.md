@@ -51,6 +51,7 @@ wget $DATASET_URL
 7za x FSL-Sim2Real-IRVL-2022.7z -o$DATASET_DOWNLOAD_DIR/$UNCOMPRESSED_DATASET_DIR_NAME
 
 # replace " " in class names with "_"
+cd $UNCOMPRESSED_DATASET_DIR_NAME
 for data in training_data test_data
 do
   cd $data; for file in *; do mv "$file" `echo $file | tr ' ' '_'` ; done; cd ..
@@ -71,6 +72,7 @@ python __select_and_create_test_classes_for_variants.py
 bash __create_tesla_tfrecords.sh
 
 # reproduce the results
+# TODO: should be removed before paper submission
 # trained on prototypical/matching networks
 # bash reproduce_best_results.sh
 
@@ -79,7 +81,7 @@ bash __train.sh <models> <gpu-ids> <perform-filtration-flag>
 # e.g. bash __train.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" "True/False"
 
 # To select and see the best model after training
-# _inference.sh does run __select_best_model.sh
+# __test.sh does run __select_best_model.sh
 # hence use this just to see the best model specs
 # bash __select_best_model.sh <models> <gpu-ids>  <perform-filtration-flag> #uncomment this
 # e.g. bash __select_best_model.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" "True/False"
@@ -90,22 +92,3 @@ bash __train.sh <models> <gpu-ids> <perform-filtration-flag>
 bash __test.sh <models> <gpu-ids> <perform-filtration-flag>
 # e.g. bash __test.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" "True/False"
 ```
-
-### Graphs for Loss/Accuracy during reproduction attempt
-Training <br>
-<img src="./img/train_1_loss.svg" alt="Train-Loss" width="300"/><img src="./img/train_1_acc.svg" alt="Train-Accuracy" width="300"/><br>
-Validation <br>
-  <img src="./img/valid_1_loss.svg" alt="Valid-Loss" width="300"/><img src="./img/valid_1_acc.svg" alt="Valid-Accuracy" width="300"/> <br>
-
-- **Note**
-  - Orange - Matching Network
-  - Blue - Prototypical Network
-
-### Evaluation results
-- Based on training done using the [updated_data_config_common.gin](./meta_dataset/learn/gin/setups/data_config_common.gin) due to memory constraints on Lab PC. 
-- **Best variant**: prototypical_imagenet. 
-  - **Best valid acc**: 0.2996023893356323. 
-  - **Best update num**: 69500.
-- **Best variant**: matching_imagenet. 
-  - **Best valid acc**: 0.25817540287971497. 
-  - **Best update num**: 42500. 
