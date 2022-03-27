@@ -2,8 +2,11 @@
 source set_env.sh
 models=$1
 gpu_ids=$2
+perform_filtration=$3 #True/False
 export SOURCE=all #tesla
 export CUDA_VISIBLE_DEVICES=$gpu_ids
+
+source __set_suffix.sh $perform_filtration
 
 for MODEL in $models
 do

@@ -3,6 +3,7 @@
 
 ### Before starting
   - Be sure to set the env variables in [set_env.sh](set_env.sh) and [usr.env](usr.env)
+  - **NOTE**: Any gin parameter initialized via the script files starting with "__" will override them. Please be careful about the parameters initialized via script files. Use the mandatory ones in scripts and keep the rest inside respective gin configs.
 
 ### To run experiment, following commands can be used
 ```bash
@@ -66,20 +67,20 @@ bash __create_tesla_tfrecords.sh
 # bash reproduce_best_results.sh
 
 # Train using TESLA
-bash __train.sh <models> <gpu-ids>
-# e.g. bash __train.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0"
+bash __train.sh <models> <gpu-ids> <perform-filtration-flag>
+# e.g. bash __train.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" "True/False"
 
 # To select and see the best model after training
 # _inference.sh does run __select_best_model.sh
 # hence use this just to see the best model specs
-# bash __select_best_model.sh <models> <gpu-ids> #uncomment this
-# e.g. bash __select_best_model.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0"
+# bash __select_best_model.sh <models> <gpu-ids>  <perform-filtration-flag> #uncomment this
+# e.g. bash __select_best_model.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" "True/False"
 
 
 # evaluate the trained models
 # tested on prototypical/matching networks
-bash __test.sh <models> <gpu-ids>
-# e.g. bash __test.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0"
+bash __test.sh <models> <gpu-ids> <perform-filtration-flag>
+# e.g. bash __test.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" "True/False"
 ```
 
 ### Graphs for Loss/Accuracy during reproduction attempt

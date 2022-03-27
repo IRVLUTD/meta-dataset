@@ -21,5 +21,4 @@ Trainer.visualize_image_set = ["support", "query"]
 
 # a boolean flag indicating whether filtration needs 
 # to be performed for tesla dataset
-Trainer.perform_filtration = True
-
+Trainer.perform_filtration = False
