@@ -1,6 +1,6 @@
 Trainer.num_updates = 75000
 Trainer.batch_size = 256 # Only applicable to non-episodic models.
-Trainer.num_eval_episodes = 600
+Trainer.num_eval_episodes = 30 #(30 as per CLT, __test.sh uses 600 for test episodes as per default Meta-Dataset setup)
 Trainer.checkpoint_every = 500
 Trainer.validate_every = 500
 Trainer.log_every = 100
@@ -21,5 +21,4 @@ Trainer.visualize_image_set = ["support", "query"]
 
 # a boolean flag indicating whether filtration needs 
 # to be performed for tesla dataset
-Trainer.perform_filtration = False
-
+Trainer.perform_filtration = True

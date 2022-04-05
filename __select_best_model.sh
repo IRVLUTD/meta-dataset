@@ -1,11 +1,12 @@
 # set the required env vars
 models=$1
 gpu_ids=$2
-perform_filtration=$3 #True/False
+perform_filtration_model=$3 #True/False for model
+perform_filtration_ds=$4 #True/False for dataset
 export SOURCE=all #tesla
 export CUDA_VISIBLE_DEVICES=$gpu_ids
 
-source __set_suffix.sh $perform_filtration
+source __set_suffix.sh $perform_filtration_model
 source set_env.sh
 
 for MODEL in $models

@@ -836,7 +836,8 @@ class Trainer(object):
       fig = plt.figure(figsize=(10, 7))
 
       # set window title
-      fig.canvas.set_window_title(f"{split}:{image_set}")
+      suffix="-filtered" if self.perform_filtration else ""
+      fig.canvas.set_window_title(f"{split}:{image_set}{suffix}")
       for idx, im in enumerate(images):
         try:
           class_name = self.data_spec.class_names[class_ids[idx]]

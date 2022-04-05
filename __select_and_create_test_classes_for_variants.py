@@ -51,7 +51,7 @@ uncompressed_dataset_directory = os.environ['UNCOMPRESSED_DATASET_DIR_NAME']
 tesla_classes_info_dir = f"{os.environ['ROOT_DIR']}/meta_dataset/dataset_conversion/tesla_info/txt"
 
 # maps variant to required classes' file
-# For creating more variants (only applicable to test_data as of 03/24/2022) 
+# For creating more variants (only applicable to tesla test_data as of 03/24/2022) 
 # just add a key: value pair with name as key and file path of text file 
 # containing classes to be included in the variaint 
 variants = {

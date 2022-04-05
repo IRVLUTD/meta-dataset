@@ -78,10 +78,25 @@ python __select_and_create_test_classes_for_variants.py
 # create tfrecords
 bash __create_tesla_tfrecords.sh
 
+get best from arxiv_v2_dev
+cd meta_dataset/learn/gin
+svn checkout https://github.com/google-research/meta-dataset/branches/arxiv_v2_dev/meta_dataset/learn/gin/best
+cd best
+sed -i 's/models/learners/g' *
+ln -s best best_v2
+cd $ROOT_DIR
+
 # reproduce the results
 # TODO: should be removed before paper submission
 # trained on prototypical/matching networks
 # bash reproduce_best_results.sh
+
+# create imagenet tfrecords for backbone pretraining
+bash __create_imagenet_tfrecords_for_pretraining_backbones.sh
+
+# pretrain-baseline
+bash __baseline_and_pretraining_on_imagenet.sh  <models> <gpu-ids>
+# e.g. bash __baseline_and_pretraining_on_imagenet.sh  "resnet mamlconvnet mamlresnet" "0"
 
 # Train TESLA; For other md-datasets, always set <perform-filtration-flag> as False
 bash __train.sh <models> <gpu-ids> <perform-filtration-flag>
@@ -91,15 +106,16 @@ bash __train.sh <models> <gpu-ids> <perform-filtration-flag>
 # __test.sh does run __select_best_model.sh
 # hence use this just to see the best model specs
 # For datasets other than TESLA, always set <perform-filtration-flag> as False
-# bash __select_best_model.sh <models> <gpu-ids>  <perform-filtration-flag> #uncomment this
-# e.g. bash __select_best_model.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" "True/False"
+# bash __select_best_model.sh <models> <gpu-ids>  <perform-filtration-flag-for-model> <perform-filtration-flag-for-dataset> #uncomment this
+# e.g. bash __select_best_model.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" "True/False" "True/False"
 
 
 # evaluate the trained models
 # tested on prototypical/matching networks
-# For datasets other than TESLA, always set <perform-filtration-flag> as False
-bash __test.sh <models> <gpu-ids> <perform-filtration-flag>
-# e.g. bash __test.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" "True/False"
+# For datasets other than TESLA, always set 
+# <perform-filtration-flag-for-model> and <perform-filtration-flag-for-model> as False
+bash __test.sh <models> <gpu-ids> <perform-filtration-flag-for-model> <perform-filtration-flag-for-dataset>
+# e.g. bash __test.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" "True/False" "True/False"
 ```
 
 ### To run experiments with other datasets
@@ -116,12 +132,12 @@ bash __train.sh <models> <gpu-ids> False
 # To select and see the best model after training
 # __test.sh does run __select_best_model.sh
 # hence use this just to see the best model specs
-# bash __select_best_model.sh <models> <gpu-ids>  False #uncomment this
-# e.g. bash __select_best_model.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" False
+# bash __select_best_model.sh <models> <gpu-ids>  False False#uncomment this
+# e.g. bash __select_best_model.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" False False
 
 
 # evaluate the trained models
 # tested on prototypical/matching networks
-bash __test.sh <models> <gpu-ids> False
-# e.g. bash __test.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" False
+bash __test.sh <models> <gpu-ids> False False
+# e.g. bash __test.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" False False
 ```
