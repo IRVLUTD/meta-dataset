@@ -2,7 +2,6 @@ source usr.env
 
 # TODO: populate after publication
 # DATASET_URL=<dataset-url>
-
 ROOT_DIR=$PWD;
 DATASRC="$DATASET_DOWNLOAD_DIR/$DATASET_DIR_NAME"; # Used for creating TESLA tfrecords only
 RECORDS="$ROOT_DIR/records";

@@ -11,7 +11,7 @@ source set_env.sh
 
 for MODEL in $models
 do
-  export EXPNAME=${MODEL}_${SOURCE}
+  export EXPNAME=${MODEL}_${SOURCE}${chkpt_suffix}
   python -m meta_dataset.analysis.select_best_model \
     --all_experiments_root=$EXPROOT \
     --experiment_dir_basenames='' \

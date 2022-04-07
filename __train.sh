@@ -13,8 +13,8 @@ do
     export EXPNAME=${MODEL}_${SOURCE}
     python -m meta_dataset.train \
     --records_root_dir=$RECORDS \
-    --train_checkpoint_dir=${EXPROOT}/checkpoints/${EXPNAME} \
-    --summary_dir=${EXPROOT}/summaries/${EXPNAME} \
+    --train_checkpoint_dir=${EXPROOT}/checkpoints/${EXPNAME}${chkpt_suffix} \
+    --summary_dir=${EXPROOT}/summaries/${EXPNAME}${chkpt_suffix} \
     --gin_config=meta_dataset/learn/gin/best/${EXPNAME}.gin \
     --gin_bindings="Trainer.experiment_name='$EXPNAME'" \
     --gin_bindings="Trainer.batch_size=$BS" \
