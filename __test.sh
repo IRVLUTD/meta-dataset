@@ -1,4 +1,4 @@
-source __select_best_model.sh $1 $2 $3 $4
+source __select_best_model.sh $1 $2 $3 $4 $5
 for MODEL in $models
 do
   export EXPNAME=${MODEL}_${SOURCE}

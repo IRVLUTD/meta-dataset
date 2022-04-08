@@ -7,8 +7,8 @@
 # 'fungi', vgg_flower, omniglot 
 # this may change based what the 
 # intended user has preprocessed
-# benchmark.train_datasets = 'fungi'
-# benchmark.eval_datasets = 'fungi'
+#benchmark.train_datasets = 'fungi'
+#benchmark.eval_datasets = 'fungi'
 
 benchmark.train_datasets = 'tesla'
 benchmark.eval_datasets = 'tesla'

@@ -1,5 +1,8 @@
 source usr.env
 
+# Reference: https://github.com/google-research/meta-dataset/blob/main/doc/reproducing_best_results.md#training-and-evaluating-on-all-datasets
+ulimit -u 10000
+
 # TODO: populate after publication
 # DATASET_URL=<dataset-url>
 ROOT_DIR=$PWD;

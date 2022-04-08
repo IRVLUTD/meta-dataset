@@ -98,6 +98,9 @@ bash __create_imagenet_tfrecords_for_pretraining_backbones.sh
 bash __baseline_and_pretraining_on_imagenet.sh  <models> <gpu-ids>
 # e.g. bash __baseline_and_pretraining_on_imagenet.sh  "resnet mamlconvnet mamlresnet" "0"
 
+# select best pre-trained backbones
+bash __select_best_pretrained_backbone_models.sh
+
 # Train TESLA; For other md-datasets, always set <perform-filtration-flag> as False
 bash __train.sh <models> <gpu-ids> <perform-filtration-flag>
 # e.g. bash __train.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" "True/False"
