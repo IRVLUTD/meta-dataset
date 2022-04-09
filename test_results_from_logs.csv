@@ -1,0 +1,18 @@
+experiment-setup, test_mean_accuracy, test_margin_of_error
+/workspace/logs/tesla-unseen+maml_all-60+model_56000-dataset--filtered.INFO, True
+/workspace/logs/tesla-unseen+maml_all-60+model_56000-dataset-tesla-mixture-filtered.INFO, 0.120416, +/- 0.008637
+/workspace/logs/tesla-unseen+maml_all-60+model_56000-dataset-tesla-mixture.INFO, 0.121437, +/- 0.009294
+/workspace/logs/tesla-unseen+maml_all-60+model_56000-dataset-tesla-seen-filtered.INFO, 0.269128, +/- 0.010781
+/workspace/logs/tesla-unseen+maml_all-60+model_56000-dataset-tesla-seen.INFO, 0.261612, +/- 0.010212
+/workspace/logs/tesla-unseen+maml_all-60+model_56000-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.402270, +/- 0.024510
+/workspace/logs/tesla-unseen+maml_all-60+model_56000-dataset-tesla-synthetic-unseen-13.INFO, 0.389720, +/- 0.024305
+/workspace/logs/tesla-unseen+maml_all-60+model_56000-dataset-tesla-unseen-filtered.INFO, 0.145864, +/- 0.009985
+/workspace/logs/tesla-unseen+maml_all-60+model_56000-dataset-tesla-unseen.INFO, 0.148898, +/- 0.009013
+/workspace/logs/tesla-unseen-filtered+maml_all-60+model_72000-dataset-tesla-mixture-filtered.INFO, 0.087003, +/- 0.007311
+/workspace/logs/tesla-unseen-filtered+maml_all-60+model_72000-dataset-tesla-mixture.INFO, 0.087845, +/- 0.007833
+/workspace/logs/tesla-unseen-filtered+maml_all-60+model_72000-dataset-tesla-seen-filtered.INFO, 0.200441, +/- 0.008611
+/workspace/logs/tesla-unseen-filtered+maml_all-60+model_72000-dataset-tesla-seen.INFO, 0.203206, +/- 0.009531
+/workspace/logs/tesla-unseen-filtered+maml_all-60+model_72000-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.291280, +/- 0.016331
+/workspace/logs/tesla-unseen-filtered+maml_all-60+model_72000-dataset-tesla-synthetic-unseen-13.INFO, 0.303085, +/- 0.016525
+/workspace/logs/tesla-unseen-filtered+maml_all-60+model_72000-dataset-tesla-unseen-filtered.INFO, 0.102619, +/- 0.008232
+/workspace/logs/tesla-unseen-filtered+maml_all-60+model_72000-dataset-tesla-unseen.INFO, 0.102599, +/- 0.007659

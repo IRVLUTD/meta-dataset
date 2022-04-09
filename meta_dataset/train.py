@@ -192,8 +192,7 @@ def main(unused_argv):
       for i in [0,0,0,1]:
         ckpt_path_split_list.pop(i)
       ckpt_path_split_list[-1] = ckpt_path_split_list[-1].split(".ckpt")[0]
-      ckpt_path = "+".join(ckpt_path_split_list)
-      ckpt_path =  f"{ckpt_path}-dataset-{os.environ['TESLA_DATASET_VARIANT']}"
+      ckpt_path =  f"{'+'.join(ckpt_path_split_list)}-dataset-{os.environ['TESLA_DATASET_VARIANT']}"
       if perform_filtration == "True":
         ckpt_path = f"{ckpt_path}-filtered"
       return ckpt_path

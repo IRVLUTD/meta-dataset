@@ -120,8 +120,9 @@ bash __train.sh <models> <gpu-ids> <perform-filtration-flag>
 bash __test.sh <models> \
 <gpu-ids> \
 <perform-filtration-flag-for-model> \
-<perform-filtration-flag-for-dataset>
-# e.g. bash __test.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" "True/False" "True/False"
+<perform-filtration-flag-for-dataset> \
+<tesla-dataset-variant>
+# e.g. bash __test.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" "True/False" "True/False" "tesla-mixture"
 
 # To test on all tesla variants
 bash __test_on_all_tesla_variants.sh \
@@ -155,6 +156,6 @@ bash __train.sh <models> <gpu-ids> False
 
 # evaluate the trained models
 # tested on prototypical/matching networks
-bash __test.sh <models> <gpu-ids> False False
-# e.g. bash __test.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" False False
+bash __test.sh <models> <gpu-ids> False False <dataset-name>
+# e.g. bash __test.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" False False imagenet
 ```
