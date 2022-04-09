@@ -193,8 +193,9 @@ def main(unused_argv):
         ckpt_path_split_list.pop(i)
       ckpt_path_split_list[-1] = ckpt_path_split_list[-1].split(".ckpt")[0]
       ckpt_path = "+".join(ckpt_path_split_list)
+      ckpt_path =  f"{ckpt_path}-dataset-{os.environ['TESLA_DATASET_VARIANT']}"
       if perform_filtration == "True":
-        ckpt_path = f"{ckpt_path}+filtered"
+        ckpt_path = f"{ckpt_path}-filtered"
       return ckpt_path
 
     try:
@@ -208,7 +209,9 @@ def main(unused_argv):
     logging.get_absl_handler().setFormatter(None)
     logging.info(ckpt_path)
     logging.info(perform_filtration_bool)
-    # raise SystemExit
+    logging.info(os.environ['TESLA_DATASET_VARIANT'])
+
+    # raise SystemExit # uncomment to debug
   ##############################################################################################
 
   if FLAGS.reload_checkpoint_gin_config:

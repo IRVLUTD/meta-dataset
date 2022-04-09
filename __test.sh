@@ -1,4 +1,11 @@
 source __select_best_model.sh $1 $2 $3 $4 $5
+
+# link dataset variant of choice, useful for tesla
+export TESLA_DATASET_VARIANT=$6
+cd $RECORDS; rm tesla; ln -s $TESLA_DATASET_VARIANT tesla; cd $ROOT_DIR;
+
+ls -l $RECORDS # useful to check if sym links are correct
+
 for MODEL in $models
 do
   export EXPNAME=${MODEL}_${SOURCE}
