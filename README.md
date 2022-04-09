@@ -10,7 +10,7 @@
 ### Setup
 ```bash
 # clone and cd
-git clone https://github.com/IRVLUTD/meta-dataset.git && cd "$_"
+git clone https://github.com/IRVLUTD/meta-dataset.git; cd meta-dataset;
 
 # If you want to use docker, open docker container in interactive mode
 docker run \
@@ -26,11 +26,11 @@ python setup.py install
 # In order to use data.read_episodes module, task_adaptation code is required
 # as per https://github.com/google-research/meta-dataset#adding-task_adaptation-code-to-the-path
 git clone https://github.com/google-research/task_adaptation.git
+cd task_adaptation; python setup.py install; cd ..; 
 export PYTHONPATH=$PYTHONPATH:$PWD
 ```
 
 - For testing any dataset, set perform_filtration=True/False in (trainer_config.gin)[meta_dataset/learn/gin/setups/trainer_config.gin]
-  - TODO: BUG; Shell scripts lacks the functionality of setting perform_filtration=True from sys args during testing.
 ### To run experiments with tesla dataset, following commands can be used
 ```bash
 # TODO: remove/archive install.sh before paper submission
