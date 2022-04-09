@@ -117,8 +117,22 @@ bash __train.sh <models> <gpu-ids> <perform-filtration-flag>
 # tested on prototypical/matching networks
 # For datasets other than TESLA, always set 
 # <perform-filtration-flag-for-model> and <perform-filtration-flag-for-model> as False
-bash __test.sh <models> <gpu-ids> <perform-filtration-flag-for-model> <perform-filtration-flag-for-dataset>
+bash __test.sh <models> \
+<gpu-ids> \
+<perform-filtration-flag-for-model> \
+<perform-filtration-flag-for-dataset>
 # e.g. bash __test.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" "True/False" "True/False"
+
+# To test on all tesla variants
+bash __test_on_all_tesla_variants.sh \
+<model> \
+<gpu_id> \
+<perform_filtration-flag> \
+<num-validation-episodes>
+# e.g. bash __test_on_all_tesla_variants.sh "maml" 0 False 60
+
+# get test results from logs
+bash __logs_filter.sh
 ```
 
 ### To run experiments with other datasets

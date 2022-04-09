@@ -3,12 +3,11 @@ gpu_id=$2
 perform_filtration=$3
 num_valid_episodes=$4
 
-for tesla_dataset_variant in tesla-mixture tesla-seen #tesla-unseen tesla-seen tesla-synthetic-unseen-13
+for tesla_dataset_variant in tesla-mixture tesla-unseen tesla-seen tesla-synthetic-unseen-13
 do
     # For each trained model it is possible test on w/wo filtered tesla variants
-    for perform_filtration_ds in True #False
+    for perform_filtration_ds in False True
     do
-        echo $perform_filtration_ds
         bash __test.sh \
         $model \
         $gpu_id \
