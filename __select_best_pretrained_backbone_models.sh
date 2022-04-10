@@ -1,6 +1,6 @@
 EXPROOT="$PWD/experiment_output/pretrained-backbones"
-
-for BACKBONE in resnet convnet wide_resnet
+backbones=$1
+for BACKBONE in $backbones #resnet convnet wide_resnet resnet34 relationnet_convnet
 do
   export JOBNAME=pretrain_imagenet_${BACKBONE}
   python -m meta_dataset.analysis.select_best_model \

@@ -38,7 +38,7 @@ from meta_dataset.data import decoder
 from meta_dataset.data import learning_spec
 from meta_dataset.data import reader
 from meta_dataset.data import sampling
-# from simclr import data_util
+from simclr import data_util
 from six.moves import zip
 import tensorflow.compat.v1 as tf
 
