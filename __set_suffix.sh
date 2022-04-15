@@ -1,7 +1,18 @@
 chkpt_suffix="-$2"
-# chkpt_suffix="-using-pretrained-backbones-$2"
+pretrained_phrase=""
+
+if test "$2" = ""
+then
+   chkpt_suffix=""
+fi
+
+if test "$3" = "use_pretrained_backbone"
+then
+   pretrained_phrase="-using-pretrained-backbone"
+fi
+
 suffix=""
-if [ $1 == "True" ]
+if test "$1" = "True"
 then
    suffix="-filtered"
 fi

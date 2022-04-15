@@ -538,7 +538,7 @@ def write_tfrecord_from_image_files_with_set_info(class_files,
       # UPDATE: Exclude an image if it's width or height is < 15 pixels
       inclusion_threshold = 15
       include_image = not (width < inclusion_threshold or height < inclusion_threshold)
-      include_image = True
+      
       if include_image:
         # UPDATE: Oversample tesla support images by a factor of math.ceil(k_query/k_support)
         # This is required as tensorflow's default shuffle operation don't allow
@@ -1233,7 +1233,7 @@ class TeslaConverter(DatasetConverter):
 
     data_path_test = os.path.join(self.data_root, 'test_data')
     test_classes = sorted(tf.io.gfile.listdir(data_path_test))
-    assert len(test_classes) in [11, 41, 52] # for variants
+    assert len(test_classes) in [11, 13, 41, 52] # for variants
 
     self.parse_split_data(learning_spec.Split.TRAIN,
                           training_classes,

@@ -102,15 +102,21 @@ bash __baseline_and_pretraining_on_imagenet.sh  <models> <gpu-ids>
 bash __select_best_pretrained_backbone_models.sh
 
 # Train TESLA; For other md-datasets, always set <perform-filtration-flag> as False
-bash __train.sh <models> <gpu-ids> <perform-filtration-flag>
-# e.g. bash __train.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" "True/False"
+bash __train.sh \
+<models> \
+<gpu-ids> \
+<perform-filtration-flag> \
+<num-validation-episodes> \
+<use-pretrained-backbone or _>
+<backbone>
+# e.g. bash __train.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" "True/False" use_pretrained_backbone resnet/""
 
 # To select and see the best model after training
 # __test.sh does run __select_best_model.sh
 # hence use this just to see the best model specs
 # For datasets other than TESLA, always set <perform-filtration-flag> as False
-# bash __select_best_model.sh <models> <gpu-ids>  <perform-filtration-flag-for-model> <perform-filtration-flag-for-dataset> #uncomment this
-# e.g. bash __select_best_model.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" "True/False" "True/False"
+# bash __select_best_model.sh <models> <gpu-ids>  <perform-filtration-flag-for-model> _ <num-valid-episodes> <use_pretrained_backbone or _> <backbone> #uncomment this
+# e.g. bash __select_best_model.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" "True/False" _ 60 use_pretrained_backbone resnet/""
 
 
 # evaluate the trained models
@@ -121,8 +127,11 @@ bash __test.sh <models> \
 <gpu-ids> \
 <perform-filtration-flag-for-model> \
 <perform-filtration-flag-for-dataset> \
-<tesla-dataset-variant>
-# e.g. bash __test.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" "True/False" "True/False" "tesla-mixture"
+<num-validation-episodes> \
+<tesla-dataset-variant> \
+<use-pretrained-backbone or _>
+<backbone>
+# e.g. bash __test.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" "True/False" "True/False" 60 "tesla-mixture" use_pretrained_backbone resnet/""
 
 # To test on all tesla variants
 bash __test_on_all_tesla_variants.sh \
@@ -130,6 +139,8 @@ bash __test_on_all_tesla_variants.sh \
 <gpu_id> \
 <perform_filtration-flag> \
 <num-validation-episodes>
+<use-pretrained-backbone or _>
+<backbone>
 # e.g. bash __test_on_all_tesla_variants.sh "maml" 0 False 60
 
 # get test results from logs
@@ -144,18 +155,25 @@ bash __logs_filter.sh
   - Run the following commands after dataset download and conversion. Refer [this](doc/dataset_conversion.md) for more details.
 ```bash
 # For other md-datasets, always set <perform-filtration-flag> as False
+bash __train.sh \
+<models> \
+<gpu-ids> \
+False \
+<num-validation-episodes> \
+<use-pretrained-backbone or _>
+<backbone>
 bash __train.sh <models> <gpu-ids> False
-# e.g. bash __train.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" False
+# e.g. bash __train.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" False 60 use_pretrained_backbone resnet/""
 
 # To select and see the best model after training
 # __test.sh does run __select_best_model.sh
 # hence use this just to see the best model specs
-# bash __select_best_model.sh <models> <gpu-ids>  False False#uncomment this
-# e.g. bash __select_best_model.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" False False
+# bash __select_best_model.sh <models> <gpu-ids>  False _ <num-valid-episodes> <use-pretrained-backbone or _> <backbone> #uncomment this
+# e.g. bash __select_best_model.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" False _ 60 use_pretrained_backbone resnet/""
 
 
 # evaluate the trained models
 # tested on prototypical/matching networks
-bash __test.sh <models> <gpu-ids> False False <dataset-name>
-# e.g. bash __test.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" False False imagenet
+bash __test.sh <models> <gpu-ids> False False <dataset-name> <use-pretrained-backbone or _> <backbone>
+# e.g. bash __test.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" False False imagenet use_pretrained_backbone resnet/""
 ```

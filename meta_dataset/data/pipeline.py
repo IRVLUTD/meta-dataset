@@ -480,21 +480,11 @@ def process_batch(example_strings, class_ids, image_size, batch_decoder):
   labels = class_ids
   
   if batch_decoder:
-    images, _, image_set_info = tf.map_fn(
-      batch_decoder.decode_with_label_and_set,
-      example_strings,
-      dtype=(batch_decoder.out_type, tf.int32, tf.string),
-      back_prop=False
-    )
-
-    # TODO; remove if this function is not called in our experiment setup
-    # keep = tf.math.logical_or(
-    #   tf.equal(image_set_info, tf.constant("query")),
-    #   tf.equal(image_set_info, tf.constant(""))
-    # )
-
-    # images = tf.boolean_mask(images, keep)
-    # labels = tf.boolean_mask(class_ids, keep) 
+    images = tf.map_fn(
+        batch_decoder,
+        example_strings,
+        dtype=batch_decoder.out_type,
+        back_prop=False)
 
   return (images, labels)
 
@@ -683,7 +673,6 @@ def make_multisource_episode_pipeline(dataset_spec_list,
   # flushed examples, splits the episode into support and query sets, removes
   # the placeholder examples and decodes the example strings.
   chunk_sizes = sampler.compute_chunk_sizes()
-  tf.print("split", split)
   def map_fn(episode, source_id):
     return process_episode(
         *episode,
