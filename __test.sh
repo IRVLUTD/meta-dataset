@@ -10,7 +10,7 @@ then
     _backbone="four_layer_convnet"
 fi
 
-num_valid_episodes=$4
+num_valid_episodes=$5
 nve_suffix="-$num_valid_episodes"
 if test "$num_valid_episodes" = ""
 then
