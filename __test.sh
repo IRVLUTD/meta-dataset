@@ -24,7 +24,8 @@ ls -l $RECORDS # useful to check if sym links are correct
 
 for MODEL in $models
 do
-  export EXPNAME=${MODEL}_${SOURCE}${nve_suffix}
+  export EXP_GIN=${MODEL}_${SOURCE}
+  export EXPNAME=${EXP_GIN}${nve_suffix}
   for DATASET in tesla
   do
     echo "MODEL-FILTER: $perform_filtration_model"
@@ -37,7 +38,7 @@ do
         --is_training=False \
         --records_root_dir=$RECORDS \
         --summary_dir=${EXPROOT}/summaries/${EXPNAME} \
-        --gin_config=meta_dataset/learn/gin/best/${EXPNAME}.gin \
+        --gin_config=meta_dataset/learn/gin/best/${EXP_GIN}.gin \
         --gin_bindings="Trainer.experiment_name='${EXPNAME}'" \
         --gin_bindings="Trainer.checkpoint_to_restore='${EXPROOT}/checkpoints/${EXPNAME}/model_${BESTNUM}.ckpt'" \
         --gin_bindings="Trainer.perform_filtration='${perform_filtration_ds}'" \
@@ -51,7 +52,7 @@ do
         --is_training=False \
         --records_root_dir=$RECORDS \
         --summary_dir=${EXPROOT}/summaries/${EXPNAME} \
-        --gin_config=meta_dataset/learn/gin/best/${EXPNAME}.gin \
+        --gin_config=meta_dataset/learn/gin/best/${EXP_GIN}.gin \
         --gin_bindings="Trainer.experiment_name=''" \
         --gin_bindings="Trainer.checkpoint_to_restore='${EXPROOT}/checkpoints/${model}/model_${BESTNUM}.ckpt'" \
         --gin_bindings="Trainer.perform_filtration='${perform_filtration_ds}'" \
