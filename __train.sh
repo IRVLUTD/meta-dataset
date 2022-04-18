@@ -8,11 +8,11 @@ backbone=$6
 export SOURCE=all #tesla
 export CUDA_VISIBLE_DEVICES=$gpu_ids
 
-source __set_suffix.sh $perform_filtration $num_valid_episodes $5
-source set_env.sh
-
 checkpoint_to_restore=''
 pretrained_source=$SOURCE_FOR_PRETRAINING
+
+source __set_suffix.sh $perform_filtration $num_valid_episodes $5
+source set_env.sh
 
 for MODEL in $models 
 do
@@ -24,10 +24,6 @@ do
         
         BESTNUM=$(cat ${PATH_PREFIX}/best_pretrain_imagenet_${backbone}.txt | cut -d " " -f 2 | tail -n 1)
         checkpoint_to_restore="${PATH_PREFIX}/checkpoints/pretrain_imagenet_${backbone}/model_$BESTNUM.ckpt"
-
-        # for differenciating models trained using backbones
-        chkpt_suffix="${chkpt_suffix}${pretrained_phrase}-${backbone}"
-
     fi
 
     if test "$backbone" = "convnet"
@@ -36,9 +32,9 @@ do
     fi
     
     # train
-    model="${EXPNAME}${chkpt_suffix}${pretrained_phrase}"
     if test "$backbone" = "" # default case
     then
+        model="${EXPNAME}${chkpt_suffix}${pretrained_phrase}"
         python -m meta_dataset.train \
         --records_root_dir=$RECORDS \
         --train_checkpoint_dir=${EXPROOT}/checkpoints/$model \
@@ -55,7 +51,7 @@ do
 
     elif test "$backbone" = "resnet34" # for tuning learning rate else train loss: NaN
     then
-        model="${model}-${backbone}"
+        model="${EXPNAME}${chkpt_suffix}${pretrained_phrase}-${backbone}"
         python -m meta_dataset.train \
         --records_root_dir=$RECORDS \
         --train_checkpoint_dir=${EXPROOT}/checkpoints/$model \
@@ -65,14 +61,14 @@ do
         --gin_bindings="Trainer.batch_size=$BS" \
         --gin_bindings="DataConfig.image_height=126" \
         --gin_bindings="Learner.embedding_fn=@${backbone}" \
-        --gin_bindings="Trainer.learning_rate = 0.005052178216688174" \
+        --gin_bindings="Trainer.learning_rate = 0.001052178216688174" \
         --gin_bindings="Trainer.num_eval_episodes=$num_valid_episodes" \
         --gin_bindings="Trainer.perform_filtration=$perform_filtration" \
         --gin_bindings="Trainer.checkpoint_to_restore='${checkpoint_to_restore}'" \
         --gin_bindings="Trainer.pretrained_source='${pretrained_source}'" \
         --gin_bindings="Trainer.checkpoint_every=1000"
     else
-        model="${model}-${backbone}"
+        model="${EXPNAME}${chkpt_suffix}${pretrained_phrase}-${backbone}"
         python -m meta_dataset.train \
         --records_root_dir=$RECORDS \
         --train_checkpoint_dir=${EXPROOT}/checkpoints/$model \
