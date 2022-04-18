@@ -10,14 +10,6 @@ then
     _backbone="four_layer_convnet"
 fi
 
-num_valid_episodes=$5
-nve_suffix="-$num_valid_episodes"
-if test "$num_valid_episodes" = ""
-then
-    nve_suffix=""
-fi
-
-
 cd $RECORDS; rm tesla; ln -s $TESLA_DATASET_VARIANT tesla; cd $ROOT_DIR;
 
 ls -l $RECORDS # useful to check if sym links are correct
@@ -25,7 +17,7 @@ ls -l $RECORDS # useful to check if sym links are correct
 for MODEL in $models
 do
   export EXP_GIN=${MODEL}_${SOURCE}
-  export EXPNAME=${EXP_GIN}${nve_suffix}
+  # export EXPNAME=${EXP_GIN}${nve_suffix}
   for DATASET in tesla
   do
     echo "MODEL-FILTER: $perform_filtration_model"
@@ -54,7 +46,7 @@ do
         --summary_dir=${EXPROOT}/summaries/${EXPNAME} \
         --gin_config=meta_dataset/learn/gin/best/${EXP_GIN}.gin \
         --gin_bindings="Trainer.experiment_name=''" \
-        --gin_bindings="Trainer.checkpoint_to_restore='${EXPROOT}/checkpoints/${model}/model_${BESTNUM}.ckpt'" \
+        --gin_bindings="Trainer.checkpoint_to_restore='${EXPROOT}/checkpoints/${EXPNAME}/model_${BESTNUM}.ckpt'" \
         --gin_bindings="Trainer.perform_filtration='${perform_filtration_ds}'" \
         --gin_bindings="Learner.embedding_fn = @${_backbone}" \
         --gin_bindings="DataConfig.image_height=126" \

@@ -18,10 +18,11 @@ do
   
   if test "$backbone" = ""
   then
-    name=${MODEL}_${SOURCE}
+      name=${MODEL}_${SOURCE}${chkpt_suffix}
   fi
-
+  
   export EXPNAME=$name
+  echo $EXPNAME
   python -m meta_dataset.analysis.select_best_model \
     --all_experiments_root=$EXPROOT \
     --experiment_dir_basenames='' \
