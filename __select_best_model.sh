@@ -18,7 +18,7 @@ do
   
   if test "$backbone" = ""
   then
-      name=${MODEL}_${SOURCE}${chkpt_suffix}
+      name=${MODEL}_${SOURCE}${chkpt_suffix}${pretrained_phrase}
   fi
   
   export EXPNAME=$name
