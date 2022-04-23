@@ -21,9 +21,14 @@ do
     then
         # TODO: make the script compatible for using pretrained backbones
         PATH_PREFIX="${ROOT_DIR}/experiment_output/pretrained-backbones" #/best_pretrain_imagenet"
-        
-        BESTNUM=$(cat ${PATH_PREFIX}/best_pretrain_imagenet_${backbone}.txt | cut -d " " -f 2 | tail -n 1)
-        checkpoint_to_restore="${PATH_PREFIX}/checkpoints/pretrain_imagenet_${backbone}/model_$BESTNUM.ckpt"
+        __phrase="pretrain_imagenet_${backbone}"
+        if test "$backbone" = "resnet34_ctx"
+        then
+            backbone="resnet34"
+            __phrase="pretrain_imagenet_${backbone}-max-stride-16"
+        fi 
+        BESTNUM=$(cat ${PATH_PREFIX}/best_${__phrase}.txt | cut -d " " -f 2 | tail -n 1)
+        checkpoint_to_restore="${PATH_PREFIX}/checkpoints/${__phrase}/model_$BESTNUM.ckpt"
     fi
 
     if test "$backbone" = "convnet"
@@ -46,8 +51,8 @@ do
         --gin_bindings="Trainer.num_eval_episodes=$num_valid_episodes" \
         --gin_bindings="Trainer.perform_filtration=$perform_filtration" \
         --gin_bindings="Trainer.checkpoint_to_restore='${checkpoint_to_restore}'" \
-        --gin_bindings="Trainer.pretrained_source='${pretrained_source}'" \
-        --gin_bindings="Trainer.checkpoint_every=1000"
+        --gin_bindings="Trainer.pretrained_source='${pretrained_source}'"
+        # --gin_bindings="Trainer.checkpoint_every=1000"
 
     elif test "$backbone" = "resnet34" # for tuning learning rate else train loss: NaN
     then
@@ -65,8 +70,8 @@ do
         --gin_bindings="Trainer.num_eval_episodes=$num_valid_episodes" \
         --gin_bindings="Trainer.perform_filtration=$perform_filtration" \
         --gin_bindings="Trainer.checkpoint_to_restore='${checkpoint_to_restore}'" \
-        --gin_bindings="Trainer.pretrained_source='${pretrained_source}'" \
-        --gin_bindings="Trainer.checkpoint_every=1000"
+        --gin_bindings="Trainer.pretrained_source='${pretrained_source}'"
+        # --gin_bindings="Trainer.checkpoint_every=1000"
     else
         model="${EXPNAME}${chkpt_suffix}${pretrained_phrase}-${backbone}"
         python -m meta_dataset.train \
@@ -81,7 +86,7 @@ do
         --gin_bindings="Trainer.num_eval_episodes=$num_valid_episodes" \
         --gin_bindings="Trainer.perform_filtration=$perform_filtration" \
         --gin_bindings="Trainer.checkpoint_to_restore='${checkpoint_to_restore}'" \
-        --gin_bindings="Trainer.pretrained_source='${pretrained_source}'" \
-        --gin_bindings="Trainer.checkpoint_every=1000"
+        --gin_bindings="Trainer.pretrained_source='${pretrained_source}'"
+        # --gin_bindings="Trainer.checkpoint_every=1000"
     fi
 done

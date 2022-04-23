@@ -95,8 +95,8 @@ cd $ROOT_DIR
 bash __create_imagenet_tfrecords_for_pretraining_backbones.sh
 
 # pretrain-baseline
-bash __baseline_and_pretraining_on_imagenet.sh  <models> <gpu-ids>
-# e.g. bash __baseline_and_pretraining_on_imagenet.sh  "resnet mamlconvnet mamlresnet" "0"
+bash __baseline_and_pretraining_on_imagenet.sh  <models> <gpu-ids> <resnet34-max-stride>
+# e.g. bash __baseline_and_pretraining_on_imagenet.sh  "resnet mamlconvnet mamlresnet" "0"  "4/8/16/32/None"
 
 # select best pre-trained backbones
 bash __select_best_pretrained_backbone_models.sh
@@ -109,14 +109,14 @@ bash __train.sh \
 <num-validation-episodes> \
 <use-pretrained-backbone or _>
 <backbone>
-# e.g. bash __train.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" "True/False" use_pretrained_backbone resnet/""
+# e.g. bash __train.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" "True/False" use_pretrained_backbone resnet34/resnet_ctx/""
 
 # To select and see the best model after training
 # __test.sh does run __select_best_model.sh
 # hence use this just to see the best model specs
 # For datasets other than TESLA, always set <perform-filtration-flag> as False
 # bash __select_best_model.sh <models> <gpu-ids>  <perform-filtration-flag-for-model> _ <num-valid-episodes> <use_pretrained_backbone or _> <backbone> #uncomment this
-# e.g. bash __select_best_model.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" "True/False" _ 60 use_pretrained_backbone resnet/""
+# e.g. bash __select_best_model.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" "True/False" _ 60 use_pretrained_backbone resnet34/resnet_ctx/""
 
 
 # evaluate the trained models
