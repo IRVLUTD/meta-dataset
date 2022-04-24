@@ -20,7 +20,12 @@ do
   then
       name=${MODEL}_${SOURCE}${chkpt_suffix}${pretrained_phrase}
   fi
-  
+
+  if test "$backbone" = "resnet34_ctx"
+  then
+      name=${MODEL}_${SOURCE}${chkpt_suffix}${pretrained_phrase}-resnet34
+  fi
+
   export EXPNAME=$name
   echo $EXPNAME
   python -m meta_dataset.analysis.select_best_model \

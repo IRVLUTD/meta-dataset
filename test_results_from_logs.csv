@@ -1,260 +1,268 @@
 experiment-setup, test_mean_accuracy, test_margin_of_error
-/home/jishnu/Documents/github/meta-dataset/logs/checkpoints+model_42500-dataset-dont_use_pretrained_backbone.INFO, Truedont_use_pretraine
-/home/jishnu/Documents/github/meta-dataset/logs/checkpoints+model_42500-dataset-tesla-mixture.INFO, unlike the experimenta
-/home/jishnu/Documents/github/meta-dataset/logs/Documents+meta-dataset+experiment_output+tesla-unseen+checkpoints+maml_all-60-using-pretrained-backbone-resnet34+model_-dataset-tesla-mixture-filtered.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/Documents+meta-dataset+experiment_output+tesla-unseen+checkpoints+maml_all-60-using-pretrained-backbone-resnet34+model_-dataset-tesla-mixture.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/Documents+meta-dataset+experiment_output+tesla-unseen+checkpoints+prototypical_all-60-using-pretrained-backbone-resnet34+model_-dataset-tesla-mixture-filtered.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/Documents+meta-dataset+experiment_output+tesla-unseen+checkpoints+prototypical_all-60-using-pretrained-backbone-resnet34+model_-dataset-tesla-mixture.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/Documents+meta-dataset+experiment_output+tesla-unseen+checkpoints+prototypical_all-60-using-pretrained-backbone-resnet34+model_-dataset-tesla-seen-filtered.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/Documents+meta-dataset+experiment_output+tesla-unseen+checkpoints+prototypical_all-60-using-pretrained-backbone-resnet34+model_-dataset-tesla-seen.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/Documents+meta-dataset+experiment_output+tesla-unseen+checkpoints+prototypical_all-60-using-pretrained-backbone-resnet34+model_-dataset-tesla-synthetic-unseen-13-filtered.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/Documents+meta-dataset+experiment_output+tesla-unseen+checkpoints+prototypical_all-60-using-pretrained-backbone-resnet34+model_-dataset-tesla-synthetic-unseen-13.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/Documents+meta-dataset+experiment_output+tesla-unseen+checkpoints+prototypical_all-60-using-pretrained-backbone-resnet34+model_-dataset-tesla-unseen-filtered.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/Documents+meta-dataset+experiment_output+tesla-unseen+checkpoints+prototypical_all-60-using-pretrained-backbone-resnet34+model_-dataset-tesla-unseen.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+crosstransformer_all-60+model_50500-dataset-tesla-mixture-filtered.INFO, 0.133402, +/- 0.010052
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+crosstransformer_all-60+model_50500-dataset-tesla-mixture.INFO, 0.133928, +/- 0.009843
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+crosstransformer_all-60+model_50500-dataset-tesla-seen-filtered.INFO, 0.299047, +/- 0.012469
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+crosstransformer_all-60+model_50500-dataset-tesla-seen.INFO, 0.297304, +/- 0.012110
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+crosstransformer_all-60+model_50500-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.491881, +/- 0.032066
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+crosstransformer_all-60+model_50500-dataset-tesla-synthetic-unseen-13.INFO, 0.491353, +/- 0.031885
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+crosstransformer_all-60+model_50500-dataset-tesla-unseen-filtered.INFO, 0.139344, +/- 0.008780
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+crosstransformer_all-60+model_50500-dataset-tesla-unseen.INFO, 0.146818, +/- 0.009629
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+crosstransformer_all-60+model_78000-dataset-tesla-mixture-filtered.INFO, 0.123853, +/- 0.010258
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+crosstransformer_all-60+model_78000-dataset-tesla-mixture.INFO, 0.114395, +/- 0.008568
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+crosstransformer_all-60+model_78000-dataset-tesla-seen-filtered.INFO, 0.304783, +/- 0.012422
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+crosstransformer_all-60+model_78000-dataset-tesla-seen.INFO, 0.310197, +/- 0.012393
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+crosstransformer_all-60+model_78000-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.382132, +/- 0.024791
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+crosstransformer_all-60+model_78000-dataset-tesla-synthetic-unseen-13.INFO, 0.400219, +/- 0.024439
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+crosstransformer_all-60+model_78000-dataset-tesla-unseen-filtered.INFO, 0.138085, +/- 0.009854
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+crosstransformer_all-60+model_78000-dataset-tesla-unseen.INFO, 0.140793, +/- 0.009947
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+maml_all-60+model_72000-dataset-tesla-mixture-filtered.INFO, 0.087003, +/- 0.007311
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+maml_all-60+model_72000-dataset-tesla-mixture.INFO, 0.087845, +/- 0.007833
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+maml_all-60+model_72000-dataset-tesla-seen-filtered.INFO, 0.200441, +/- 0.008611
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+maml_all-60+model_72000-dataset-tesla-seen.INFO, 0.203206, +/- 0.009531
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+maml_all-60+model_72000-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.291280, +/- 0.016331
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+maml_all-60+model_72000-dataset-tesla-synthetic-unseen-13.INFO, 0.303085, +/- 0.016525
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+maml_all-60+model_72000-dataset-tesla-unseen-filtered.INFO, 0.102619, +/- 0.008232
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+maml_all-60+model_72000-dataset-tesla-unseen.INFO, 0.102599, +/- 0.007659
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+maml_all-60-using-pretrained-backbone-resnet34+model_2000-dataset-tesla-mixture-filtered.INFO, 0.115840, +/- 0.008494
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+maml_all-60-using-pretrained-backbone-resnet34+model_2000-dataset-tesla-mixture.INFO, 0.123167, +/- 0.009516
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+maml_all-60-using-pretrained-backbone-resnet34+model_2000-dataset-tesla-seen-filtered.INFO, 0.251695, +/- 0.010538
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+maml_all-60-using-pretrained-backbone-resnet34+model_2000-dataset-tesla-seen.INFO, 0.262080, +/- 0.011354
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+maml_all-60-using-pretrained-backbone-resnet34+model_2000-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.305766, +/- 0.017755
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+maml_all-60-using-pretrained-backbone-resnet34+model_2000-dataset-tesla-synthetic-unseen-13.INFO, 0.327566, +/- 0.017315
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+maml_all-60-using-pretrained-backbone-resnet34+model_2000-dataset-tesla-unseen-filtered.INFO, 0.139750, +/- 0.009824
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+maml_all-60-using-pretrained-backbone-resnet34+model_2000-dataset-tesla-unseen.INFO, 0.136952, +/- 0.010089
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+maml_all-60-using-pretrained-backbone-resnet34+model_72500-dataset-tesla-mixture-filtered.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+maml_all-60-using-pretrained-backbone-resnet34+model_72500-dataset-tesla-mixture.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+maml_all-60-using-pretrained-backbone-resnet34+model_72500-dataset-tesla-seen-filtered.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+maml_all-60-using-pretrained-backbone-resnet34+model_72500-dataset-tesla-seen.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+maml_all-60-using-pretrained-backbone-resnet34+model_72500-dataset-tesla-synthetic-unseen-13-filtered.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+maml_all-60-using-pretrained-backbone-resnet34+model_72500-dataset-tesla-synthetic-unseen-13.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+maml_all-60-using-pretrained-backbone-resnet34+model_72500-dataset-tesla-unseen-filtered.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+maml_all-60-using-pretrained-backbone-resnet34+model_72500-dataset-tesla-unseen.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+maml_init_with_proto_all-60-using-pretrained-backbone-resnet34+model_70000-dataset-tesla-mixture-filtered.INFO, 0.145644, +/- 0.010150
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+maml_init_with_proto_all-60-using-pretrained-backbone-resnet34+model_70000-dataset-tesla-mixture.INFO, 0.133227, +/- 0.009647
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+maml_init_with_proto_all-60-using-pretrained-backbone-resnet34+model_70000-dataset-tesla-seen-filtered.INFO, 0.355831, +/- 0.013797
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+maml_init_with_proto_all-60-using-pretrained-backbone-resnet34+model_70000-dataset-tesla-seen.INFO, 0.344228, +/- 0.014235
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+maml_init_with_proto_all-60-using-pretrained-backbone-resnet34+model_70000-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.430566, +/- 0.028465
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+maml_init_with_proto_all-60-using-pretrained-backbone-resnet34+model_70000-dataset-tesla-synthetic-unseen-13.INFO, 0.435877, +/- 0.028379
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+maml_init_with_proto_all-60-using-pretrained-backbone-resnet34+model_70000-dataset-tesla-unseen-filtered.INFO, 0.173201, +/- 0.010724
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+maml_init_with_proto_all-60-using-pretrained-backbone-resnet34+model_70000-dataset-tesla-unseen.INFO, 0.157612, +/- 0.010859
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-resnet34+model_56500-dataset-tesla-mixture-filtered.INFO, 0.089107, +/- 0.006142
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-resnet34+model_56500-dataset-tesla-mixture.INFO, 0.097366, +/- 0.007536
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-resnet34+model_56500-dataset-tesla-seen-filtered.INFO, 0.197687, +/- 0.008750
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-resnet34+model_56500-dataset-tesla-seen.INFO, 0.206087, +/- 0.008584
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-resnet34+model_56500-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.309203, +/- 0.016846
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-resnet34+model_56500-dataset-tesla-synthetic-unseen-13.INFO, 0.303932, +/- 0.016429
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-resnet34+model_56500-dataset-tesla-unseen-filtered.INFO, 0.104695, +/- 0.007041
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-resnet34+model_56500-dataset-tesla-unseen.INFO, 0.105970, +/- 0.007119
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-resnet34+model_72500-dataset-tesla-mixture-filtered.INFO, 0.065593, +/- 0.004883
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-resnet34+model_72500-dataset-tesla-mixture.INFO, 0.063861, +/- 0.005290
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-resnet34+model_72500-dataset-tesla-seen-filtered.INFO, 0.172136, +/- 0.008106
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-resnet34+model_72500-dataset-tesla-seen.INFO, 0.161969, +/- 0.007422
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-resnet34+model_72500-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.148628, +/- 0.008072
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-resnet34+model_72500-dataset-tesla-synthetic-unseen-13.INFO, 0.168773, +/- 0.009612
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-resnet34+model_72500-dataset-tesla-unseen-filtered.INFO, 0.072278, +/- 0.005112
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-resnet34+model_72500-dataset-tesla-unseen.INFO, 0.068716, +/- 0.004790
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-resnet34+model_-dataset-tesla-mixture-filtered.INFO, be created from
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-resnet34+model_-dataset-tesla-mixture.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-resnet+model_35500-dataset-tesla-mixture-filtered.INFO, 0.090226, +/- 0.006732
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-resnet+model_35500-dataset-tesla-mixture.INFO, 0.082304, +/- 0.005947
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-resnet+model_35500-dataset-tesla-seen-filtered.INFO, 0.215081, +/- 0.009401
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-resnet+model_35500-dataset-tesla-seen.INFO, 0.214861, +/- 0.009062
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-resnet+model_35500-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.308743, +/- 0.016834
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-resnet+model_35500-dataset-tesla-synthetic-unseen-13.INFO, 0.299862, +/- 0.016767
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-resnet+model_35500-dataset-tesla-unseen-filtered.INFO, 0.095444, +/- 0.006348
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-resnet+model_35500-dataset-tesla-unseen.INFO, 0.100418, +/- 0.006942
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-resnet+model_-dataset-tesla-mixture-filtered.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-resnet+model_-dataset-tesla-mixture.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-resnet+model_-dataset-tesla-unseen-filtered.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-resnet+model_-dataset-tesla-unseen.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-convnet+model_20500-dataset-tesla-mixture-filtered.INFO, 0.133984, +/- 0.008927
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-convnet+model_20500-dataset-tesla-mixture.INFO, 0.125634, +/- 0.008582
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-convnet+model_20500-dataset-tesla-seen-filtered.INFO, 0.294139, +/- 0.012531
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-convnet+model_20500-dataset-tesla-seen.INFO, 0.296380, +/- 0.012473
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-convnet+model_20500-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.366233, +/- 0.020213
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-convnet+model_20500-dataset-tesla-synthetic-unseen-13.INFO, 0.353707, +/- 0.019537
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-convnet+model_20500-dataset-tesla-unseen-filtered.INFO, 0.143145, +/- 0.008940
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-convnet+model_20500-dataset-tesla-unseen.INFO, 0.143594, +/- 0.008648
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-four_layer_convnet+model_-dataset-tesla-mixture-filtered.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-resnet34+model_26000-dataset-tesla-mixture-filtered.INFO, 0.163349, +/- 0.011204
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-resnet34+model_26000-dataset-tesla-mixture.INFO, 0.160835, +/- 0.010888
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-resnet34+model_26000-dataset-tesla-seen-filtered.INFO, 0.310444, +/- 0.013288
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-resnet34+model_26000-dataset-tesla-seen.INFO, 0.312592, +/- 0.013709
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-resnet34+model_26000-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.357003, +/- 0.021303
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-resnet34+model_26000-dataset-tesla-synthetic-unseen-13.INFO, 0.364172, +/- 0.022254
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-resnet34+model_26000-dataset-tesla-unseen-filtered.INFO, 0.190700, +/- 0.011471
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-resnet34+model_26000-dataset-tesla-unseen.INFO, 0.190306, +/- 0.011250
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-resnet+model_7500-dataset-tesla-mixture-filtered.INFO, 0.131116, +/- 0.008599
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-resnet+model_7500-dataset-tesla-mixture.INFO, 0.132808, +/- 0.009823
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-resnet+model_7500-dataset-tesla-seen-filtered.INFO, 0.287842, +/- 0.012237
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-resnet+model_7500-dataset-tesla-seen.INFO, 0.286673, +/- 0.011853
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-resnet+model_7500-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.343371, +/- 0.019922
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-resnet+model_7500-dataset-tesla-synthetic-unseen-13.INFO, 0.287412, +/- 0.013638
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-resnet+model_7500-dataset-tesla-unseen-filtered.INFO, 0.147591, +/- 0.009981
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-resnet+model_7500-dataset-tesla-unseen.INFO, 0.137116, +/- 0.008691
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-wide_resnet+model_73000-dataset-tesla-mixture-filtered.INFO, 0.122924, +/- 0.008168
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-wide_resnet+model_73000-dataset-tesla-mixture.INFO, 0.125681, +/- 0.008084
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-wide_resnet+model_73000-dataset-tesla-seen-filtered.INFO, 0.248230, +/- 0.011055
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-wide_resnet+model_73000-dataset-tesla-seen.INFO, 0.259580, +/- 0.010952
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-wide_resnet+model_73000-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.353854, +/- 0.019135
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-wide_resnet+model_73000-dataset-tesla-synthetic-unseen-13.INFO, 0.327913, +/- 0.019331
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-wide_resnet+model_73000-dataset-tesla-unseen-filtered.INFO, 0.140970, +/- 0.008954
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-wide_resnet+model_73000-dataset-tesla-unseen.INFO, 0.128372, +/- 0.008389
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-60-using-pretrained-backbone-resnet34+model_35500-dataset-tesla-mixture-filtered.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-60-using-pretrained-backbone-resnet34+model_35500-dataset-tesla-mixture.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-60-using-pretrained-backbone-resnet34+model_35500-dataset-tesla-seen-filtered.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-60-using-pretrained-backbone-resnet34+model_35500-dataset-tesla-seen.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-60-using-pretrained-backbone-resnet34+model_35500-dataset-tesla-synthetic-unseen-13-filtered.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-60-using-pretrained-backbone-resnet34+model_35500-dataset-tesla-synthetic-unseen-13.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-60-using-pretrained-backbone-resnet34+model_35500-dataset-tesla-unseen-filtered.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-60-using-pretrained-backbone-resnet34+model_35500-dataset-tesla-unseen.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-60-using-pretrained-backbone-resnet34+model_5000-dataset-tesla-mixture-filtered.INFO, 0.153557, +/- 0.010479
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-60-using-pretrained-backbone-resnet34+model_5000-dataset-tesla-mixture.INFO, 0.162347, +/- 0.011152
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-60-using-pretrained-backbone-resnet34+model_5000-dataset-tesla-seen-filtered.INFO, 0.338030, +/- 0.014823
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-60-using-pretrained-backbone-resnet34+model_5000-dataset-tesla-seen.INFO, 0.345373, +/- 0.013952
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-60-using-pretrained-backbone-resnet34+model_5000-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.382030, +/- 0.023724
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-60-using-pretrained-backbone-resnet34+model_5000-dataset-tesla-synthetic-unseen-13.INFO, 0.379454, +/- 0.023903
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-60-using-pretrained-backbone-resnet34+model_5000-dataset-tesla-unseen-filtered.INFO, 0.181551, +/- 0.011059
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all-60-using-pretrained-backbone-resnet34+model_5000-dataset-tesla-unseen.INFO, 0.181511, +/- 0.011355
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+matching_all+model_0-dataset-dont_use_pretrained_backbone.INFO, Falsedont_use_pretrain
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+prototypical_all-60-using-pretrained-backbone-resnet34+model_15000-dataset-tesla-mixture-filtered.INFO, 0.149415, +/- 0.010077
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+prototypical_all-60-using-pretrained-backbone-resnet34+model_15000-dataset-tesla-mixture.INFO, 0.149467, +/- 0.010467
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+prototypical_all-60-using-pretrained-backbone-resnet34+model_15000-dataset-tesla-seen-filtered.INFO, 0.320377, +/- 0.012778
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+prototypical_all-60-using-pretrained-backbone-resnet34+model_15000-dataset-tesla-seen.INFO, 0.344624, +/- 0.013766
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+prototypical_all-60-using-pretrained-backbone-resnet34+model_15000-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.346672, +/- 0.018910
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+prototypical_all-60-using-pretrained-backbone-resnet34+model_15000-dataset-tesla-synthetic-unseen-13.INFO, 0.356481, +/- 0.019241
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+prototypical_all-60-using-pretrained-backbone-resnet34+model_15000-dataset-tesla-unseen-filtered.INFO, 0.159910, +/- 0.010271
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+prototypical_all-60-using-pretrained-backbone-resnet34+model_15000-dataset-tesla-unseen.INFO, 0.154891, +/- 0.009842
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+prototypical_all-60-using-pretrained-backbone-resnet34+model_19500-dataset-tesla-mixture-filtered.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+prototypical_all-60-using-pretrained-backbone-resnet34+model_19500-dataset-tesla-mixture.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+prototypical_all-60-using-pretrained-backbone-resnet34+model_19500-dataset-tesla-seen-filtered.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+prototypical_all-60-using-pretrained-backbone-resnet34+model_19500-dataset-tesla-seen.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+prototypical_all-60-using-pretrained-backbone-resnet34+model_19500-dataset-tesla-synthetic-unseen-13-filtered.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+prototypical_all-60-using-pretrained-backbone-resnet34+model_19500-dataset-tesla-synthetic-unseen-13.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+prototypical_all-60-using-pretrained-backbone-resnet34+model_19500-dataset-tesla-unseen-filtered.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen-filtered+prototypical_all-60-using-pretrained-backbone-resnet34+model_19500-dataset-tesla-unseen.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+maml_all-60+model_56000-dataset--filtered.INFO, True
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+maml_all-60+model_56000-dataset-tesla-mixture-filtered.INFO, 0.120416, +/- 0.008637
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+maml_all-60+model_56000-dataset-tesla-mixture.INFO, 0.121437, +/- 0.009294
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+maml_all-60+model_56000-dataset-tesla-seen-filtered.INFO, 0.269128, +/- 0.010781
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+maml_all-60+model_56000-dataset-tesla-seen.INFO, 0.261612, +/- 0.010212
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+maml_all-60+model_56000-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.402270, +/- 0.024510
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+maml_all-60+model_56000-dataset-tesla-synthetic-unseen-13.INFO, 0.389720, +/- 0.024305
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+maml_all-60+model_56000-dataset-tesla-unseen-filtered.INFO, 0.145864, +/- 0.009985
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+maml_all-60+model_56000-dataset-tesla-unseen.INFO, 0.148898, +/- 0.009013
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+maml_all-60-using-pretrained-backbone-resnet34+model_73000-dataset-tesla-mixture-filtered.INFO, 0.142420, +/- 0.009209
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+maml_all-60-using-pretrained-backbone-resnet34+model_73000-dataset-tesla-mixture.INFO, split using 600
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+maml_all-60-using-pretrained-backbone-resnet34+model_73000-dataset-tesla-seen-filtered.INFO, 0.270078, +/- 0.011123
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+maml_all-60-using-pretrained-backbone-resnet34+model_73000-dataset-tesla-seen.INFO, 0.283635, +/- 0.010669
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+maml_all-60-using-pretrained-backbone-resnet34+model_73000-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.410370, +/- 0.024849
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+maml_all-60-using-pretrained-backbone-resnet34+model_73000-dataset-tesla-synthetic-unseen-13.INFO, 0.421075, +/- 0.024818
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+maml_all-60-using-pretrained-backbone-resnet34+model_73000-dataset-tesla-unseen-filtered.INFO, 0.146511, +/- 0.009125
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+maml_all-60-using-pretrained-backbone-resnet34+model_73000-dataset-tesla-unseen.INFO, 0.155808, +/- 0.009201
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+maml_init_with_proto_all-60-using-pretrained-backbone-resnet34+model_54000-dataset-tesla-mixture-filtered.INFO, 0.179172, +/- 0.012049
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+maml_init_with_proto_all-60-using-pretrained-backbone-resnet34+model_54000-dataset-tesla-mixture.INFO, 0.182980, +/- 0.011962
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+maml_init_with_proto_all-60-using-pretrained-backbone-resnet34+model_54000-dataset-tesla-seen-filtered.INFO, 0.363565, +/- 0.016015
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+maml_init_with_proto_all-60-using-pretrained-backbone-resnet34+model_54000-dataset-tesla-seen.INFO, 0.375896, +/- 0.015436
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+maml_init_with_proto_all-60-using-pretrained-backbone-resnet34+model_54000-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.479335, +/- 0.030279
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+maml_init_with_proto_all-60-using-pretrained-backbone-resnet34+model_54000-dataset-tesla-synthetic-unseen-13.INFO, 0.479856, +/- 0.030287
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+maml_init_with_proto_all-60-using-pretrained-backbone-resnet34+model_54000-dataset-tesla-unseen-filtered.INFO, 0.189192, +/- 0.012390
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+maml_init_with_proto_all-60-using-pretrained-backbone-resnet34+model_54000-dataset-tesla-unseen.INFO, 0.191268, +/- 0.011843
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all-600-convnet+model_-dataset-tesla-mixture.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all-600-four_layer_convnet+model_31500-dataset-tesla-mixture-filtered.INFO, 0.131312, +/- 0.009290
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all-600-four_layer_convnet+model_31500-dataset-tesla-mixture.INFO, 0.132519, +/- 0.009711
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all-600-four_layer_convnet+model_31500-dataset-tesla-seen-filtered.INFO, 0.285628, +/- 0.012140
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all-600-four_layer_convnet+model_31500-dataset-tesla-seen.INFO, 0.281116, +/- 0.011626
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all-600-four_layer_convnet+model_31500-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.438262, +/- 0.027494
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all-600-four_layer_convnet+model_31500-dataset-tesla-synthetic-unseen-13.INFO, 0.433700, +/- 0.026290
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all-600-four_layer_convnet+model_31500-dataset-tesla-unseen-filtered.INFO, 0.161223, +/- 0.010302
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all-600-four_layer_convnet+model_31500-dataset-tesla-unseen.INFO, 0.150296, +/- 0.009754
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all-600-resnet34+model_45000-dataset-tesla-mixture-filtered.INFO, 0.132447, +/- 0.009051
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all-600-resnet34+model_45000-dataset-tesla-mixture.INFO, 0.133141, +/- 0.009207
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all-600-resnet34+model_45000-dataset-tesla-seen-filtered.INFO, 0.271123, +/- 0.011145
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all-600-resnet34+model_45000-dataset-tesla-seen.INFO, 0.266643, +/- 0.010637
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all-600-resnet34+model_45000-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.427699, +/- 0.025899
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all-600-resnet34+model_45000-dataset-tesla-synthetic-unseen-13.INFO, 0.419964, +/- 0.025487
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all-600-resnet34+model_45000-dataset-tesla-unseen-filtered.INFO, 0.150161, +/- 0.009560
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all-600-resnet34+model_45000-dataset-tesla-unseen.INFO, 0.141944, +/- 0.008680
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all-600-resnet+model_33500-dataset-tesla-mixture-filtered.INFO, 0.126137, +/- 0.008653
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all-600-resnet+model_33500-dataset-tesla-mixture.INFO, 0.119603, +/- 0.008671
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all-600-resnet+model_33500-dataset-tesla-seen-filtered.INFO, 0.248754, +/- 0.009766
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all-600-resnet+model_33500-dataset-tesla-seen.INFO, 0.247681, +/- 0.010189
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all-600-resnet+model_33500-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.413996, +/- 0.024593
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all-600-resnet+model_33500-dataset-tesla-synthetic-unseen-13.INFO, 0.393960, +/- 0.024283
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all-600-resnet+model_33500-dataset-tesla-unseen-filtered.INFO, 0.146533, +/- 0.009362
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all-600-resnet+model_33500-dataset-tesla-unseen.INFO, 0.137827, +/- 0.008250
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all-60-using-pretrained-backbone-resnet34+model_35000-dataset-tesla-mixture-filtered.INFO, 0.175357, +/- 0.012418
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all-60-using-pretrained-backbone-resnet34+model_35000-dataset-tesla-mixture.INFO, 0.187082, +/- 0.012892
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all-60-using-pretrained-backbone-resnet34+model_35000-dataset-tesla-seen-filtered.INFO, 0.343373, +/- 0.014475
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all-60-using-pretrained-backbone-resnet34+model_35000-dataset-tesla-seen.INFO, 0.338957, +/- 0.013326
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all-60-using-pretrained-backbone-resnet34+model_35000-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.474551, +/- 0.030028
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all-60-using-pretrained-backbone-resnet34+model_35000-dataset-tesla-synthetic-unseen-13.INFO, 0.454627, +/- 0.029646
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all-60-using-pretrained-backbone-resnet34+model_35000-dataset-tesla-unseen-filtered.INFO, 0.191670, +/- 0.012489
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all-60-using-pretrained-backbone-resnet34+model_35000-dataset-tesla-unseen.INFO, 0.219924, +/- 0.012765
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all+model_44000-dataset-dont_use_pretrained_backbone.INFO, Falsedont_use_pretrain
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all+model_44000-dataset-tesla_dataset_variant.INFO, 0.443969, +/- 0.027785
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all+model_44000-dataset-tesla-mixture-filtered.INFO, 0.167980, +/- 0.010352
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all+model_44000-dataset-tesla-mixture.INFO, 0.162333, +/- 0.010358
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all+model_44000-dataset-tesla-seen-filtered.INFO, 0.161607, +/- 0.010719
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all+model_44000-dataset-tesla-seen.INFO, 0.167528, +/- 0.010305
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all+model_44000-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.157748, +/- 0.010042
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all+model_44000-dataset-tesla-synthetic-unseen-13.INFO, 0.159096, +/- 0.010010
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all+model_44000-dataset-tesla-unseen-filtered.INFO, 0.161217, +/- 0.010507
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+matching_all+model_44000-dataset-tesla-unseen.INFO, 0.171937, +/- 0.010976
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen++model_-dataset-tesla-mixture-filtered.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen++model_-dataset-tesla-mixture.INFO, 
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+prototypical_all-600-four_layer_convnet+model_73000-dataset-tesla-mixture-filtered.INFO, 0.132667, +/- 0.009315
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+prototypical_all-600-four_layer_convnet+model_73000-dataset-tesla-mixture.INFO, 0.118498, +/- 0.008572
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+prototypical_all-600-four_layer_convnet+model_73000-dataset-tesla-seen-filtered.INFO, 0.196379, +/- 0.008473
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+prototypical_all-600-four_layer_convnet+model_73000-dataset-tesla-seen.INFO, 0.202689, +/- 0.009711
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+prototypical_all-600-four_layer_convnet+model_73000-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.374298, +/- 0.020442
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+prototypical_all-600-four_layer_convnet+model_73000-dataset-tesla-synthetic-unseen-13.INFO, 0.372093, +/- 0.021347
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+prototypical_all-600-four_layer_convnet+model_73000-dataset-tesla-unseen-filtered.INFO, 0.139128, +/- 0.008737
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+prototypical_all-600-four_layer_convnet+model_73000-dataset-tesla-unseen.INFO, 0.142437, +/- 0.008525
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+prototypical_all-60-using-pretrained-backbone-resnet34+model_38500-dataset-tesla-mixture-filtered.INFO, split using 600
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+prototypical_all-60-using-pretrained-backbone-resnet34+model_38500-dataset-tesla-mixture.INFO, 0.109661, +/- 0.007429
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+prototypical_all-60-using-pretrained-backbone-resnet34+model_38500-dataset-tesla-seen-filtered.INFO, 0.268834, +/- 0.010471
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+prototypical_all-60-using-pretrained-backbone-resnet34+model_38500-dataset-tesla-seen.INFO, 0.279958, +/- 0.011021
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+prototypical_all-60-using-pretrained-backbone-resnet34+model_38500-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.391787, +/- 0.023189
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+prototypical_all-60-using-pretrained-backbone-resnet34+model_38500-dataset-tesla-synthetic-unseen-13.INFO, 0.383757, +/- 0.023173
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+prototypical_all-60-using-pretrained-backbone-resnet34+model_38500-dataset-tesla-unseen-filtered.INFO, 0.126525, +/- 0.008108
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+prototypical_all-60-using-pretrained-backbone-resnet34+model_38500-dataset-tesla-unseen.INFO, 0.130108, +/- 0.008379
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+prototypical_all-60-using-pretrained-backbone-resnet34+model_71000-dataset-tesla-mixture-filtered.INFO, 0.190360, +/- 0.013627
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+prototypical_all-60-using-pretrained-backbone-resnet34+model_71000-dataset-tesla-mixture.INFO, 0.186063, +/- 0.013106
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+prototypical_all-60-using-pretrained-backbone-resnet34+model_71000-dataset-tesla-seen-filtered.INFO, 0.399018, +/- 0.016520
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+prototypical_all-60-using-pretrained-backbone-resnet34+model_71000-dataset-tesla-seen.INFO, 0.385059, +/- 0.017517
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+prototypical_all-60-using-pretrained-backbone-resnet34+model_71000-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.457065, +/- 0.027844
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+prototypical_all-60-using-pretrained-backbone-resnet34+model_71000-dataset-tesla-synthetic-unseen-13.INFO, 0.441648, +/- 0.027355
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+prototypical_all-60-using-pretrained-backbone-resnet34+model_71000-dataset-tesla-unseen-filtered.INFO, 0.227950, +/- 0.014055
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+prototypical_all-60-using-pretrained-backbone-resnet34+model_71000-dataset-tesla-unseen.INFO, 0.221343, +/- 0.013549
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+prototypical_all-60-using-pretrained-backbone-resnet34+model_-dataset-tesla-mixture.INFO, unlike the experimenta
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+prototypical_all+model_33500-dataset-tesla-mixture-filtered.INFO, 0.128200, +/- 0.008553
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+prototypical_all+model_33500-dataset-tesla-mixture.INFO, 0.129010, +/- 0.008608
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+prototypical_all+model_33500-dataset-tesla-seen-filtered.INFO, 0.118501, +/- 0.007750
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+prototypical_all+model_33500-dataset-tesla-seen.INFO, 0.123932, +/- 0.007755
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+prototypical_all+model_33500-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.123202, +/- 0.008322
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+prototypical_all+model_33500-dataset-tesla-synthetic-unseen-13.INFO, 0.118512, +/- 0.007565
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+prototypical_all+model_33500-dataset-tesla-unseen-filtered.INFO, 0.129476, +/- 0.008789
-/home/jishnu/Documents/github/meta-dataset/logs/tesla-unseen+prototypical_all+model_33500-dataset-tesla-unseen.INFO, 0.127596, +/- 0.008021
+/workspace/logs/Documents+meta-dataset+experiment_output+tesla-unseen+checkpoints+maml_all-60-using-pretrained-backbone-resnet34+model_-dataset-tesla-mixture-filtered.INFO, 
+/workspace/logs/Documents+meta-dataset+experiment_output+tesla-unseen+checkpoints+maml_all-60-using-pretrained-backbone-resnet34+model_-dataset-tesla-mixture.INFO, 
+/workspace/logs/Documents+meta-dataset+experiment_output+tesla-unseen+checkpoints+prototypical_all-60-using-pretrained-backbone-resnet34+model_-dataset-tesla-mixture-filtered.INFO, 
+/workspace/logs/Documents+meta-dataset+experiment_output+tesla-unseen+checkpoints+prototypical_all-60-using-pretrained-backbone-resnet34+model_-dataset-tesla-mixture.INFO, 
+/workspace/logs/Documents+meta-dataset+experiment_output+tesla-unseen+checkpoints+prototypical_all-60-using-pretrained-backbone-resnet34+model_-dataset-tesla-seen-filtered.INFO, 
+/workspace/logs/Documents+meta-dataset+experiment_output+tesla-unseen+checkpoints+prototypical_all-60-using-pretrained-backbone-resnet34+model_-dataset-tesla-seen.INFO, 
+/workspace/logs/Documents+meta-dataset+experiment_output+tesla-unseen+checkpoints+prototypical_all-60-using-pretrained-backbone-resnet34+model_-dataset-tesla-synthetic-unseen-13-filtered.INFO, 
+/workspace/logs/Documents+meta-dataset+experiment_output+tesla-unseen+checkpoints+prototypical_all-60-using-pretrained-backbone-resnet34+model_-dataset-tesla-synthetic-unseen-13.INFO, 
+/workspace/logs/Documents+meta-dataset+experiment_output+tesla-unseen+checkpoints+prototypical_all-60-using-pretrained-backbone-resnet34+model_-dataset-tesla-unseen-filtered.INFO, 
+/workspace/logs/Documents+meta-dataset+experiment_output+tesla-unseen+checkpoints+prototypical_all-60-using-pretrained-backbone-resnet34+model_-dataset-tesla-unseen.INFO, 
+/workspace/logs/checkpoints+model_42500-dataset-dont_use_pretrained_backbone.INFO, Truedont_use_pretraine
+/workspace/logs/checkpoints+model_42500-dataset-tesla-mixture.INFO, unlike the experimenta
+/workspace/logs/tesla-unseen++model_-dataset-tesla-mixture-filtered.INFO, 
+/workspace/logs/tesla-unseen++model_-dataset-tesla-mixture.INFO, 
+/workspace/logs/tesla-unseen+crosstransformer_all-60+model_50500-dataset-tesla-mixture-filtered.INFO, 0.133402, +/- 0.010052
+/workspace/logs/tesla-unseen+crosstransformer_all-60+model_50500-dataset-tesla-mixture.INFO, 0.133928, +/- 0.009843
+/workspace/logs/tesla-unseen+crosstransformer_all-60+model_50500-dataset-tesla-seen-filtered.INFO, 0.299047, +/- 0.012469
+/workspace/logs/tesla-unseen+crosstransformer_all-60+model_50500-dataset-tesla-seen.INFO, 0.297304, +/- 0.012110
+/workspace/logs/tesla-unseen+crosstransformer_all-60+model_50500-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.491881, +/- 0.032066
+/workspace/logs/tesla-unseen+crosstransformer_all-60+model_50500-dataset-tesla-synthetic-unseen-13.INFO, 0.491353, +/- 0.031885
+/workspace/logs/tesla-unseen+crosstransformer_all-60+model_50500-dataset-tesla-unseen-filtered.INFO, 0.139344, +/- 0.008780
+/workspace/logs/tesla-unseen+crosstransformer_all-60+model_50500-dataset-tesla-unseen.INFO, 0.146818, +/- 0.009629
+/workspace/logs/tesla-unseen+maml_all-60+model_56000-dataset--filtered.INFO, True
+/workspace/logs/tesla-unseen+maml_all-60+model_56000-dataset-tesla-mixture-filtered.INFO, 0.120416, +/- 0.008637
+/workspace/logs/tesla-unseen+maml_all-60+model_56000-dataset-tesla-mixture.INFO, 0.121437, +/- 0.009294
+/workspace/logs/tesla-unseen+maml_all-60+model_56000-dataset-tesla-seen-filtered.INFO, 0.269128, +/- 0.010781
+/workspace/logs/tesla-unseen+maml_all-60+model_56000-dataset-tesla-seen.INFO, 0.261612, +/- 0.010212
+/workspace/logs/tesla-unseen+maml_all-60+model_56000-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.402270, +/- 0.024510
+/workspace/logs/tesla-unseen+maml_all-60+model_56000-dataset-tesla-synthetic-unseen-13.INFO, 0.389720, +/- 0.024305
+/workspace/logs/tesla-unseen+maml_all-60+model_56000-dataset-tesla-unseen-filtered.INFO, 0.145864, +/- 0.009985
+/workspace/logs/tesla-unseen+maml_all-60+model_56000-dataset-tesla-unseen.INFO, 0.148898, +/- 0.009013
+/workspace/logs/tesla-unseen+maml_all-60-using-pretrained-backbone-resnet34+model_73000-dataset-tesla-mixture-filtered.INFO, 0.131270, +/- 0.008658
+/workspace/logs/tesla-unseen+maml_all-60-using-pretrained-backbone-resnet34+model_73000-dataset-tesla-mixture.INFO, 0.137484, +/- 0.008987
+/workspace/logs/tesla-unseen+maml_all-60-using-pretrained-backbone-resnet34+model_73000-dataset-tesla-seen-filtered.INFO, 0.268532, +/- 0.010980
+/workspace/logs/tesla-unseen+maml_all-60-using-pretrained-backbone-resnet34+model_73000-dataset-tesla-seen.INFO, 0.272842, +/- 0.010376
+/workspace/logs/tesla-unseen+maml_all-60-using-pretrained-backbone-resnet34+model_73000-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.394396, +/- 0.024712
+/workspace/logs/tesla-unseen+maml_all-60-using-pretrained-backbone-resnet34+model_73000-dataset-tesla-synthetic-unseen-13.INFO, 0.404906, +/- 0.024620
+/workspace/logs/tesla-unseen+maml_all-60-using-pretrained-backbone-resnet34+model_73000-dataset-tesla-unseen-filtered.INFO, 0.148547, +/- 0.008696
+/workspace/logs/tesla-unseen+maml_all-60-using-pretrained-backbone-resnet34+model_73000-dataset-tesla-unseen.INFO, 0.148606, +/- 0.009225
+/workspace/logs/tesla-unseen+maml_init_with_proto_all-60-using-pretrained-backbone-resnet34+model_54000-dataset-tesla-mixture-filtered.INFO, 0.179118, +/- 0.012287
+/workspace/logs/tesla-unseen+maml_init_with_proto_all-60-using-pretrained-backbone-resnet34+model_54000-dataset-tesla-mixture.INFO, 0.172813, +/- 0.012435
+/workspace/logs/tesla-unseen+maml_init_with_proto_all-60-using-pretrained-backbone-resnet34+model_54000-dataset-tesla-seen-filtered.INFO, 0.366142, +/- 0.015768
+/workspace/logs/tesla-unseen+maml_init_with_proto_all-60-using-pretrained-backbone-resnet34+model_54000-dataset-tesla-seen.INFO, 0.369707, +/- 0.015159
+/workspace/logs/tesla-unseen+maml_init_with_proto_all-60-using-pretrained-backbone-resnet34+model_54000-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.484097, +/- 0.030775
+/workspace/logs/tesla-unseen+maml_init_with_proto_all-60-using-pretrained-backbone-resnet34+model_54000-dataset-tesla-synthetic-unseen-13.INFO, 0.469324, +/- 0.030232
+/workspace/logs/tesla-unseen+maml_init_with_proto_all-60-using-pretrained-backbone-resnet34+model_54000-dataset-tesla-unseen-filtered.INFO, 0.191013, +/- 0.012133
+/workspace/logs/tesla-unseen+maml_init_with_proto_all-60-using-pretrained-backbone-resnet34+model_54000-dataset-tesla-unseen.INFO, 0.190425, +/- 0.011715
+/workspace/logs/tesla-unseen+matching_all+model_44000-dataset-dont_use_pretrained_backbone.INFO, Falsedont_use_pretrain
+/workspace/logs/tesla-unseen+matching_all+model_44000-dataset-tesla-mixture-filtered.INFO, 0.167980, +/- 0.010352
+/workspace/logs/tesla-unseen+matching_all+model_44000-dataset-tesla-mixture.INFO, 0.162333, +/- 0.010358
+/workspace/logs/tesla-unseen+matching_all+model_44000-dataset-tesla-seen-filtered.INFO, 0.161607, +/- 0.010719
+/workspace/logs/tesla-unseen+matching_all+model_44000-dataset-tesla-seen.INFO, 0.167528, +/- 0.010305
+/workspace/logs/tesla-unseen+matching_all+model_44000-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.157748, +/- 0.010042
+/workspace/logs/tesla-unseen+matching_all+model_44000-dataset-tesla-synthetic-unseen-13.INFO, 0.159096, +/- 0.010010
+/workspace/logs/tesla-unseen+matching_all+model_44000-dataset-tesla-unseen-filtered.INFO, 0.161217, +/- 0.010507
+/workspace/logs/tesla-unseen+matching_all+model_44000-dataset-tesla-unseen.INFO, 0.171937, +/- 0.010976
+/workspace/logs/tesla-unseen+matching_all+model_44000-dataset-tesla_dataset_variant.INFO, 0.443969, +/- 0.027785
+/workspace/logs/tesla-unseen+matching_all-60-using-pretrained-backbone-resnet34+model_35000-dataset-tesla-mixture-filtered.INFO, 0.175357, +/- 0.012418
+/workspace/logs/tesla-unseen+matching_all-60-using-pretrained-backbone-resnet34+model_35000-dataset-tesla-mixture.INFO, 0.187082, +/- 0.012892
+/workspace/logs/tesla-unseen+matching_all-60-using-pretrained-backbone-resnet34+model_35000-dataset-tesla-seen-filtered.INFO, 0.343373, +/- 0.014475
+/workspace/logs/tesla-unseen+matching_all-60-using-pretrained-backbone-resnet34+model_35000-dataset-tesla-seen.INFO, 0.338957, +/- 0.013326
+/workspace/logs/tesla-unseen+matching_all-60-using-pretrained-backbone-resnet34+model_35000-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.474551, +/- 0.030028
+/workspace/logs/tesla-unseen+matching_all-60-using-pretrained-backbone-resnet34+model_35000-dataset-tesla-synthetic-unseen-13.INFO, 0.454627, +/- 0.029646
+/workspace/logs/tesla-unseen+matching_all-60-using-pretrained-backbone-resnet34+model_35000-dataset-tesla-unseen-filtered.INFO, 0.191670, +/- 0.012489
+/workspace/logs/tesla-unseen+matching_all-60-using-pretrained-backbone-resnet34+model_35000-dataset-tesla-unseen.INFO, 0.219924, +/- 0.012765
+/workspace/logs/tesla-unseen+matching_all-600-convnet+model_-dataset-tesla-mixture.INFO, 
+/workspace/logs/tesla-unseen+matching_all-600-four_layer_convnet+model_31500-dataset-tesla-mixture-filtered.INFO, 0.131312, +/- 0.009290
+/workspace/logs/tesla-unseen+matching_all-600-four_layer_convnet+model_31500-dataset-tesla-mixture.INFO, 0.132519, +/- 0.009711
+/workspace/logs/tesla-unseen+matching_all-600-four_layer_convnet+model_31500-dataset-tesla-seen-filtered.INFO, 0.285628, +/- 0.012140
+/workspace/logs/tesla-unseen+matching_all-600-four_layer_convnet+model_31500-dataset-tesla-seen.INFO, 0.281116, +/- 0.011626
+/workspace/logs/tesla-unseen+matching_all-600-four_layer_convnet+model_31500-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.438262, +/- 0.027494
+/workspace/logs/tesla-unseen+matching_all-600-four_layer_convnet+model_31500-dataset-tesla-synthetic-unseen-13.INFO, 0.433700, +/- 0.026290
+/workspace/logs/tesla-unseen+matching_all-600-four_layer_convnet+model_31500-dataset-tesla-unseen-filtered.INFO, 0.161223, +/- 0.010302
+/workspace/logs/tesla-unseen+matching_all-600-four_layer_convnet+model_31500-dataset-tesla-unseen.INFO, 0.150296, +/- 0.009754
+/workspace/logs/tesla-unseen+matching_all-600-resnet+model_33500-dataset-tesla-mixture-filtered.INFO, 0.126137, +/- 0.008653
+/workspace/logs/tesla-unseen+matching_all-600-resnet+model_33500-dataset-tesla-mixture.INFO, 0.119603, +/- 0.008671
+/workspace/logs/tesla-unseen+matching_all-600-resnet+model_33500-dataset-tesla-seen-filtered.INFO, 0.248754, +/- 0.009766
+/workspace/logs/tesla-unseen+matching_all-600-resnet+model_33500-dataset-tesla-seen.INFO, 0.247681, +/- 0.010189
+/workspace/logs/tesla-unseen+matching_all-600-resnet+model_33500-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.413996, +/- 0.024593
+/workspace/logs/tesla-unseen+matching_all-600-resnet+model_33500-dataset-tesla-synthetic-unseen-13.INFO, 0.393960, +/- 0.024283
+/workspace/logs/tesla-unseen+matching_all-600-resnet+model_33500-dataset-tesla-unseen-filtered.INFO, 0.146533, +/- 0.009362
+/workspace/logs/tesla-unseen+matching_all-600-resnet+model_33500-dataset-tesla-unseen.INFO, 0.137827, +/- 0.008250
+/workspace/logs/tesla-unseen+matching_all-600-resnet34+model_45000-dataset-tesla-mixture-filtered.INFO, 0.132447, +/- 0.009051
+/workspace/logs/tesla-unseen+matching_all-600-resnet34+model_45000-dataset-tesla-mixture.INFO, 0.133141, +/- 0.009207
+/workspace/logs/tesla-unseen+matching_all-600-resnet34+model_45000-dataset-tesla-seen-filtered.INFO, 0.271123, +/- 0.011145
+/workspace/logs/tesla-unseen+matching_all-600-resnet34+model_45000-dataset-tesla-seen.INFO, 0.266643, +/- 0.010637
+/workspace/logs/tesla-unseen+matching_all-600-resnet34+model_45000-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.427699, +/- 0.025899
+/workspace/logs/tesla-unseen+matching_all-600-resnet34+model_45000-dataset-tesla-synthetic-unseen-13.INFO, 0.419964, +/- 0.025487
+/workspace/logs/tesla-unseen+matching_all-600-resnet34+model_45000-dataset-tesla-unseen-filtered.INFO, 0.150161, +/- 0.009560
+/workspace/logs/tesla-unseen+matching_all-600-resnet34+model_45000-dataset-tesla-unseen.INFO, 0.141944, +/- 0.008680
+/workspace/logs/tesla-unseen+prototypical_all+model_33500-dataset-tesla-mixture-filtered.INFO, 0.128200, +/- 0.008553
+/workspace/logs/tesla-unseen+prototypical_all+model_33500-dataset-tesla-mixture.INFO, 0.129010, +/- 0.008608
+/workspace/logs/tesla-unseen+prototypical_all+model_33500-dataset-tesla-seen-filtered.INFO, 0.118501, +/- 0.007750
+/workspace/logs/tesla-unseen+prototypical_all+model_33500-dataset-tesla-seen.INFO, 0.123932, +/- 0.007755
+/workspace/logs/tesla-unseen+prototypical_all+model_33500-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.123202, +/- 0.008322
+/workspace/logs/tesla-unseen+prototypical_all+model_33500-dataset-tesla-synthetic-unseen-13.INFO, 0.118512, +/- 0.007565
+/workspace/logs/tesla-unseen+prototypical_all+model_33500-dataset-tesla-unseen-filtered.INFO, 0.129476, +/- 0.008789
+/workspace/logs/tesla-unseen+prototypical_all+model_33500-dataset-tesla-unseen.INFO, 0.127596, +/- 0.008021
+/workspace/logs/tesla-unseen+prototypical_all-60-using-pretrained-backbone-resnet34+model_-dataset-tesla-mixture.INFO, unlike the experimenta
+/workspace/logs/tesla-unseen+prototypical_all-60-using-pretrained-backbone-resnet34+model_38500-dataset-tesla-mixture-filtered.INFO, split using 600
+/workspace/logs/tesla-unseen+prototypical_all-60-using-pretrained-backbone-resnet34+model_38500-dataset-tesla-mixture.INFO, 0.109661, +/- 0.007429
+/workspace/logs/tesla-unseen+prototypical_all-60-using-pretrained-backbone-resnet34+model_38500-dataset-tesla-seen-filtered.INFO, 0.268834, +/- 0.010471
+/workspace/logs/tesla-unseen+prototypical_all-60-using-pretrained-backbone-resnet34+model_38500-dataset-tesla-seen.INFO, 0.279958, +/- 0.011021
+/workspace/logs/tesla-unseen+prototypical_all-60-using-pretrained-backbone-resnet34+model_38500-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.391787, +/- 0.023189
+/workspace/logs/tesla-unseen+prototypical_all-60-using-pretrained-backbone-resnet34+model_38500-dataset-tesla-synthetic-unseen-13.INFO, 0.383757, +/- 0.023173
+/workspace/logs/tesla-unseen+prototypical_all-60-using-pretrained-backbone-resnet34+model_38500-dataset-tesla-unseen-filtered.INFO, 0.126525, +/- 0.008108
+/workspace/logs/tesla-unseen+prototypical_all-60-using-pretrained-backbone-resnet34+model_38500-dataset-tesla-unseen.INFO, 0.130108, +/- 0.008379
+/workspace/logs/tesla-unseen+prototypical_all-60-using-pretrained-backbone-resnet34+model_71000-dataset-tesla-mixture-filtered.INFO, 0.190360, +/- 0.013627
+/workspace/logs/tesla-unseen+prototypical_all-60-using-pretrained-backbone-resnet34+model_71000-dataset-tesla-mixture.INFO, 0.186063, +/- 0.013106
+/workspace/logs/tesla-unseen+prototypical_all-60-using-pretrained-backbone-resnet34+model_71000-dataset-tesla-seen-filtered.INFO, 0.399018, +/- 0.016520
+/workspace/logs/tesla-unseen+prototypical_all-60-using-pretrained-backbone-resnet34+model_71000-dataset-tesla-seen.INFO, 0.385059, +/- 0.017517
+/workspace/logs/tesla-unseen+prototypical_all-60-using-pretrained-backbone-resnet34+model_71000-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.457065, +/- 0.027844
+/workspace/logs/tesla-unseen+prototypical_all-60-using-pretrained-backbone-resnet34+model_71000-dataset-tesla-synthetic-unseen-13.INFO, 0.441648, +/- 0.027355
+/workspace/logs/tesla-unseen+prototypical_all-60-using-pretrained-backbone-resnet34+model_71000-dataset-tesla-unseen-filtered.INFO, 0.227950, +/- 0.014055
+/workspace/logs/tesla-unseen+prototypical_all-60-using-pretrained-backbone-resnet34+model_71000-dataset-tesla-unseen.INFO, 0.221343, +/- 0.013549
+/workspace/logs/tesla-unseen+prototypical_all-600-four_layer_convnet+model_73000-dataset-tesla-mixture-filtered.INFO, 0.132667, +/- 0.009315
+/workspace/logs/tesla-unseen+prototypical_all-600-four_layer_convnet+model_73000-dataset-tesla-mixture.INFO, 0.118498, +/- 0.008572
+/workspace/logs/tesla-unseen+prototypical_all-600-four_layer_convnet+model_73000-dataset-tesla-seen-filtered.INFO, 0.196379, +/- 0.008473
+/workspace/logs/tesla-unseen+prototypical_all-600-four_layer_convnet+model_73000-dataset-tesla-seen.INFO, 0.202689, +/- 0.009711
+/workspace/logs/tesla-unseen+prototypical_all-600-four_layer_convnet+model_73000-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.374298, +/- 0.020442
+/workspace/logs/tesla-unseen+prototypical_all-600-four_layer_convnet+model_73000-dataset-tesla-synthetic-unseen-13.INFO, 0.372093, +/- 0.021347
+/workspace/logs/tesla-unseen+prototypical_all-600-four_layer_convnet+model_73000-dataset-tesla-unseen-filtered.INFO, 0.139128, +/- 0.008737
+/workspace/logs/tesla-unseen+prototypical_all-600-four_layer_convnet+model_73000-dataset-tesla-unseen.INFO, 0.142437, +/- 0.008525
+/workspace/logs/tesla-unseen-filtered+crosstransformer_all-60+model_78000-dataset-tesla-mixture-filtered.INFO, 0.123853, +/- 0.010258
+/workspace/logs/tesla-unseen-filtered+crosstransformer_all-60+model_78000-dataset-tesla-mixture.INFO, 0.114395, +/- 0.008568
+/workspace/logs/tesla-unseen-filtered+crosstransformer_all-60+model_78000-dataset-tesla-seen-filtered.INFO, 0.304783, +/- 0.012422
+/workspace/logs/tesla-unseen-filtered+crosstransformer_all-60+model_78000-dataset-tesla-seen.INFO, 0.310197, +/- 0.012393
+/workspace/logs/tesla-unseen-filtered+crosstransformer_all-60+model_78000-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.382132, +/- 0.024791
+/workspace/logs/tesla-unseen-filtered+crosstransformer_all-60+model_78000-dataset-tesla-synthetic-unseen-13.INFO, 0.400219, +/- 0.024439
+/workspace/logs/tesla-unseen-filtered+crosstransformer_all-60+model_78000-dataset-tesla-unseen-filtered.INFO, 0.138085, +/- 0.009854
+/workspace/logs/tesla-unseen-filtered+crosstransformer_all-60+model_78000-dataset-tesla-unseen.INFO, 0.140793, +/- 0.009947
+/workspace/logs/tesla-unseen-filtered+crosstransformer_all-60-using-pretrained-backbone-resnet34+model_26500-dataset-tesla-mixture-filtered.INFO, 0.167731, +/- 0.011397
+/workspace/logs/tesla-unseen-filtered+crosstransformer_all-60-using-pretrained-backbone-resnet34+model_26500-dataset-tesla-mixture.INFO, 0.174869, +/- 0.012937
+/workspace/logs/tesla-unseen-filtered+crosstransformer_all-60-using-pretrained-backbone-resnet34+model_26500-dataset-tesla-seen-filtered.INFO, 0.340370, +/- 0.014783
+/workspace/logs/tesla-unseen-filtered+crosstransformer_all-60-using-pretrained-backbone-resnet34+model_26500-dataset-tesla-seen.INFO, 0.338999, +/- 0.014861
+/workspace/logs/tesla-unseen-filtered+crosstransformer_all-60-using-pretrained-backbone-resnet34+model_26500-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.430364, +/- 0.027997
+/workspace/logs/tesla-unseen-filtered+crosstransformer_all-60-using-pretrained-backbone-resnet34+model_26500-dataset-tesla-synthetic-unseen-13.INFO, 0.428783, +/- 0.028408
+/workspace/logs/tesla-unseen-filtered+crosstransformer_all-60-using-pretrained-backbone-resnet34+model_26500-dataset-tesla-unseen-filtered.INFO, 0.204657, +/- 0.013102
+/workspace/logs/tesla-unseen-filtered+crosstransformer_all-60-using-pretrained-backbone-resnet34+model_26500-dataset-tesla-unseen.INFO, 0.202444, +/- 0.013550
+/workspace/logs/tesla-unseen-filtered+maml_all-60+model_72000-dataset-tesla-mixture-filtered.INFO, 0.087003, +/- 0.007311
+/workspace/logs/tesla-unseen-filtered+maml_all-60+model_72000-dataset-tesla-mixture.INFO, 0.087845, +/- 0.007833
+/workspace/logs/tesla-unseen-filtered+maml_all-60+model_72000-dataset-tesla-seen-filtered.INFO, 0.200441, +/- 0.008611
+/workspace/logs/tesla-unseen-filtered+maml_all-60+model_72000-dataset-tesla-seen.INFO, 0.203206, +/- 0.009531
+/workspace/logs/tesla-unseen-filtered+maml_all-60+model_72000-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.291280, +/- 0.016331
+/workspace/logs/tesla-unseen-filtered+maml_all-60+model_72000-dataset-tesla-synthetic-unseen-13.INFO, 0.303085, +/- 0.016525
+/workspace/logs/tesla-unseen-filtered+maml_all-60+model_72000-dataset-tesla-unseen-filtered.INFO, 0.102619, +/- 0.008232
+/workspace/logs/tesla-unseen-filtered+maml_all-60+model_72000-dataset-tesla-unseen.INFO, 0.102599, +/- 0.007659
+/workspace/logs/tesla-unseen-filtered+maml_all-60-using-pretrained-backbone-resnet34+model_2000-dataset-tesla-mixture-filtered.INFO, 0.115840, +/- 0.008494
+/workspace/logs/tesla-unseen-filtered+maml_all-60-using-pretrained-backbone-resnet34+model_2000-dataset-tesla-mixture.INFO, 0.123167, +/- 0.009516
+/workspace/logs/tesla-unseen-filtered+maml_all-60-using-pretrained-backbone-resnet34+model_2000-dataset-tesla-seen-filtered.INFO, 0.251695, +/- 0.010538
+/workspace/logs/tesla-unseen-filtered+maml_all-60-using-pretrained-backbone-resnet34+model_2000-dataset-tesla-seen.INFO, 0.262080, +/- 0.011354
+/workspace/logs/tesla-unseen-filtered+maml_all-60-using-pretrained-backbone-resnet34+model_2000-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.305766, +/- 0.017755
+/workspace/logs/tesla-unseen-filtered+maml_all-60-using-pretrained-backbone-resnet34+model_2000-dataset-tesla-synthetic-unseen-13.INFO, 0.327566, +/- 0.017315
+/workspace/logs/tesla-unseen-filtered+maml_all-60-using-pretrained-backbone-resnet34+model_2000-dataset-tesla-unseen-filtered.INFO, 0.139750, +/- 0.009824
+/workspace/logs/tesla-unseen-filtered+maml_all-60-using-pretrained-backbone-resnet34+model_2000-dataset-tesla-unseen.INFO, 0.136952, +/- 0.010089
+/workspace/logs/tesla-unseen-filtered+maml_all-60-using-pretrained-backbone-resnet34+model_72500-dataset-tesla-mixture-filtered.INFO, 
+/workspace/logs/tesla-unseen-filtered+maml_all-60-using-pretrained-backbone-resnet34+model_72500-dataset-tesla-mixture.INFO, 
+/workspace/logs/tesla-unseen-filtered+maml_all-60-using-pretrained-backbone-resnet34+model_72500-dataset-tesla-seen-filtered.INFO, 
+/workspace/logs/tesla-unseen-filtered+maml_all-60-using-pretrained-backbone-resnet34+model_72500-dataset-tesla-seen.INFO, 
+/workspace/logs/tesla-unseen-filtered+maml_all-60-using-pretrained-backbone-resnet34+model_72500-dataset-tesla-synthetic-unseen-13-filtered.INFO, 
+/workspace/logs/tesla-unseen-filtered+maml_all-60-using-pretrained-backbone-resnet34+model_72500-dataset-tesla-synthetic-unseen-13.INFO, 
+/workspace/logs/tesla-unseen-filtered+maml_all-60-using-pretrained-backbone-resnet34+model_72500-dataset-tesla-unseen-filtered.INFO, 
+/workspace/logs/tesla-unseen-filtered+maml_all-60-using-pretrained-backbone-resnet34+model_72500-dataset-tesla-unseen.INFO, 
+/workspace/logs/tesla-unseen-filtered+maml_init_with_proto_all-60-using-pretrained-backbone-resnet34+model_70000-dataset-tesla-mixture-filtered.INFO, 0.145644, +/- 0.010150
+/workspace/logs/tesla-unseen-filtered+maml_init_with_proto_all-60-using-pretrained-backbone-resnet34+model_70000-dataset-tesla-mixture.INFO, 0.133227, +/- 0.009647
+/workspace/logs/tesla-unseen-filtered+maml_init_with_proto_all-60-using-pretrained-backbone-resnet34+model_70000-dataset-tesla-seen-filtered.INFO, 0.355831, +/- 0.013797
+/workspace/logs/tesla-unseen-filtered+maml_init_with_proto_all-60-using-pretrained-backbone-resnet34+model_70000-dataset-tesla-seen.INFO, 0.344228, +/- 0.014235
+/workspace/logs/tesla-unseen-filtered+maml_init_with_proto_all-60-using-pretrained-backbone-resnet34+model_70000-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.430566, +/- 0.028465
+/workspace/logs/tesla-unseen-filtered+maml_init_with_proto_all-60-using-pretrained-backbone-resnet34+model_70000-dataset-tesla-synthetic-unseen-13.INFO, 0.435877, +/- 0.028379
+/workspace/logs/tesla-unseen-filtered+maml_init_with_proto_all-60-using-pretrained-backbone-resnet34+model_70000-dataset-tesla-unseen-filtered.INFO, 0.173201, +/- 0.010724
+/workspace/logs/tesla-unseen-filtered+maml_init_with_proto_all-60-using-pretrained-backbone-resnet34+model_70000-dataset-tesla-unseen.INFO, 0.157612, +/- 0.010859
+/workspace/logs/tesla-unseen-filtered+matching_all+model_0-dataset-dont_use_pretrained_backbone.INFO, Falsedont_use_pretrain
+/workspace/logs/tesla-unseen-filtered+matching_all-30-resnet+model_-dataset-tesla-mixture-filtered.INFO, 
+/workspace/logs/tesla-unseen-filtered+matching_all-30-resnet+model_-dataset-tesla-mixture.INFO, 
+/workspace/logs/tesla-unseen-filtered+matching_all-30-resnet+model_-dataset-tesla-unseen-filtered.INFO, 
+/workspace/logs/tesla-unseen-filtered+matching_all-30-resnet+model_-dataset-tesla-unseen.INFO, 
+/workspace/logs/tesla-unseen-filtered+matching_all-30-resnet+model_35500-dataset-tesla-mixture-filtered.INFO, 0.090226, +/- 0.006732
+/workspace/logs/tesla-unseen-filtered+matching_all-30-resnet+model_35500-dataset-tesla-mixture.INFO, 0.082304, +/- 0.005947
+/workspace/logs/tesla-unseen-filtered+matching_all-30-resnet+model_35500-dataset-tesla-seen-filtered.INFO, 0.215081, +/- 0.009401
+/workspace/logs/tesla-unseen-filtered+matching_all-30-resnet+model_35500-dataset-tesla-seen.INFO, 0.214861, +/- 0.009062
+/workspace/logs/tesla-unseen-filtered+matching_all-30-resnet+model_35500-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.308743, +/- 0.016834
+/workspace/logs/tesla-unseen-filtered+matching_all-30-resnet+model_35500-dataset-tesla-synthetic-unseen-13.INFO, 0.299862, +/- 0.016767
+/workspace/logs/tesla-unseen-filtered+matching_all-30-resnet+model_35500-dataset-tesla-unseen-filtered.INFO, 0.095444, +/- 0.006348
+/workspace/logs/tesla-unseen-filtered+matching_all-30-resnet+model_35500-dataset-tesla-unseen.INFO, 0.100418, +/- 0.006942
+/workspace/logs/tesla-unseen-filtered+matching_all-30-resnet34+model_-dataset-tesla-mixture-filtered.INFO, be created from
+/workspace/logs/tesla-unseen-filtered+matching_all-30-resnet34+model_-dataset-tesla-mixture.INFO, 
+/workspace/logs/tesla-unseen-filtered+matching_all-30-resnet34+model_56500-dataset-tesla-mixture-filtered.INFO, 0.089107, +/- 0.006142
+/workspace/logs/tesla-unseen-filtered+matching_all-30-resnet34+model_56500-dataset-tesla-mixture.INFO, 0.097366, +/- 0.007536
+/workspace/logs/tesla-unseen-filtered+matching_all-30-resnet34+model_56500-dataset-tesla-seen-filtered.INFO, 0.197687, +/- 0.008750
+/workspace/logs/tesla-unseen-filtered+matching_all-30-resnet34+model_56500-dataset-tesla-seen.INFO, 0.206087, +/- 0.008584
+/workspace/logs/tesla-unseen-filtered+matching_all-30-resnet34+model_56500-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.309203, +/- 0.016846
+/workspace/logs/tesla-unseen-filtered+matching_all-30-resnet34+model_56500-dataset-tesla-synthetic-unseen-13.INFO, 0.303932, +/- 0.016429
+/workspace/logs/tesla-unseen-filtered+matching_all-30-resnet34+model_56500-dataset-tesla-unseen-filtered.INFO, 0.104695, +/- 0.007041
+/workspace/logs/tesla-unseen-filtered+matching_all-30-resnet34+model_56500-dataset-tesla-unseen.INFO, 0.105970, +/- 0.007119
+/workspace/logs/tesla-unseen-filtered+matching_all-30-resnet34+model_72500-dataset-tesla-mixture-filtered.INFO, 0.065593, +/- 0.004883
+/workspace/logs/tesla-unseen-filtered+matching_all-30-resnet34+model_72500-dataset-tesla-mixture.INFO, 0.063861, +/- 0.005290
+/workspace/logs/tesla-unseen-filtered+matching_all-30-resnet34+model_72500-dataset-tesla-seen-filtered.INFO, 0.172136, +/- 0.008106
+/workspace/logs/tesla-unseen-filtered+matching_all-30-resnet34+model_72500-dataset-tesla-seen.INFO, 0.161969, +/- 0.007422
+/workspace/logs/tesla-unseen-filtered+matching_all-30-resnet34+model_72500-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.148628, +/- 0.008072
+/workspace/logs/tesla-unseen-filtered+matching_all-30-resnet34+model_72500-dataset-tesla-synthetic-unseen-13.INFO, 0.168773, +/- 0.009612
+/workspace/logs/tesla-unseen-filtered+matching_all-30-resnet34+model_72500-dataset-tesla-unseen-filtered.INFO, 0.072278, +/- 0.005112
+/workspace/logs/tesla-unseen-filtered+matching_all-30-resnet34+model_72500-dataset-tesla-unseen.INFO, 0.068716, +/- 0.004790
+/workspace/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-convnet+model_20500-dataset-tesla-mixture-filtered.INFO, 0.133984, +/- 0.008927
+/workspace/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-convnet+model_20500-dataset-tesla-mixture.INFO, 0.125634, +/- 0.008582
+/workspace/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-convnet+model_20500-dataset-tesla-seen-filtered.INFO, 0.294139, +/- 0.012531
+/workspace/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-convnet+model_20500-dataset-tesla-seen.INFO, 0.296380, +/- 0.012473
+/workspace/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-convnet+model_20500-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.366233, +/- 0.020213
+/workspace/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-convnet+model_20500-dataset-tesla-synthetic-unseen-13.INFO, 0.353707, +/- 0.019537
+/workspace/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-convnet+model_20500-dataset-tesla-unseen-filtered.INFO, 0.143145, +/- 0.008940
+/workspace/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-convnet+model_20500-dataset-tesla-unseen.INFO, 0.143594, +/- 0.008648
+/workspace/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-four_layer_convnet+model_-dataset-tesla-mixture-filtered.INFO, 
+/workspace/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-resnet+model_7500-dataset-tesla-mixture-filtered.INFO, 0.131116, +/- 0.008599
+/workspace/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-resnet+model_7500-dataset-tesla-mixture.INFO, 0.132808, +/- 0.009823
+/workspace/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-resnet+model_7500-dataset-tesla-seen-filtered.INFO, 0.287842, +/- 0.012237
+/workspace/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-resnet+model_7500-dataset-tesla-seen.INFO, 0.286673, +/- 0.011853
+/workspace/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-resnet+model_7500-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.343371, +/- 0.019922
+/workspace/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-resnet+model_7500-dataset-tesla-synthetic-unseen-13.INFO, 0.287412, +/- 0.013638
+/workspace/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-resnet+model_7500-dataset-tesla-unseen-filtered.INFO, 0.147591, +/- 0.009981
+/workspace/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-resnet+model_7500-dataset-tesla-unseen.INFO, 0.137116, +/- 0.008691
+/workspace/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-resnet34+model_26000-dataset-tesla-mixture-filtered.INFO, 0.163349, +/- 0.011204
+/workspace/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-resnet34+model_26000-dataset-tesla-mixture.INFO, 0.160835, +/- 0.010888
+/workspace/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-resnet34+model_26000-dataset-tesla-seen-filtered.INFO, 0.310444, +/- 0.013288
+/workspace/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-resnet34+model_26000-dataset-tesla-seen.INFO, 0.312592, +/- 0.013709
+/workspace/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-resnet34+model_26000-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.357003, +/- 0.021303
+/workspace/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-resnet34+model_26000-dataset-tesla-synthetic-unseen-13.INFO, 0.364172, +/- 0.022254
+/workspace/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-resnet34+model_26000-dataset-tesla-unseen-filtered.INFO, 0.190700, +/- 0.011471
+/workspace/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-resnet34+model_26000-dataset-tesla-unseen.INFO, 0.190306, +/- 0.011250
+/workspace/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-wide_resnet+model_73000-dataset-tesla-mixture-filtered.INFO, 0.122924, +/- 0.008168
+/workspace/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-wide_resnet+model_73000-dataset-tesla-mixture.INFO, 0.125681, +/- 0.008084
+/workspace/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-wide_resnet+model_73000-dataset-tesla-seen-filtered.INFO, 0.248230, +/- 0.011055
+/workspace/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-wide_resnet+model_73000-dataset-tesla-seen.INFO, 0.259580, +/- 0.010952
+/workspace/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-wide_resnet+model_73000-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.353854, +/- 0.019135
+/workspace/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-wide_resnet+model_73000-dataset-tesla-synthetic-unseen-13.INFO, 0.327913, +/- 0.019331
+/workspace/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-wide_resnet+model_73000-dataset-tesla-unseen-filtered.INFO, 0.140970, +/- 0.008954
+/workspace/logs/tesla-unseen-filtered+matching_all-30-using-pretrained-backbone-wide_resnet+model_73000-dataset-tesla-unseen.INFO, 0.128372, +/- 0.008389
+/workspace/logs/tesla-unseen-filtered+matching_all-60-using-pretrained-backbone-resnet34+model_35500-dataset-tesla-mixture-filtered.INFO, 
+/workspace/logs/tesla-unseen-filtered+matching_all-60-using-pretrained-backbone-resnet34+model_35500-dataset-tesla-mixture.INFO, 
+/workspace/logs/tesla-unseen-filtered+matching_all-60-using-pretrained-backbone-resnet34+model_35500-dataset-tesla-seen-filtered.INFO, 
+/workspace/logs/tesla-unseen-filtered+matching_all-60-using-pretrained-backbone-resnet34+model_35500-dataset-tesla-seen.INFO, 
+/workspace/logs/tesla-unseen-filtered+matching_all-60-using-pretrained-backbone-resnet34+model_35500-dataset-tesla-synthetic-unseen-13-filtered.INFO, 
+/workspace/logs/tesla-unseen-filtered+matching_all-60-using-pretrained-backbone-resnet34+model_35500-dataset-tesla-synthetic-unseen-13.INFO, 
+/workspace/logs/tesla-unseen-filtered+matching_all-60-using-pretrained-backbone-resnet34+model_35500-dataset-tesla-unseen-filtered.INFO, 
+/workspace/logs/tesla-unseen-filtered+matching_all-60-using-pretrained-backbone-resnet34+model_35500-dataset-tesla-unseen.INFO, 
+/workspace/logs/tesla-unseen-filtered+matching_all-60-using-pretrained-backbone-resnet34+model_5000-dataset-tesla-mixture-filtered.INFO, 0.153557, +/- 0.010479
+/workspace/logs/tesla-unseen-filtered+matching_all-60-using-pretrained-backbone-resnet34+model_5000-dataset-tesla-mixture.INFO, 0.162347, +/- 0.011152
+/workspace/logs/tesla-unseen-filtered+matching_all-60-using-pretrained-backbone-resnet34+model_5000-dataset-tesla-seen-filtered.INFO, 0.338030, +/- 0.014823
+/workspace/logs/tesla-unseen-filtered+matching_all-60-using-pretrained-backbone-resnet34+model_5000-dataset-tesla-seen.INFO, 0.345373, +/- 0.013952
+/workspace/logs/tesla-unseen-filtered+matching_all-60-using-pretrained-backbone-resnet34+model_5000-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.382030, +/- 0.023724
+/workspace/logs/tesla-unseen-filtered+matching_all-60-using-pretrained-backbone-resnet34+model_5000-dataset-tesla-synthetic-unseen-13.INFO, 0.379454, +/- 0.023903
+/workspace/logs/tesla-unseen-filtered+matching_all-60-using-pretrained-backbone-resnet34+model_5000-dataset-tesla-unseen-filtered.INFO, 0.181551, +/- 0.011059
+/workspace/logs/tesla-unseen-filtered+matching_all-60-using-pretrained-backbone-resnet34+model_5000-dataset-tesla-unseen.INFO, 0.181511, +/- 0.011355
+/workspace/logs/tesla-unseen-filtered+prototypical_all-60-using-pretrained-backbone-resnet34+model_15000-dataset-tesla-mixture-filtered.INFO, 0.149415, +/- 0.010077
+/workspace/logs/tesla-unseen-filtered+prototypical_all-60-using-pretrained-backbone-resnet34+model_15000-dataset-tesla-mixture.INFO, 0.149467, +/- 0.010467
+/workspace/logs/tesla-unseen-filtered+prototypical_all-60-using-pretrained-backbone-resnet34+model_15000-dataset-tesla-seen-filtered.INFO, 0.320377, +/- 0.012778
+/workspace/logs/tesla-unseen-filtered+prototypical_all-60-using-pretrained-backbone-resnet34+model_15000-dataset-tesla-seen.INFO, 0.344624, +/- 0.013766
+/workspace/logs/tesla-unseen-filtered+prototypical_all-60-using-pretrained-backbone-resnet34+model_15000-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.346672, +/- 0.018910
+/workspace/logs/tesla-unseen-filtered+prototypical_all-60-using-pretrained-backbone-resnet34+model_15000-dataset-tesla-synthetic-unseen-13.INFO, 0.356481, +/- 0.019241
+/workspace/logs/tesla-unseen-filtered+prototypical_all-60-using-pretrained-backbone-resnet34+model_15000-dataset-tesla-unseen-filtered.INFO, 0.159910, +/- 0.010271
+/workspace/logs/tesla-unseen-filtered+prototypical_all-60-using-pretrained-backbone-resnet34+model_15000-dataset-tesla-unseen.INFO, 0.154891, +/- 0.009842
+/workspace/logs/tesla-unseen-filtered+prototypical_all-60-using-pretrained-backbone-resnet34+model_19500-dataset-tesla-mixture-filtered.INFO, 
+/workspace/logs/tesla-unseen-filtered+prototypical_all-60-using-pretrained-backbone-resnet34+model_19500-dataset-tesla-mixture.INFO, 
+/workspace/logs/tesla-unseen-filtered+prototypical_all-60-using-pretrained-backbone-resnet34+model_19500-dataset-tesla-seen-filtered.INFO, 
+/workspace/logs/tesla-unseen-filtered+prototypical_all-60-using-pretrained-backbone-resnet34+model_19500-dataset-tesla-seen.INFO, 
+/workspace/logs/tesla-unseen-filtered+prototypical_all-60-using-pretrained-backbone-resnet34+model_19500-dataset-tesla-synthetic-unseen-13-filtered.INFO, 
+/workspace/logs/tesla-unseen-filtered+prototypical_all-60-using-pretrained-backbone-resnet34+model_19500-dataset-tesla-synthetic-unseen-13.INFO, 
+/workspace/logs/tesla-unseen-filtered+prototypical_all-60-using-pretrained-backbone-resnet34+model_19500-dataset-tesla-unseen-filtered.INFO, 
+/workspace/logs/tesla-unseen-filtered+prototypical_all-60-using-pretrained-backbone-resnet34+model_19500-dataset-tesla-unseen.INFO, 

@@ -10,6 +10,11 @@ then
     _backbone="four_layer_convnet"
 fi
 
+if test "$backbone" = "resnet34_ctx"
+then
+    _backbone="resnet34"
+fi
+
 cd $RECORDS; rm tesla; ln -s $TESLA_DATASET_VARIANT tesla; cd $ROOT_DIR;
 
 ls -l $RECORDS # useful to check if sym links are correct
