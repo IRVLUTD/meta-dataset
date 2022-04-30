@@ -131,7 +131,6 @@ def episode_representation_generator(dataset_spec, split, pool, sampler):
       # sample from and the remaining `len(chunk_sizes) - 1` elements indicate
       # how many examples to allocate to each chunk.
       episode_description = sampler.sample_episode_description()
-    print("episode_description: ", episode_description)
 
     if run_counter < sampler.episode_description_switch_frequency - 1:
       run_counter += 1
