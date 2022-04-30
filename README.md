@@ -16,8 +16,17 @@ git clone https://github.com/IRVLUTD/meta-dataset.git; cd meta-dataset;
 docker run \
 -it --rm --runtime=nvidia -p 7777:8888 \
 -v <cloned-meta-dataset-dir-path>:/workspace \
+--env=DISPLAY --workdir=/workspace \
+--volume="/etc/group:/etc/group:ro" \
+--volume="/etc/passwd:/etc/passwd:ro" \
+--volume="/etc/shadow:/etc/shadow:ro" \
+--volume="/etc/sudoers.d:/etc/sudoers.d:ro" \
+--volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
 --name meta-dataset -e NVIDIA_VISIBLE_DEVICES=<list-of-gpu-ids> \
 nvcr.io/nvidia/tensorflow:21.12-tf2-py3 # tensorflow 2
+
+# run inside docker
+apt-get update; apt install python3-tk pkg-config libcairo2-dev python-gi python-gi-cairo python3-gi python3-gi-cairo gir1.2-gtk-3.0;
 
 # install dependencies
 pip install -r requirements.txt

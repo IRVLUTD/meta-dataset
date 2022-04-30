@@ -328,8 +328,10 @@ def process_episode(example_strings, class_ids, dataset_name, data_split,
     - swap support_complement with query complement by
        - keeping the cardinality constraints in mind
   '''
+
   perform_filtration = perform_filtration and \
                       support_decoder and query_decoder and dataset_name == 'tesla'
+  
   if perform_filtration:
     # filter support artifacts (pure-support)
     support_keep = get_keep_boolean_mask(support_images_set, "support")
@@ -399,11 +401,11 @@ def process_episode(example_strings, class_ids, dataset_name, data_split,
       query_keep_images = tf.boolean_mask(query_keep_images, query_class_ids_present_in_support_class_ids)
       query_keep_class_ids = tf.boolean_mask(query_keep_class_ids, query_class_ids_present_in_support_class_ids) 
     
-    support_images = support_keep_images
-    support_class_ids = support_keep_class_ids
-    query_images = query_keep_images
-    query_class_ids = query_keep_class_ids
+    # sync support and query class ids
+    support_images, support_class_ids = get_sorted(support_keep_images, support_keep_class_ids)
+    query_images, query_class_ids = get_sorted(query_keep_images, query_keep_class_ids)
     # UPDATE ENDS
+
 
   # Convert class IDs into labels in [0, num_ways).
   _, support_labels = tf.unique(support_class_ids)
@@ -417,6 +419,21 @@ def process_episode(example_strings, class_ids, dataset_name, data_split,
 
   return episode
 
+
+# UPDATE
+def get_sorted(images, class_ids):
+  ''' 
+  NOTE: this is required only when dealing with 'tesla' dataset
+  Args:
+    images: tensor containing images
+    class_ids: tensor containing class_ids
+  Returns: 
+    Returns sorted images and class_ids 
+  '''
+  sorted_class_id_indices = tf.argsort(class_ids)
+  sorted_images = tf.gather(images, indices=sorted_class_id_indices)
+  sorted_class_ids = tf.gather(class_ids, indices=sorted_class_id_indices)
+  return sorted_images, sorted_class_ids
 
 # UPDATE
 def get_keep_boolean_mask(image_set_info, class_set):
@@ -676,6 +693,9 @@ def make_multisource_episode_pipeline(dataset_spec_list,
   def map_fn(episode, source_id):
     return process_episode(
         *episode,
+        dataset_name=episode_reader.dataset_spec.name, #UPDATE,
+        data_split=split,
+        perform_filtration=perform_filtration,
         chunk_sizes=chunk_sizes,
         image_size=image_size,
         simclr_episode_fraction=simclr_episode_fraction), source_id

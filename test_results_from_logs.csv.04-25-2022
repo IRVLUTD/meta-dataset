@@ -21,6 +21,15 @@ experiment-setup, test_mean_accuracy, test_margin_of_error
 /workspace/logs/tesla-unseen+crosstransformer_all-60+model_50500-dataset-tesla-synthetic-unseen-13.INFO, 0.491353, +/- 0.031885
 /workspace/logs/tesla-unseen+crosstransformer_all-60+model_50500-dataset-tesla-unseen-filtered.INFO, 0.139344, +/- 0.008780
 /workspace/logs/tesla-unseen+crosstransformer_all-60+model_50500-dataset-tesla-unseen.INFO, 0.146818, +/- 0.009629
+/workspace/logs/tesla-unseen+crosstransformer_all-60-resnet34+model_-dataset-tesla-mixture.INFO, 
+/workspace/logs/tesla-unseen+crosstransformer_all-60-using-pretrained-backbone-resnet34+model_96500-dataset-tesla-mixture-filtered.INFO, 0.161764, +/- 0.012345
+/workspace/logs/tesla-unseen+crosstransformer_all-60-using-pretrained-backbone-resnet34+model_96500-dataset-tesla-mixture.INFO, 0.166998, +/- 0.011786
+/workspace/logs/tesla-unseen+crosstransformer_all-60-using-pretrained-backbone-resnet34+model_96500-dataset-tesla-seen-filtered.INFO, 0.358514, +/- 0.014877
+/workspace/logs/tesla-unseen+crosstransformer_all-60-using-pretrained-backbone-resnet34+model_96500-dataset-tesla-seen.INFO, 0.356871, +/- 0.015440
+/workspace/logs/tesla-unseen+crosstransformer_all-60-using-pretrained-backbone-resnet34+model_96500-dataset-tesla-synthetic-unseen-13-filtered.INFO, 0.485140, +/- 0.032110
+/workspace/logs/tesla-unseen+crosstransformer_all-60-using-pretrained-backbone-resnet34+model_96500-dataset-tesla-synthetic-unseen-13.INFO, 0.493620, +/- 0.032357
+/workspace/logs/tesla-unseen+crosstransformer_all-60-using-pretrained-backbone-resnet34+model_96500-dataset-tesla-unseen-filtered.INFO, 0.173936, +/- 0.011821
+/workspace/logs/tesla-unseen+crosstransformer_all-60-using-pretrained-backbone-resnet34+model_96500-dataset-tesla-unseen.INFO, 0.192310, +/- 0.012004
 /workspace/logs/tesla-unseen+maml_all-60+model_56000-dataset--filtered.INFO, True
 /workspace/logs/tesla-unseen+maml_all-60+model_56000-dataset-tesla-mixture-filtered.INFO, 0.120416, +/- 0.008637
 /workspace/logs/tesla-unseen+maml_all-60+model_56000-dataset-tesla-mixture.INFO, 0.121437, +/- 0.009294

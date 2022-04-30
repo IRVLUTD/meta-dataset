@@ -1,8 +1,10 @@
+#!/bin/bash
 source __select_best_model.sh $1 $2 $3 $4 $5 $7 $8
 
 # link dataset variant of choice, useful for tesla
 export TESLA_DATASET_VARIANT=$6
 
+eval_episodes=1 #600
 backbone=$8
 _backbone=$backbone
 if test "$backbone" = "convnet"
@@ -23,7 +25,8 @@ for MODEL in $models
 do
   export EXP_GIN=${MODEL}_${SOURCE}
   # export EXPNAME=${EXP_GIN}${nve_suffix}
-  for DATASET in tesla
+  # for DATASET in omniglot 
+  for DATASET in tesla 
   do
     echo "MODEL-FILTER: $perform_filtration_model"
     echo "DATASET-FILTER: $perform_filtration_ds"
@@ -40,10 +43,10 @@ do
         --gin_bindings="Trainer.checkpoint_to_restore='${EXPROOT}/checkpoints/${EXPNAME}/model_${BESTNUM}.ckpt'" \
         --gin_bindings="Trainer.perform_filtration=${perform_filtration_ds}" \
         --gin_bindings="DataConfig.image_height=126" \
-        --gin_bindings="Trainer.num_eval_episodes=600" \
+        --gin_bindings="EpisodeDescriptionConfig.num_support=9" \
+        --gin_bindings="Trainer.num_eval_episodes=$eval_episodes" \
         --gin_bindings="benchmark.eval_datasets='$DATASET'"
     else
-
       export BESTNUM=$(grep best_update_num ${EXPROOT}/best_$EXPNAME.txt | awk '{print $2;}')
       python -m meta_dataset.train \
         --is_training=False \
@@ -55,7 +58,8 @@ do
         --gin_bindings="Trainer.perform_filtration=${perform_filtration_ds}" \
         --gin_bindings="Learner.embedding_fn = @${_backbone}" \
         --gin_bindings="DataConfig.image_height=126" \
-        --gin_bindings="Trainer.num_eval_episodes=600" \
+        --gin_bindings="EpisodeDescriptionConfig.num_support=9" \
+        --gin_bindings="Trainer.num_eval_episodes=$eval_episodes" \
         --gin_bindings="benchmark.eval_datasets='$DATASET'"      
     fi
   done

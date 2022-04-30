@@ -49,6 +49,19 @@ from six.moves import range
 from six.moves import zip
 import tensorflow.compat.v1 as tf
 
+gui_backend = [
+    'GTK3Agg', 'GTK3Cairo', 'GTK4Agg', 
+    'GTK4Cairo', 'MacOSX', 'nbAgg', 
+    'QtAgg', 'QtCairo', 'Qt5Agg', 
+    'Qt5Cairo', 'TkAgg', 'Agg', 'TkCairo', 
+    'WebAgg', 'WX', 'WXAgg', 'WXCairo', 
+    'agg', 'cairo', 'pdf', 'pgf', 'ps', 
+    'svg', 'template'
+  ]
+import matplotlib
+matplotlib.use(gui_backend[11])
+import matplotlib.pyplot as plt
+
 # Enable tf.data optimizations, which are applied to the input data pipeline.
 # It may be helpful to disable them when investigating regressions due to
 # changes in tf.data (see b/121130181 for instance), but they seem to be helpful
@@ -606,6 +619,7 @@ class Trainer(object):
     self.initialize_saver()
     self.create_summary_writer()
 
+
   def build_learner(self, split):
     """Return predictions, losses and accuracies for the learner on split.
 
@@ -715,7 +729,7 @@ class Trainer(object):
       def run(data_local):
         """Run the forward pass of the model."""
         predictions_dist = self.learners[split].forward_pass(data_local)
-
+        tf.print(data_local)
         loss_dist = self.learners[split].compute_loss(
             predictions=predictions_dist,
             onehot_labels=data_local.onehot_labels)
@@ -723,6 +737,7 @@ class Trainer(object):
             predictions=predictions_dist,
             onehot_labels=data_local.onehot_labels)
         episode_info = self.get_episode_info(data_local)
+        tf.print(episode_info)
         return {
             'predictions': predictions_dist,
             'loss': loss_dist,
@@ -812,18 +827,6 @@ class Trainer(object):
     return (imgs, labels, class_names)
 
   def visualize(self, split):
-    gui_backend = [
-        'GTK3Agg', 'GTK3Cairo', 'GTK4Agg', 
-        'GTK4Cairo', 'MacOSX', 'nbAgg', 
-        'QtAgg', 'QtCairo', 'Qt5Agg', 
-        'Qt5Cairo', 'TkAgg', 'TkCairo', 
-        'WebAgg', 'WX', 'WXAgg', 'WXCairo', 
-        'agg', 'cairo', 'pdf', 'pgf', 'ps', 
-        'svg', 'template'
-      ]
-    import matplotlib
-    matplotlib.use(gui_backend[10])
-    import matplotlib.pyplot as plt
     
     # setting values to rows and column variables
     rows, columns = 8, 8
@@ -871,6 +874,8 @@ class Trainer(object):
     
       if self.visualize_data:
         self.visualize(split)
+
+    tf.print("Done initial vis")
 
     # Add summaries for the way / shot / logits / targets of the learner.
     evaluation_summaries = self.add_eval_summaries()
