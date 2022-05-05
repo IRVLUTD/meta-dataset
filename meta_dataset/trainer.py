@@ -51,6 +51,8 @@ from six.moves import zip
 import tensorflow.compat.v1 as tf
 import matplotlib.pyplot as plt
 import cv2
+import time
+
 
 # Enable tf.data optimizations, which are applied to the input data pipeline.
 # It may be helpful to disable them when investigating regressions due to
@@ -262,7 +264,6 @@ class Trainer(object):
       distribute,
       enable_tf_optimizations,
       visualize_data,
-      visualize_image_set,
       perform_filtration):
     # pyformat: disable
     """Initializes a Trainer.
@@ -342,7 +343,6 @@ class Trainer(object):
         few minutes to the first calls to session.run(), but decrease memory
         usage.
       visualize_data: bool indicating whether to visualize data before training.
-      visualize_image_set: "support", "query" or ""
       perform_filtration: A boolean flag indicating whether filtration needs 
       to be performed for tesla dataset
     Raises:
@@ -374,7 +374,6 @@ class Trainer(object):
     self.normalized_gradient_descent = normalized_gradient_descent
     self.enable_tf_optimizations = enable_tf_optimizations
     self.visualize_data = visualize_data
-    self.visualize_image_set = visualize_image_set
     self.perform_filtration = perform_filtration
     self.data_spec = None
 
@@ -640,6 +639,10 @@ class Trainer(object):
         top, bottom, left, right = [7]*4
         return cv2.copyMakeBorder(img, top, bottom, left, right, cv2.BORDER_CONSTANT, value=color)
 
+      suffix="-filtered" if self.perform_filtration else ""
+      epoch = str(int(time.time()))
+      outdir=f"{epoch}{suffix}"
+      os.makedirs(outdir)
       # make plot for way classes
       for class_label in range(N):
         # get indices for this class_label
@@ -655,10 +658,10 @@ class Trainer(object):
         fig = plt.figure(figsize=(100, 100))
 
         # set window title
-        suffix="-filtered" if self.perform_filtration else ""
-
         class_name = self.data_spec.class_names[class_ids[class_label]]
-        fig.canvas.set_window_title(f"{split}{suffix} | {class_name} | s:{len(support_indices[0])} | q:{len(query_indices[0])} | current:{class_label} | N:{N} | max_K: {max_K}")
+        title=f"{split}{suffix} | {class_name} | s:{len(support_indices[0])} | q:{len(query_indices[0])} | current:{class_label} | N:{N} | max_K: {max_K}"
+        fig.canvas.set_window_title(title)
+        
 
         # plot support images
         _ = 0 
@@ -687,8 +690,9 @@ class Trainer(object):
           plt.title(f"q; {predicted_class}")
           plt.plot()
         print(f"plotting label: {class_label} class_name:{class_name}")
-        
-        plt.show()
+        # plt.show()
+        plt.savefig(f"{outdir}/{title.replace(' ', '_')}.jpg")
+
 
 
   def build_learner(self, split):

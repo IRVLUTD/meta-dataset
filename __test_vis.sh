@@ -44,6 +44,8 @@ do
         --gin_bindings="Trainer.perform_filtration=${perform_filtration_ds}" \
         --gin_bindings="DataConfig.image_height=126" \
         --gin_bindings="EpisodeDescriptionConfig.num_support=9" \
+        --gin_bindings="EpisodeDescriptionConfig.num_ways=5" \
+        --gin_bindings="EpisodeDescriptionConfig.num_query=5" \
         --gin_bindings="Trainer.num_eval_episodes=$eval_episodes" \
         --gin_bindings="benchmark.eval_datasets='$DATASET'"
     else
@@ -59,6 +61,8 @@ do
         --gin_bindings="Learner.embedding_fn = @${_backbone}" \
         --gin_bindings="DataConfig.image_height=126" \
         --gin_bindings="EpisodeDescriptionConfig.num_support=9" \
+        --gin_bindings="EpisodeDescriptionConfig.num_ways=5" \
+        --gin_bindings="EpisodeDescriptionConfig.num_query=5" \
         --gin_bindings="Trainer.num_eval_episodes=$eval_episodes" \
         --gin_bindings="benchmark.eval_datasets='$DATASET'"      
     fi
