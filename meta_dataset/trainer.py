@@ -690,8 +690,8 @@ class Trainer(object):
           plt.title(f"q; {predicted_class}")
           plt.plot()
         print(f"plotting label: {class_label} class_name:{class_name}")
-        # plt.show()
-        plt.savefig(f"{outdir}/{title.replace(' ', '_')}.jpg")
+        plt.show()
+        # plt.savefig(f"{outdir}/{title.replace(' ', '_')}.jpg")
 
 
 
