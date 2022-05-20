@@ -132,6 +132,10 @@ tf.flags.DEFINE_string(
 tf.flags.DEFINE_string('splits_root', '',
                        'The root directory storing the splits of datasets.')
 
+tf.flags.DEFINE_string(
+    'oversample_tesla_support', 'True',
+    'Boolean indicating whether to oversample tesla support images or not')
+
 FLAGS = tf.flags.FLAGS
 DEFAULT_FILE_PATTERN = '{}.tfrecords'
 TRAIN_TEST_FILE_PATTERN = '{}_{}.tfrecords'
@@ -139,8 +143,8 @@ AUX_DATA_PATH = os.path.dirname(os.path.realpath(__file__))
 VGGFLOWER_LABELS_PATH = os.path.join(AUX_DATA_PATH,
                                      'VggFlower_labels.txt')
 TRAFFICSIGN_LABELS_PATH = os.path.join(AUX_DATA_PATH, 'TrafficSign_labels.txt')
-
 SHUFFLE_SEED = 22032022
+OVERSAMPLE_TESLA_SUPPORT = FLAGS.oversample_tesla_support=='True'
 
 def make_example(features):
   """Creates an Example protocol buffer.
@@ -462,7 +466,7 @@ def write_tfrecord_from_image_files_with_set_info(class_files,
       with the record_decoder of the DataProvider that will read the file.
     skip_on_error: whether to skip an image if there is an issue in reading it.
       The default it to crash and report the original exception.
-
+    shuffle_with_seed: seed for random shuffling
   Returns:
     The number of images written into the records file.
   """
@@ -551,7 +555,7 @@ def write_tfrecord_from_image_files_with_set_info(class_files,
                               class_label, 
                               belongs_to_set=bytes(set_info, 'utf-8'))
         for _ in range(repeat):    
-          if dataset_is_tesla:
+          if dataset_is_tesla and OVERSAMPLE_TESLA_SUPPORT:
             # if dataset is tesla then store in example_strings array 
             # to shuffle before writing them (oth support and query samples)
             example_strings.append(example)
@@ -788,7 +792,6 @@ class DatasetConverter(object):
       records_path = os.path.join(FLAGS.records_root, name)
     tf.io.gfile.makedirs(records_path)
     self.records_path = records_path
-
     # Where to write the DatasetSpecification instance.
     self.dataset_spec_path = os.path.join(self.records_path,
                                           'dataset_spec.json')

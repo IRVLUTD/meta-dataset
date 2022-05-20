@@ -12,7 +12,7 @@ gdown
 gsutil
 simclr
 tqdm
-pycairo
+#pycairo
 matplotlib
 opencv-python
 

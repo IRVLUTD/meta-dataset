@@ -211,7 +211,7 @@ def sample_num_support_per_class(images_per_class,
   # This guarantees that there is at least one support example per class.
   num_desired_per_class = np.floor(
       support_set_proportions * remaining_support_set_size).astype('int32') + 1
-
+  
   return np.minimum(num_desired_per_class, num_remaining_per_class)
 
 
@@ -490,7 +490,6 @@ class EpisodeDescriptionSampler(object):
         self.dataset_spec.get_total_images_per_class(
             self.class_set[cid], pool=self.pool) for cid in class_ids
     ])
-
     if self.num_query is not None:
       num_query = self.num_query
     else:
@@ -526,7 +525,7 @@ class EpisodeDescriptionSampler(object):
           min_log_weight=self.min_log_weight,
           max_log_weight=self.max_log_weight,
           rng=self._rng)
-
+    
     return tuple(
         (class_id, num_support, num_query)
         for class_id, num_support in zip(class_ids, num_support_per_class))

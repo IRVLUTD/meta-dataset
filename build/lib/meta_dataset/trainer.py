@@ -31,6 +31,7 @@ import copy
 import functools
 import os
 import re
+import shutil
 
 from absl import logging
 import gin.tf
@@ -48,19 +49,10 @@ import six
 from six.moves import range
 from six.moves import zip
 import tensorflow.compat.v1 as tf
-
-gui_backend = [
-    'GTK3Agg', 'GTK3Cairo', 'GTK4Agg', 
-    'GTK4Cairo', 'MacOSX', 'nbAgg', 
-    'QtAgg', 'QtCairo', 'Qt5Agg', 
-    'Qt5Cairo', 'TkAgg', 'Agg', 'TkCairo', 
-    'WebAgg', 'WX', 'WXAgg', 'WXCairo', 
-    'agg', 'cairo', 'pdf', 'pgf', 'ps', 
-    'svg', 'template'
-  ]
-import matplotlib
-matplotlib.use(gui_backend[11])
 import matplotlib.pyplot as plt
+import cv2
+import time
+
 
 # Enable tf.data optimizations, which are applied to the input data pipeline.
 # It may be helpful to disable them when investigating regressions due to
@@ -272,7 +264,6 @@ class Trainer(object):
       distribute,
       enable_tf_optimizations,
       visualize_data,
-      visualize_image_set,
       perform_filtration):
     # pyformat: disable
     """Initializes a Trainer.
@@ -352,7 +343,6 @@ class Trainer(object):
         few minutes to the first calls to session.run(), but decrease memory
         usage.
       visualize_data: bool indicating whether to visualize data before training.
-      visualize_image_set: "support", "query" or ""
       perform_filtration: A boolean flag indicating whether filtration needs 
       to be performed for tesla dataset
     Raises:
@@ -384,9 +374,7 @@ class Trainer(object):
     self.normalized_gradient_descent = normalized_gradient_descent
     self.enable_tf_optimizations = enable_tf_optimizations
     self.visualize_data = visualize_data
-    self.visualize_image_set = visualize_image_set
     self.perform_filtration = perform_filtration
-    self.DATA = None
     self.data_spec = None
 
     # Currently we are supporting single dataset when we read from fixed
@@ -594,7 +582,7 @@ class Trainer(object):
         data_tensors = tf.data.make_one_shot_iterator(
             self.data_fns[split]()).get_next()
         output = self.run_fns[split](data_tensors)
-
+      
       loss = tf.reduce_mean(output['loss'])
       loss += self.regularizer_fns[split]()
 
@@ -602,7 +590,7 @@ class Trainer(object):
       self.accuracies[split] = tf.reduce_mean(output['accuracy'])
       self.predictions[split] = output['predictions']
       self.episode_info[split] = output['episode_info']
-
+      
       if split == TRAIN_SPLIT and self.is_training:
         self.train_op = output['train_op']
 
@@ -618,6 +606,93 @@ class Trainer(object):
     self.initialize_session()
     self.initialize_saver()
     self.create_summary_writer()
+
+                
+    if self.visualize_data:
+      (
+        support_images, 
+        support_labels, 
+        query_images, 
+        query_labels, 
+        N, 
+        K_per_class, 
+        class_ids, 
+        predictions
+      )  = self.sess.run([
+        data_tensors.support_images,
+        data_tensors.support_labels,
+        data_tensors.query_images,
+        data_tensors.query_labels,# ground truth (tf.argmax(data_tensors.onehot_labels, -1))
+        output['episode_info']['way'],
+        output['episode_info']['shots'],
+        output['episode_info']['class_ids'], # actual class_ids 
+        tf.argmax(output['predictions'], -1), # preds
+      ])
+      
+      max_K = np.max(K_per_class)
+      pred_boolean_mask = query_labels == predictions
+
+      def frame_image(img, prediction_correct):
+        color = [255, 0, 0] # red
+        if prediction_correct:
+          color = [0, 255, 0] # green
+        top, bottom, left, right = [7]*4
+        return cv2.copyMakeBorder(img, top, bottom, left, right, cv2.BORDER_CONSTANT, value=color)
+
+      suffix="-filtered" if self.perform_filtration else ""
+      epoch = str(int(time.time()))
+      outdir=f"{epoch}{suffix}"
+      os.makedirs(outdir)
+      # make plot for way classes
+      for class_label in range(N):
+        # get indices for this class_label
+        support_indices = np.where(support_labels == class_label)
+        query_indices = np.where(query_labels == class_label)
+
+
+        # plot support + query images for this class_label
+        # setting values to rows and column variables
+        rows, columns = 7,7
+
+        # create figure
+        fig = plt.figure(figsize=(100, 100))
+
+        # set window title
+        class_name = self.data_spec.class_names[class_ids[class_label]]
+        title=f"{split}{suffix} | {class_name} | s:{len(support_indices[0])} | q:{len(query_indices[0])} | current:{class_label} | N:{N} | max_K: {max_K}"
+        fig.canvas.set_window_title(title)
+        
+
+        # plot support images
+        _ = 0 
+        for idx, im in enumerate(support_images[support_indices]):
+          # Adds a subplot at the nth position
+          fig.add_subplot(rows, columns, idx+1)
+          im = self.convert_to_pseudo_original_form(im)
+          # showing image
+          plt.imshow(im)
+          plt.axis('off')
+          plt.title(f"s; {self.data_spec.class_names[class_ids[support_labels[support_indices][idx]]]}")
+          plt.plot()
+          _ = idx + 2
+        
+
+        # plot query images with green and red borders indicating correct and wrong predictions
+        for _idx, im in enumerate(query_images[query_indices]):
+          # Adds a subplot at the nth position
+          fig.add_subplot(rows, columns, _idx+_)
+          im = self.convert_to_pseudo_original_form(im)
+          im = frame_image(im, pred_boolean_mask[query_indices][_idx])
+          # showing image
+          plt.imshow(im)
+          plt.axis('off')
+          predicted_class = self.data_spec.class_names[class_ids[predictions[query_indices][_idx]]]
+          plt.title(f"q; {predicted_class}")
+          plt.plot()
+        print(f"plotting label: {class_label} class_name:{class_name}")
+        plt.show()
+        # plt.savefig(f"{outdir}/{title.replace(' ', '_')}.jpg")
+
 
 
   def build_learner(self, split):
@@ -723,13 +798,11 @@ class Trainer(object):
           self.data_initializeable_iterators.append(data)
       else:
         data = lambda: data_src
-        self.DATA = data_src
         regularizer = self.learners[split].compute_regularizer
 
       def run(data_local):
         """Run the forward pass of the model."""
         predictions_dist = self.learners[split].forward_pass(data_local)
-        tf.print(data_local)
         loss_dist = self.learners[split].compute_loss(
             predictions=predictions_dist,
             onehot_labels=data_local.onehot_labels)
@@ -737,7 +810,6 @@ class Trainer(object):
             predictions=predictions_dist,
             onehot_labels=data_local.onehot_labels)
         episode_info = self.get_episode_info(data_local)
-        tf.print(episode_info)
         return {
             'predictions': predictions_dist,
             'loss': loss_dist,
@@ -774,90 +846,6 @@ class Trainer(object):
     image = (((image/2) + 0.5) * 255.0).astype(np.uint8)
     return image
 
-  def get_data_and_label(self, image_set, limit=50):
-    data_iterator = self.DATA.make_one_shot_iterator()
-    count, total = 0, 0
-    imgs, labels, class_names = [], [], []
-    
-    with tf.Session() as sess:
-      while count < limit:
-        try:
-          data = sess.run(data_iterator.get_next())
-          if image_set == "support":
-            im = data.support_images
-            lbl = data.support_labels
-            cls_id = data.support_class_ids
-          else:
-            im = data.query_images
-            lbl = data.query_labels
-            cls_id = data.query_class_ids
-          
-          img_list_len = len(im)
-          only_see_first_img_of_episode = False
-          is_first_access = True
-          
-          if only_see_first_img_of_episode:
-            total += 1
-            if img_list_len:
-              count += 1
-              imgs.append(self.convert_to_pseudo_original_form(im[0]))
-              class_names.append(cls_id[0])
-              labels.append(lbl[0])
-          else:
-            sum = total + img_list_len
-            if sum > limit:
-              if is_first_access:
-                im = im[:limit]
-                cls_id = cls_id[:limit]
-                lbl = lbl[:limit]
-                img_list_len = limit
-                is_first_access=False
-              else:
-                break
-            total += img_list_len
-            if img_list_len:
-              count += img_list_len
-              imgs.extend(self.convert_to_pseudo_original_form(im))
-              class_names.extend(cls_id)
-              labels.extend(lbl)
-              print(f"{image_set} : {count}/{total}")
-            #   break
-        except tf.errors.OutOfRangeError:
-          break
-    return (imgs, labels, class_names)
-
-  def visualize(self, split):
-    
-    # setting values to rows and column variables
-    rows, columns = 8, 8
-
-    for image_set in self.visualize_image_set:
-
-      images, labels, class_ids = self.get_data_and_label(image_set, rows*columns)
-
-      # create figure
-      fig = plt.figure(figsize=(10, 7))
-
-      # set window title
-      suffix="-filtered" if self.perform_filtration else ""
-      fig.canvas.set_window_title(f"{split}:{image_set}{suffix}")
-      for idx, im in enumerate(images):
-        try:
-          class_name = self.data_spec.class_names[class_ids[idx]]
-          print(f"plotting label: {idx}, label:{labels[idx]}, class_name:{class_name}")
-          # Adds a subplot at the nth position
-          fig.add_subplot(rows, columns, idx+1)
-        
-          # showing image
-          plt.imshow(im)
-          plt.axis('off')
-          plt.title(f"#{idx+1}; {labels[idx]}:{class_name}")
-          plt.plot()
-        except:
-          pass
-      plt.show()
-      # raise SystemExit("Stopping to see the plots")
-
   def create_summary_writer(self):
     
     """Create summaries and writer."""
@@ -870,12 +858,6 @@ class Trainer(object):
                                         tf.reduce_mean(self.accuracies[split]))
         standard_summaries.append(loss_summary)
         standard_summaries.append(acc_summary)
-    
-    
-      if self.visualize_data:
-        self.visualize(split)
-
-    tf.print("Done initial vis")
 
     # Add summaries for the way / shot / logits / targets of the learner.
     evaluation_summaries = self.add_eval_summaries()
@@ -1653,6 +1635,7 @@ class Trainer(object):
   def evaluate(self, split, step=0):
     """Returns performance metrics across num_eval_trials episodes / batches."""
     num_eval_trials = self.num_eval_episodes
+
     logging.info('Performing evaluation of the %s split using %d episodes...',
                  split, num_eval_trials)
     accuracies = []
@@ -1661,6 +1644,7 @@ class Trainer(object):
       # Following is used to normalize accuracies.
       acc, summaries = self.sess.run(
           [self.accuracies[split], self.evaluation_summaries])
+      
       # Write complete summaries during evaluation, but not training.
       # Otherwise, validation summaries become too big.
       if not self.is_training and self.summary_writer:
