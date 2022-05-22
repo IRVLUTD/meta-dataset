@@ -132,9 +132,6 @@ tf.flags.DEFINE_string(
 tf.flags.DEFINE_string('splits_root', '',
                        'The root directory storing the splits of datasets.')
 
-tf.flags.DEFINE_string(
-    'oversample_tesla_support', 'True',
-    'Boolean indicating whether to oversample tesla support images or not')
 
 FLAGS = tf.flags.FLAGS
 DEFAULT_FILE_PATTERN = '{}.tfrecords'
@@ -144,7 +141,6 @@ VGGFLOWER_LABELS_PATH = os.path.join(AUX_DATA_PATH,
                                      'VggFlower_labels.txt')
 TRAFFICSIGN_LABELS_PATH = os.path.join(AUX_DATA_PATH, 'TrafficSign_labels.txt')
 SHUFFLE_SEED = 22032022
-OVERSAMPLE_TESLA_SUPPORT = FLAGS.oversample_tesla_support=='True'
 
 def make_example(features):
   """Creates an Example protocol buffer.
@@ -549,13 +545,14 @@ def write_tfrecord_from_image_files_with_set_info(class_files,
         # custom randomization for data sampling
         # do oversampling for tesla dataset's support set
         set_is_support = set_info == "support"
-        do_oversampling = dataset_is_tesla and set_is_support
+        oversample_tesla_support = False
+        do_oversampling = dataset_is_tesla and set_is_support and oversample_tesla_support
         repeat = math.ceil(k_query/k_support) if do_oversampling else 1
         example = get_example(img, 
                               class_label, 
                               belongs_to_set=bytes(set_info, 'utf-8'))
         for _ in range(repeat):    
-          if dataset_is_tesla and OVERSAMPLE_TESLA_SUPPORT:
+          if dataset_is_tesla:
             # if dataset is tesla then store in example_strings array 
             # to shuffle before writing them (oth support and query samples)
             example_strings.append(example)
@@ -569,10 +566,10 @@ def write_tfrecord_from_image_files_with_set_info(class_files,
   # are mixed randomly instead of having support examples first and 
   # query examples following it. This might aid in sampling more 
   # views instead of having same view image in the support set of an episode
-    if shuffle_with_seed is not None \
-      and dataset_is_tesla and len(example_strings) > 1:
-      rng = np.random.RandomState(shuffle_with_seed)
-      rng.shuffle(example_strings)
+    # if shuffle_with_seed is not None \
+    #   and dataset_is_tesla and len(example_strings) > 1:
+    #   rng = np.random.RandomState(shuffle_with_seed)
+    #   rng.shuffle(example_strings)
   
   # write tesla class samples to tfrecords
   for example_string in example_strings:
@@ -642,12 +639,13 @@ def write_tfrecord_from_tesla_directory_structure(class_directory,
   for class_set in ["support", "query"]:
     class_files.extend(get_classes_with_set_info(class_directory, class_set))
 
-  if shuffle_with_seed is not None:
-    # UPDATE: Shuffle is a must requirement so that support and query images 
-    # are mixed randomly instead of having support examples first and 
-    # query examples following it
-    rng = np.random.RandomState(shuffle_with_seed)
-    rng.shuffle(class_files)
+  # shuffle_with_seed=None
+  # if shuffle_with_seed is not None:
+  #   # UPDATE: Shuffle is a must requirement so that support and query images 
+  #   # are mixed randomly instead of having support examples first and 
+  #   # query examples following it
+  #   rng = np.random.RandomState(shuffle_with_seed)
+  #   rng.shuffle(class_files)
 
   written_images_count, real_images_count = write_tfrecord_from_image_files_with_set_info(
       class_files,

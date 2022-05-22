@@ -90,7 +90,7 @@ def _dataset_name_to_converter_and_args(flags=FLAGS):
       'tesla': (dataset_to_records.TeslaConverter,
                 ConverterArgs(
                   data_root=flags.tesla_data_root,
-                  long_name='TESLA')),
+                  long_name='TESLA')), #TODO: change long_name after publication
       'aircraft': (dataset_to_records.AircraftConverter,
                    ConverterArgs(
                        data_root=flags.aircraft_data_root,
