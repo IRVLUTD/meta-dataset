@@ -31,6 +31,7 @@ do
     then
       # set BESTNUM to the "best_update_num" field in the corresponding best_....txt
       export BESTNUM=$(grep best_update_num ${EXPROOT}/best_$EXPNAME.txt | awk '{print $2;}')
+      BESTNUM=$9
       python -m meta_dataset.train \
         --is_training=False \
         --records_root_dir=$RECORDS \
@@ -45,6 +46,7 @@ do
     else
 
       export BESTNUM=$(grep best_update_num ${EXPROOT}/best_$EXPNAME.txt | awk '{print $2;}')
+      BESTNUM=$9
       python -m meta_dataset.train \
         --is_training=False \
         --records_root_dir=$RECORDS \

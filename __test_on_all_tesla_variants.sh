@@ -4,9 +4,10 @@ perform_filtration=$3
 num_valid_episodes=$4
 use_pretrained_backbone=$5
 backbone=$6
+bestnum=$7
 
 for tesla_dataset_variant in tesla-mixture tesla-unseen tesla-seen tesla-synthetic-unseen-13
-# for tesla_dataset_variant in tesla-seen tesla-synthetic-unseen-13
+# for tesla_dataset_variant in tesla-synthetic-unseen-13
 do
     # For each trained model it is possible test on w/wo filtered tesla variants
     for perform_filtration_ds in False True
@@ -19,7 +20,8 @@ do
         $num_valid_episodes \
         $tesla_dataset_variant \
         $use_pretrained_backbone \
-        $backbone
+        $backbone \
+	$bestnum
     done
 done
 
