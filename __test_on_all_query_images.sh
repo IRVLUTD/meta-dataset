@@ -17,11 +17,12 @@ then
     _backbone="resnet34"
 fi
 
-# cd $RECORDS; rm tesla; ln -s $TESLA_DATASET_VARIANT tesla; cd $ROOT_DIR;
+RECORDS="$ROOT_DIR/records-non-oversampled"
 
-# ls -l $RECORDS # useful to check if sym links are correct
+cd $RECORDS; rm tesla; ln -s $TESLA_DATASET_VARIANT tesla; cd $ROOT_DIR;
 
-RECORDS="$PWD/records-non-oversampled/tesla-mixture/"
+ls -l $RECORDS # useful to check if sym links are correct
+
 
 for MODEL in $models
 do
