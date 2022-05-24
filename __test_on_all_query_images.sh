@@ -21,7 +21,7 @@ fi
 
 # ls -l $RECORDS # useful to check if sym links are correct
 
-RECORDS="/home/jishnu/Documents/github/meta-dataset/records-non-oversampled/tesla-mixture/tesla"
+RECORDS="/home/jishnu/Documents/github/meta-dataset/records-non-oversampled/tesla-mixture"
 
 for MODEL in $models
 do
