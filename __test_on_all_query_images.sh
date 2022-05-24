@@ -34,7 +34,7 @@ do
     then
       # set BESTNUM to the "best_update_num" field in the corresponding best_....txt
       export BESTNUM=$(grep best_update_num ${EXPROOT}/best_$EXPNAME.txt | awk '{print $2;}')
-      python -m meta_dataset.train \
+      python -m meta_dataset.test_all_query_images \
         --is_training=False \
         --records_root_dir=$RECORDS \
         --summary_dir=${EXPROOT}/summaries/${EXPNAME} \
@@ -47,7 +47,7 @@ do
         --gin_bindings="benchmark.eval_datasets='$DATASET'"
     else
       export BESTNUM=$(grep best_update_num ${EXPROOT}/best_$EXPNAME.txt | awk '{print $2;}')
-      python -m meta_dataset.train \
+      python -m meta_dataset.test_all_query_images \
         --is_training=False \
         --records_root_dir=$RECORDS \
         --summary_dir=${EXPROOT}/summaries/${EXPNAME} \
