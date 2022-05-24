@@ -552,6 +552,7 @@ class Trainer(object):
     self.predictions = {}
     self.losses = {}
     self.accuracies = {}
+    self.accuracies_raw = {}
     self.episode_info = {}
     for split in self.required_splits:
       if self.distribute:
@@ -588,6 +589,7 @@ class Trainer(object):
 
       self.losses[split] = loss
       self.accuracies[split] = tf.reduce_mean(output['accuracy'])
+      self.accuracies_raw[split] = output['accuracy']
       self.predictions[split] = output['predictions']
       self.episode_info[split] = output['episode_info']
       
@@ -1686,12 +1688,12 @@ class Trainer(object):
     self.next_data = episode
     logging.info('Performing evaluation of the %s split using %d episodes...',
                  split, num_eval_trials)
-    accuracies = []
+    accuracies, predictions, eps_info_list = [], [], []
     total_samples = 0
     for eval_trial_num in range(num_eval_trials):
       # Following is used to normalize accuracies.
-      acc, summaries = self.sess.run(
-          [self.accuracies[split], self.evaluation_summaries])
+      acc, preds, eps_info, summaries = self.sess.run(
+          [self.accuracies_raw[split], self.predictions[split], self.episode_info[split], self.evaluation_summaries])
       
       # Write complete summaries during evaluation, but not training.
       # Otherwise, validation summaries become too big.
@@ -1716,7 +1718,7 @@ class Trainer(object):
       # Logging during training is handled by self.train() instead.
       logging.info('Meta-%s split: Accuracy=%f, Samples=%f\n', split,
                    sum_acc, total_samples)
-      print("ACC: ", accuracies)
+      print("ACC: ", accuracies, preds, eps_info)
 
     return sum_acc, total_samples
 
