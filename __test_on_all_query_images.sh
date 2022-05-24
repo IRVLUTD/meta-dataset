@@ -21,7 +21,7 @@ fi
 
 # ls -l $RECORDS # useful to check if sym links are correct
 
-RECORDS="records-non-oversampled/tesla-mixture"
+RECORDS="$PWD/records-non-oversampled/tesla-mixture/tesla"
 
 for MODEL in $models
 do
