@@ -324,6 +324,7 @@ def main(unused_argv):
         # break
     
     acc, total_samples = trainer_instance.evaluate_one_episode(eval_split, episode)
+    print("OUTPUT: ", acc, total_samples)
 
 
 program = main
