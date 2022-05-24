@@ -1679,6 +1679,46 @@ class Trainer(object):
 
     return mean_acc, ci_acc, mean_acc_summary, ci_acc_summary
 
+  # UPDATE
+  def evaluate_one_episode(self, split, episode, step=0):
+    """Returns performance metrics across num_eval_trials episodes / batches."""
+    num_eval_trials = 1
+    self.next_data = episode
+    logging.info('Performing evaluation of the %s split using %d episodes...',
+                 split, num_eval_trials)
+    accuracies = []
+    total_samples = 0
+    for eval_trial_num in range(num_eval_trials):
+      # Following is used to normalize accuracies.
+      acc, summaries = self.sess.run(
+          [self.accuracies[split], self.evaluation_summaries])
+      
+      # Write complete summaries during evaluation, but not training.
+      # Otherwise, validation summaries become too big.
+      if not self.is_training and self.summary_writer:
+        self.summary_writer.add_summary(summaries, eval_trial_num)
+      if self._fixed_eval == 'vtab':
+        accuracies.append(np.sum(acc))
+        total_samples += np.size(acc)
+        continue
+      accuracies.append(np.mean(acc))
+      total_samples += 1
+
+    logging.info('Finished evaluation.')
+
+    sum_acc = np.sum(accuracies)
+
+    # VTAB evaluation has 1 episode.
+    if self._fixed_eval == 'vtab':
+      ci_acc = 0
+
+    if not self.is_training:
+      # Logging during training is handled by self.train() instead.
+      logging.info('Meta-%s split: Accuracy=%f, Samples=%f\n', split,
+                   sum_acc, total_samples)
+
+    return sum_acc, total_samples
+
   def add_eval_summaries(self):
     """Returns summaries of way / shot / classes/ logits / targets."""
     evaluation_summaries = [
