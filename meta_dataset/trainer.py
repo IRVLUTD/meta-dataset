@@ -1701,8 +1701,8 @@ class Trainer(object):
         accuracies.append(np.sum(acc))
         total_samples += np.size(acc)
         continue
-      accuracies.append(np.mean(acc))
-      total_samples += 1
+      accuracies.append(np.sum(acc))
+      total_samples += np.size(acc)
 
     logging.info('Finished evaluation.')
 
@@ -1716,6 +1716,7 @@ class Trainer(object):
       # Logging during training is handled by self.train() instead.
       logging.info('Meta-%s split: Accuracy=%f, Samples=%f\n', split,
                    sum_acc, total_samples)
+      print("ACC: ", accuracies)
 
     return sum_acc, total_samples
 
