@@ -52,7 +52,7 @@ do
         --records_root_dir=$RECORDS \
         --summary_dir=${EXPROOT}/summaries/${EXPNAME} \
         --gin_config=meta_dataset/learn/gin/best/${EXP_GIN}.gin \
-        --gin_bindings="Trainer.experiment_name=''" \
+        --gin_bindings="Trainer.experiment_name='${EXPNAME}'" \
         --gin_bindings="Trainer.checkpoint_to_restore='${EXPROOT}/checkpoints/${EXPNAME}/model_${BESTNUM}.ckpt'" \
         --gin_bindings="Trainer.perform_filtration=${perform_filtration_ds}" \
         --gin_bindings="Learner.embedding_fn = @${_backbone}" \
