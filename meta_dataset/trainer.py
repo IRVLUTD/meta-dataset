@@ -1692,8 +1692,8 @@ class Trainer(object):
     total_samples = 0
     for eval_trial_num in range(num_eval_trials):
       # Following is used to normalize accuracies.
-      acc, preds, eps_info, summaries = self.sess.run(
-          [self.accuracies_raw[split], self.predictions[split], self.episode_info[split], self.evaluation_summaries])
+      acc, summaries = self.sess.run(
+          [self.accuracies_raw[split], self.evaluation_summaries])
       
       # Write complete summaries during evaluation, but not training.
       # Otherwise, validation summaries become too big.
@@ -1718,7 +1718,7 @@ class Trainer(object):
       # Logging during training is handled by self.train() instead.
       logging.info('Meta-%s split: Accuracy=%f, Samples=%f\n', split,
                    sum_acc, total_samples)
-      print("ACC: ", accuracies, preds, eps_info)
+      print("ACC: ", accuracies)
 
     return sum_acc, total_samples
 
