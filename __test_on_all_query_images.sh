@@ -21,7 +21,7 @@ fi
 
 # ls -l $RECORDS # useful to check if sym links are correct
 
-RECORDS="records-non-oversampled"
+RECORDS="/home/jishnu/Documents/github/meta-dataset/records-non-oversampled"
 
 for MODEL in $models
 do
