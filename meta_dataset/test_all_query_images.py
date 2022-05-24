@@ -300,7 +300,8 @@ def main(unused_argv):
 
     train_classes = 125
     tesla_variant = list(meta.keys())[0]  # tesla-mixture
-    tfrecords_dir = FLAGS.records_root_dir
+    BASE_PATH = FLAGS.records_root_dir
+    tfrecords_dir = f"{BASE_PATH}/{tesla_variant}/tesla"
     dataset_spec = dataset_spec_lib.load_dataset_spec(tfrecords_dir)
     start = train_classes
     end = start + meta[tesla_variant]
