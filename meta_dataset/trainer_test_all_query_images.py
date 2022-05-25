@@ -593,7 +593,7 @@ class Trainer(object):
         with open(f"pkl/{tesla_variant}-episode.pkl", 'rb') as pkl_file:
           b = pickle.load(pkl_file)
         data_tensors = tf.data.make_one_shot_iterator(
-            tf.data.Dataset(b)).get_next()
+            b).get_next()
         output = self.run_fns[split](data_tensors)
       
       loss = tf.reduce_mean(output['loss'])
