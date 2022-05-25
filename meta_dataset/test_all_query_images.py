@@ -59,8 +59,8 @@ import numpy as np
 import pickle
 
 import tensorflow.compat.v1 as tf
-# tf.disable_eager_execution()
-# tf.enable_eager_execution()
+tf.disable_eager_execution()
+
 
 DEFAULT_SAVING_DIRECTORY = '/tmp/metadataset'
 
