@@ -54,6 +54,7 @@ import matplotlib.pyplot as plt
 import cv2
 import time
 
+tf.enable_eager_execution()
 
 # Enable tf.data optimizations, which are applied to the input data pipeline.
 # It may be helpful to disable them when investigating regressions due to
