@@ -1589,10 +1589,9 @@ class Trainer(object):
     return mean_acc, ci_acc, mean_acc_summary, ci_acc_summary
 
   # UPDATE
-  def evaluate_one_episode(self, split, episode, step=0):
+  def evaluate_one_episode(self, split, step=0):
     """Returns performance metrics across num_eval_trials episodes / batches."""
     num_eval_trials = 1
-    self.next_data = episode
     logging.info('Performing evaluation of the %s split using %d episodes...',
                  split, num_eval_trials)
     accuracies, predictions, eps_info_list = [], [], []
