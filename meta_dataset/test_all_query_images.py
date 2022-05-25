@@ -47,7 +47,7 @@ import gin.tf
 # configurables.
 from meta_dataset import data
 from meta_dataset import learners  # pylint: disable=unused-import
-from meta_dataset import trainer
+from meta_dataset import trainer_test_all_query_images
 from meta_dataset.data import config  # pylint: disable=unused-import
 from meta_dataset.learners import experimental as experimental_learners  # pylint: disable=unused-import
 from meta_dataset.models.experimental import parameter_adapter  # pylint: disable=unused-import
@@ -244,7 +244,7 @@ def main(unused_argv):
      restrict_num_per_class) = trainer.get_datasets_and_restrictions()
 
     # Get a trainer or evaluator.
-    trainer_instance = trainer.Trainer(
+    trainer_instance = trainer_test_all_query_images.Trainer(
         is_training=FLAGS.is_training,
         train_dataset_list=train_datasets,
         eval_dataset_list=eval_datasets,
@@ -308,8 +308,8 @@ def main(unused_argv):
     end = start + meta[tesla_variant]
 
     episode = None
-    episode_skeleton_path = "pkl/episode_skeleton.pkl"
-    with open(episode_skeleton_path, 'rb') as pkl_file:
+    episode_pkl_path = f"pkl/{tesla_variant}-episode.pkl"
+    with open(episode_pkl_path, 'rb') as pkl_file:
       episode = pickle.load(pkl_file)
     
     # image_decoder = decoder.ImageDecoder(image_size=126)
@@ -322,7 +322,8 @@ def main(unused_argv):
     #     acc, total_samples = trainer_instance.evaluate_one_episode(eval_split, episode)
     #   except tf.errors.OutOfRangeError:
         # break
-    
+    os.environ["EPISODE_PKL_PATH"] = episode_pkl_path
+
     acc, total_samples = trainer_instance.evaluate_one_episode(eval_split, episode)
     print("OUTPUT: ", acc, total_samples)
 
