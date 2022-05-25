@@ -591,7 +591,9 @@ class Trainer(object):
         tesla_variant = list(meta.keys())[0]  # tesla-mixture
         print(tesla_variant)
         with open(f"pkl/{tesla_variant}-episode.pkl", 'rb') as pkl_file:
-          data_tensors = pickle.load(pkl_file)
+          b = pickle.load(pkl_file)
+        data_tensors = tf.data.make_one_shot_iterator(
+            tf.data.Dataset(b)).get_next()
         output = self.run_fns[split](data_tensors)
       
       loss = tf.reduce_mean(output['loss'])
@@ -1334,7 +1336,7 @@ class Trainer(object):
       UnexpectedSplitError: If split not as expected for this episode build.
     """
     return None
-      
+
   def _build_batch(self, split):
     """Builds a `tf.Dataset` of Batch objects containing data for "split".
 
