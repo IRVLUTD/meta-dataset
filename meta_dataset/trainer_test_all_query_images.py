@@ -581,8 +581,17 @@ class Trainer(object):
             output['episode_info'] = episode_info
 
       else:
-        data_tensors = tf.data.make_one_shot_iterator(
-            self.data_fns[split]()).get_next()
+        meta = {
+          'tesla-mixture': 52,
+          'tesla-unseen': 41,
+          'tesla-seen': 11,
+          'tesla-synthetic-seen-13': 13,
+        }
+
+        tesla_variant = list(meta.keys())[0]  # tesla-mixture
+        print(tesla_variant)
+        with open(f"pkl/{tesla_variant}-episode.pkl", 'rb') as pkl_file:
+          data_tensors = pickle.load(pkl_file)
         output = self.run_fns[split](data_tensors)
       
       loss = tf.reduce_mean(output['loss'])
@@ -1324,17 +1333,7 @@ class Trainer(object):
     Raises:
       UnexpectedSplitError: If split not as expected for this episode build.
     """
-    meta = {
-      'tesla-mixture': 52,
-      'tesla-unseen': 41,
-      'tesla-seen': 11,
-      'tesla-synthetic-seen-13': 13,
-    }
-
-    tesla_variant = list(meta.keys())[0]  # tesla-mixture
-    print(tesla_variant)
-    with open(f"pkl/{tesla_variant}-episode.pkl", 'rb') as pkl_file:
-      return pickle.load(pkl_file)
+    return None
       
   def _build_batch(self, split):
     """Builds a `tf.Dataset` of Batch objects containing data for "split".
