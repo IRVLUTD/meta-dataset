@@ -1334,7 +1334,111 @@ class Trainer(object):
     Raises:
       UnexpectedSplitError: If split not as expected for this episode build.
     """
-    return None
+    shuffle_buffer_size = self.data_config.shuffle_buffer_size
+    read_buffer_size_bytes = self.data_config.read_buffer_size_bytes
+    num_prefetch = self.data_config.num_prefetch
+    (_, image_shape, dataset_spec_list, has_dag_ontology, has_bilevel_ontology,
+     splits_to_contribute) = self.benchmark_spec
+
+    # Choose only the datasets that are chosen to contribute to the given split.
+    dataset_spec_list = self._restrict_dataset_list_for_split(
+        split, splits_to_contribute, dataset_spec_list)
+    has_dag_ontology = self._restrict_dataset_list_for_split(
+        split, splits_to_contribute, has_dag_ontology)
+    has_bilevel_ontology = self._restrict_dataset_list_for_split(
+        split, splits_to_contribute, has_bilevel_ontology)
+
+    episode_spec = self.split_episode_or_batch_specs[split]
+    dataset_split = episode_spec[0]
+    # TODO(lamblinp): Support non-square shapes if necessary. For now, all
+    # images are resized to square, even if it changes the aspect ratio.
+    image_size = image_shape[0]
+    if image_shape[1] != image_size:
+      raise ValueError(
+          'Expected a square image shape, not {}'.format(image_shape))
+
+    if split == TRAIN_SPLIT:
+      episode_descr_config = self.train_episode_config
+    elif split in (VALID_SPLIT, TEST_SPLIT):
+      episode_descr_config = self.eval_episode_config
+    else:
+      raise UnexpectedSplitError(split)
+
+    # Decide how many examples per class to restrict to for each dataset for the
+    # given split (by default there is no restriction).
+    num_per_class = []  # A list whose length is the number of datasets.
+    for dataset_spec in dataset_spec_list:
+      num_per_class.append(self.get_num_to_take(dataset_spec.name, split))
+
+    if split == TRAIN_SPLIT:
+      # The learner for the training split should only be in training mode if
+      # the evaluation split is not the training split.
+      gin_scope_name = ('train'
+                        if self.eval_split != TRAIN_SPLIT else 'evaluation')
+    else:
+      gin_scope_name = 'evaluation'
+
+    ignore_hierarchy_prob = episode_descr_config.ignore_hierarchy_probability
+    simclr_episode_fraction = episode_descr_config.simclr_episode_fraction
+    if simclr_episode_fraction > 0:
+      assert not self.enable_tf_optimizations, (
+          'Must set enable_tf_optimizations=False or SimCLR will fail; see '
+          'https://github.com/tensorflow/tensorflow/issues/22145')
+    # TODO(lamblinp): pass specs directly to the pipeline builder.
+    # TODO(lamblinp): move the special case directly in make_..._pipeline
+    if len(dataset_spec_list) == 1:
+      use_dag_ontology = has_dag_ontology[0]
+      if self.eval_finegrainedness or self.eval_imbalance_dataset:
+        use_dag_ontology = False
+
+      with gin.config_scope(gin_scope_name):
+        data_pipeline = pipeline.make_one_source_episode_pipeline(
+            dataset_spec_list[0],
+            use_dag_ontology=use_dag_ontology,
+            use_bilevel_ontology=has_bilevel_ontology[0],
+            split=dataset_split,
+            episode_descr_config=episode_descr_config,
+            perform_filtration = self.perform_filtration,
+            shuffle_buffer_size=shuffle_buffer_size,
+            read_buffer_size_bytes=read_buffer_size_bytes,
+            num_prefetch=num_prefetch,
+            image_size=image_size,
+            num_to_take=num_per_class[0],
+            simclr_episode_fraction=simclr_episode_fraction,
+            ignore_hierarchy_probability=ignore_hierarchy_prob)
+
+    else:
+      if ignore_hierarchy_prob > 0.0:
+        raise ValueError(
+            'ignore_hierarchy_probability not supported with multisource pipelines'
+        )
+      with gin.config_scope(gin_scope_name):
+        data_pipeline = pipeline.make_multisource_episode_pipeline(
+            dataset_spec_list,
+            use_dag_ontology_list=has_dag_ontology,
+            use_bilevel_ontology_list=has_bilevel_ontology,
+            split=dataset_split,
+            episode_descr_config=episode_descr_config,
+            shuffle_buffer_size=shuffle_buffer_size,
+            read_buffer_size_bytes=read_buffer_size_bytes,
+            num_prefetch=num_prefetch,
+            image_size=image_size,
+            num_to_take=num_per_class,
+            simclr_episode_fraction=simclr_episode_fraction)
+
+    data_pipeline = apply_dataset_options(data_pipeline)
+
+    def create_episode_struct(support_images, support_labels, support_class_ids,
+                              query_images, query_labels, query_class_ids):
+      return providers.Episode(
+          support_images=support_images,
+          query_images=query_images,
+          support_labels=support_labels,
+          query_labels=query_labels,
+          support_class_ids=support_class_ids,
+          query_class_ids=query_class_ids)
+
+    return data_pipeline.map(lambda x, y: x).map(create_episode_struct)
 
   def _build_batch(self, split):
     """Builds a `tf.Dataset` of Batch objects containing data for "split".
