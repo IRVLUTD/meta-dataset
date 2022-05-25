@@ -1686,6 +1686,7 @@ class Trainer(object):
     """Returns performance metrics across num_eval_trials episodes / batches."""
     num_eval_trials = 1
     self.next_data = episode
+    print(self.next_data)
     logging.info('Performing evaluation of the %s split using %d episodes...',
                  split, num_eval_trials)
     accuracies, predictions, eps_info_list = [], [], []
