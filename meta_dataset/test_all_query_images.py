@@ -47,7 +47,7 @@ import gin.tf
 # configurables.
 from meta_dataset import data
 from meta_dataset import learners  # pylint: disable=unused-import
-from meta_dataset import trainer_test_all_query_images
+from meta_dataset import trainer_test_all_query_images as trainer
 from meta_dataset.data import config  # pylint: disable=unused-import
 from meta_dataset.learners import experimental as experimental_learners  # pylint: disable=unused-import
 from meta_dataset.models.experimental import parameter_adapter  # pylint: disable=unused-import
@@ -244,7 +244,7 @@ def main(unused_argv):
      restrict_num_per_class) = trainer.get_datasets_and_restrictions()
 
     # Get a trainer or evaluator.
-    trainer_instance = trainer_test_all_query_images.Trainer(
+    trainer_instance = trainer.Trainer(
         is_training=FLAGS.is_training,
         train_dataset_list=train_datasets,
         eval_dataset_list=eval_datasets,
