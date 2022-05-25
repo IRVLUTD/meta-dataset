@@ -815,6 +815,7 @@ class Trainer(object):
         print(tesla_variant)
         with open(f"pkl/{tesla_variant}-episode.pkl", 'rb') as pkl_file:
           data_local = pickle.load(pkl_file)
+        data_local = tf.data.Dataset.from_tensor_slices([data_local])
         predictions_dist = self.learners[split].forward_pass(data_local)
         loss_dist = self.learners[split].compute_loss(
             predictions=predictions_dist,
