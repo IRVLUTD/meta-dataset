@@ -291,40 +291,7 @@ def main(unused_argv):
     else:
       eval_split = trainer.TEST_SPLIT
 
-    meta = {
-      'tesla-mixture': 52,
-      'tesla-unseen': 41,
-      'tesla-seen': 11,
-      'tesla-synthetic-seen-13': 13,
-    }
-
-    train_classes = 125
-    tesla_variant = list(meta.keys())[0]  # tesla-mixture
-    BASE_PATH = FLAGS.records_root_dir
-    # tfrecords_dir = f"{BASE_PATH}/{tesla_variant}/tesla"
-    tfrecords_dir = f"{BASE_PATH}/tesla"
-    dataset_spec = dataset_spec_lib.load_dataset_spec(tfrecords_dir)
-    start = train_classes
-    end = start + meta[tesla_variant]
-
-    episode = None
-    episode_pkl_path = f"pkl/{tesla_variant}-episode.pkl"
-    with open(episode_pkl_path, 'rb') as pkl_file:
-      episode = pickle.load(pkl_file)
-    
-    # image_decoder = decoder.ImageDecoder(image_size=126)
-    # iterator = dataset.make_one_shot_iterator()
-    
-    # while True:
-    #   try:
-    #     next_element = iterator.get_next()
-    #     trainer_instance.sess.run(next_element)
-    #     acc, total_samples = trainer_instance.evaluate_one_episode(eval_split, episode)
-    #   except tf.errors.OutOfRangeError:
-        # break
-    os.environ["EPISODE_PKL_PATH"] = episode_pkl_path
-
-    acc, total_samples = trainer_instance.evaluate_one_episode(eval_split, episode)
+    acc, total_samples = trainer_instance.evaluate_one_episode(eval_split)
     print("OUTPUT: ", acc, total_samples)
 
 

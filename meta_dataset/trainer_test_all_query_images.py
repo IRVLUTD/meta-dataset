@@ -1324,7 +1324,16 @@ class Trainer(object):
     Raises:
       UnexpectedSplitError: If split not as expected for this episode build.
     """
-    with open(os.environ["EPISODE_PKL_PATH"], 'rb') as pkl_file:
+    meta = {
+      'tesla-mixture': 52,
+      'tesla-unseen': 41,
+      'tesla-seen': 11,
+      'tesla-synthetic-seen-13': 13,
+    }
+
+    tesla_variant = list(meta.keys())[0]  # tesla-mixture
+    print(tesla_variant)
+    with open(f"pkl/{tesla_variant}-episode.pkl", 'rb') as pkl_file:
       return pickle.load(pkl_file)
       
   def _build_batch(self, split):
