@@ -19,10 +19,9 @@ do
 export DATASRC="$DATASET_DOWNLOAD_DIR/$DATASET_DIR_NAME"
  # For creating tfrecords of different tesla variants
  # If no variants then comment the following line
-_RECORDS="$RECORDS/$DATASET_DIR_NAME"
 python -m meta_dataset.dataset_conversion.convert_datasets_to_records \
 	--dataset=tesla --splits_root=$SPLITS \
-	--records_root=$_RECORDS --tesla_data_root=$DATASRC \
+	--records_root="$RECORDS/$DATASET_DIR_NAME" --tesla_data_root=$DATASRC \
 	--image_filter_threshold=$image_filter_threshold \
 	--do_support_set_oversampling=$oversample_support_set
 done
