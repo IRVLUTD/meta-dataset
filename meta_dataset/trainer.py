@@ -615,13 +615,14 @@ class Trainer(object):
     self.initialize_saver()
     self.create_summary_writer()
 
-    sc,sl,qc,ql, p, oh, top_5, ways, shots, cls_ids = self.sess.run([
+    sc,sl,qc,ql, acc, p, oh, top_5, ways, shots, cls_ids = self.sess.run([
       data_tensors.support_class_ids,
       data_tensors.support_labels,
       data_tensors.query_class_ids,
       data_tensors.query_labels,
       # output['accuracy'],
       # output['predictions'],
+      output['accuracy'],
       tf.argmax(output['predictions'], -1),
       tf.argmax(data_tensors.onehot_labels, -1),
       tf.math.top_k(output['predictions'], k=5),
@@ -629,27 +630,7 @@ class Trainer(object):
       output['episode_info']['shots'],
       output['episode_info']['class_ids'], # actual class_ids 
       ])
-    print("\n\n\n1")
-    print(sc, sl, qc, ql)
-    # print(sess.run(data_local.onehot_labels))
-    print("\n\n\n2")
-    print(len(sc), len(sl), len(qc), len(ql))
-    print("\n\n\n3")
-    # print(ac)
-    print("\n\n\n4")
-    # print(out)
-    print("\n\n\n5")
-    print(oh)
-    print("\n\n\n5")
-    # print(preds)
-    print("\n\n\n6")
-    print(p)
-    print("\n\n\n7")
-    print(len(oh))    
-    print("\n\n\n8")
-    print(top_5.indices)    
-    print("\n\n\n9")
-    print(f"{ways=}, {shots=}, {cls_ids=}")    
+
     true_predictions = 0
     true_predictions_top_5 = 0
     total_query_samples = len(oh)
@@ -658,9 +639,12 @@ class Trainer(object):
         true_predictions += 1
       if i in k:
         true_predictions_top_5 += 1
-    print(true_predictions, true_predictions_top_5, total_query_samples)
-    print(f"Top-1% Acc: {(true_predictions/total_query_samples)}")
-    print(f"Top-5% Acc: {(true_predictions_top_5/total_query_samples)}")
+    
+    def round_to_2_decimal(value):
+      return "{:0.2f}".format(value * 100.0)
+    
+    print(f"Top-1% Acc: {round_to_2_decimal(true_predictions/total_query_samples)}")
+    print(f"Top-5% Acc: {round_to_2_decimal(true_predictions_top_5/total_query_samples)}")
     
 
 
@@ -1456,7 +1440,6 @@ class Trainer(object):
         use_dag_ontology = False
 
       with gin.config_scope(gin_scope_name):
-        print(f"{self.test_entire_test_set_using_single_episode=}, make_one_source_episode_pipeline")
         data_pipeline = pipeline.make_one_source_episode_pipeline(
             dataset_spec_list[0],
             use_dag_ontology=use_dag_ontology,
@@ -1502,8 +1485,6 @@ class Trainer(object):
           query_labels=query_labels,
           support_class_ids=support_class_ids,
           query_class_ids=query_class_ids)
-    print("data_pipeline:", data_pipeline)
-    print(data_pipeline.map(lambda x, y: x).map(create_episode_struct))
     return data_pipeline.map(lambda x, y: x).map(create_episode_struct)
 
   def _build_batch(self, split):
@@ -1757,47 +1738,6 @@ class Trainer(object):
         ci_acc_summary.value.add(tag='acc CI', simple_value=ci_acc)
 
     return mean_acc, ci_acc, mean_acc_summary, ci_acc_summary
-
-  # # UPDATE
-  # def evaluate_one_episode(self, split, step=0):
-  #   """Returns performance metrics across num_eval_trials episodes / batches."""
-  #   num_eval_trials = 1
-
-  #   logging.info('Performing evaluation of the %s split using %d episodes...',
-  #                split, num_eval_trials)
-  #   accuracies, predictions, eps_info_list = [], [], []
-  #   total_samples = 0
-  #   for eval_trial_num in range(num_eval_trials):
-  #     # Following is used to normalize accuracies.
-  #     acc, summaries = self.sess.run(
-  #         [self.accuracies_raw[split], self.evaluation_summaries])
-      
-  #     # Write complete summaries during evaluation, but not training.
-  #     # Otherwise, validation summaries become too big.
-  #     if not self.is_training and self.summary_writer:
-  #       self.summary_writer.add_summary(summaries, eval_trial_num)
-  #     if self._fixed_eval == 'vtab':
-  #       accuracies.append(np.sum(acc))
-  #       total_samples += np.size(acc)
-  #       continue
-  #     accuracies.append(np.sum(acc))
-  #     total_samples += np.size(acc)
-
-  #   logging.info('Finished evaluation.')
-
-  #   sum_acc = np.sum(accuracies)
-
-  #   # VTAB evaluation has 1 episode.
-  #   if self._fixed_eval == 'vtab':
-  #     ci_acc = 0
-
-  #   if not self.is_training:
-  #     # Logging during training is handled by self.train() instead.
-  #     logging.info('Meta-%s split: Accuracy=%f, Samples=%f\n', split,
-  #                  sum_acc, total_samples)
-  #     print("ACC: ", accuracies)
-
-  #   return sum_acc, total_samples
 
   def add_eval_summaries(self):
     """Returns summaries of way / shot / classes/ logits / targets."""

@@ -23,11 +23,15 @@ cd $RECORDS; rm tesla; ln -s $TESLA_DATASET_VARIANT tesla; cd $ROOT_DIR;
 
 ls -l $RECORDS # useful to check if sym links are correct
 
-
+image_height=126
 
 for MODEL in $models
 do
   export EXP_GIN=${MODEL}_${SOURCE}
+  if [ "$MODEL" == "baselinefinetune" ];
+  then
+    image_height=84
+  fi
   # export EXPNAME=${EXP_GIN}${nve_suffix}
   # for DATASET in omniglot 
   for DATASET in tesla 
@@ -48,7 +52,7 @@ do
         --gin_bindings="Trainer.experiment_name='${EXPNAME}'" \
         --gin_bindings="Trainer.checkpoint_to_restore='${EXPROOT}/checkpoints/${EXPNAME}/model_${BESTNUM}.ckpt'" \
         --gin_bindings="Trainer.perform_filtration=${perform_filtration_ds}" \
-        --gin_bindings="DataConfig.image_height=126" \
+        --gin_bindings="DataConfig.image_height=${image_height}" \
         --gin_bindings="Trainer.num_eval_episodes=$eval_episodes" \
         --gin_bindings="Trainer.test_entire_test_set_using_single_episode=${10}" \
         --gin_bindings="benchmark.eval_datasets='$DATASET'"
@@ -64,7 +68,7 @@ do
         --gin_bindings="Trainer.checkpoint_to_restore='${EXPROOT}/checkpoints/${EXPNAME}/model_${BESTNUM}.ckpt'" \
         --gin_bindings="Trainer.perform_filtration=${perform_filtration_ds}" \
         --gin_bindings="Learner.embedding_fn = @${_backbone}" \
-        --gin_bindings="DataConfig.image_height=126" \
+        --gin_bindings="DataConfig.image_height=${image_height}" \
         --gin_bindings="Trainer.num_eval_episodes=$eval_episodes" \
         --gin_bindings="Trainer.test_entire_test_set_using_single_episode=${10}" \
         --gin_bindings="benchmark.eval_datasets='$DATASET'"      
