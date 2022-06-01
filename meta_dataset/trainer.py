@@ -616,7 +616,7 @@ class Trainer(object):
     self.create_summary_writer()
 
     predictions, target, top_5 = self.sess.run([
-      tf.math.top_k(output['predictions'], k=1),
+      tf.argmax(output['predictions'], -1),
       tf.argmax(data_tensors.onehot_labels, -1),
       tf.math.top_k(output['predictions'], k=5)
     ])
