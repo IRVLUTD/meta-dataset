@@ -132,6 +132,7 @@ tf.flags.DEFINE_string(
 tf.flags.DEFINE_string('splits_root', '',
                        'The root directory storing the splits of datasets.')
 
+
 FLAGS = tf.flags.FLAGS
 DEFAULT_FILE_PATTERN = '{}.tfrecords'
 TRAIN_TEST_FILE_PATTERN = '{}_{}.tfrecords'
@@ -139,7 +140,6 @@ AUX_DATA_PATH = os.path.dirname(os.path.realpath(__file__))
 VGGFLOWER_LABELS_PATH = os.path.join(AUX_DATA_PATH,
                                      'VggFlower_labels.txt')
 TRAFFICSIGN_LABELS_PATH = os.path.join(AUX_DATA_PATH, 'TrafficSign_labels.txt')
-
 SHUFFLE_SEED = 22032022
 
 def make_example(features):
@@ -462,7 +462,7 @@ def write_tfrecord_from_image_files_with_set_info(class_files,
       with the record_decoder of the DataProvider that will read the file.
     skip_on_error: whether to skip an image if there is an issue in reading it.
       The default it to crash and report the original exception.
-
+    shuffle_with_seed: seed for random shuffling
   Returns:
     The number of images written into the records file.
   """
@@ -538,14 +538,15 @@ def write_tfrecord_from_image_files_with_set_info(class_files,
       # UPDATE: Exclude an image if it's width or height is < 15 pixels
       inclusion_threshold = 15
       include_image = not (width < inclusion_threshold or height < inclusion_threshold)
-      
+      include_image = True
       if include_image:
         # UPDATE: Oversample tesla support images by a factor of math.ceil(k_query/k_support)
         # This is required as tensorflow's default shuffle operation don't allow
         # custom randomization for data sampling
         # do oversampling for tesla dataset's support set
         set_is_support = set_info == "support"
-        do_oversampling = dataset_is_tesla and set_is_support
+        # do_oversampling = dataset_is_tesla and set_is_support
+        do_oversampling = False
         repeat = math.ceil(k_query/k_support) if do_oversampling else 1
         example = get_example(img, 
                               class_label, 
@@ -638,6 +639,7 @@ def write_tfrecord_from_tesla_directory_structure(class_directory,
   for class_set in ["support", "query"]:
     class_files.extend(get_classes_with_set_info(class_directory, class_set))
 
+  # shuffle_with_seed=None
   if shuffle_with_seed is not None:
     # UPDATE: Shuffle is a must requirement so that support and query images 
     # are mixed randomly instead of having support examples first and 
@@ -788,7 +790,6 @@ class DatasetConverter(object):
       records_path = os.path.join(FLAGS.records_root, name)
     tf.io.gfile.makedirs(records_path)
     self.records_path = records_path
-
     # Where to write the DatasetSpecification instance.
     self.dataset_spec_path = os.path.join(self.records_path,
                                           'dataset_spec.json')

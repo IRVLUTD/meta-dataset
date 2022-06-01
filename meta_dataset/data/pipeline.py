@@ -28,6 +28,7 @@ needed, decode the example strings, and resize the images.
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
+from email.mime import image
 
 import functools
 
@@ -35,12 +36,14 @@ from absl import logging
 import gin.tf
 from meta_dataset import data
 from meta_dataset.data import decoder
+from meta_dataset.data import providers
 from meta_dataset.data import learning_spec
 from meta_dataset.data import reader
 from meta_dataset.data import sampling
 from simclr import data_util
 from six.moves import zip
 import tensorflow.compat.v1 as tf
+import numpy as np
 
 tf.flags.DEFINE_float('color_jitter_strength', 1.0,
                       'The strength of color jittering for SimCLR episodes.')
@@ -245,7 +248,8 @@ def simclr_augment(image_batch, blur=False):
                             image_batch)
   image_batch = image_batch * 2.0 - 1.0
   return image_batch
-  
+
+
 @gin.configurable(allowlist=['support_decoder', 'query_decoder'])
 def process_episode(example_strings, class_ids, dataset_name, data_split, 
                     perform_filtration, chunk_sizes, image_size, 
@@ -506,11 +510,17 @@ def process_batch(example_strings, class_ids, image_size, batch_decoder):
   return (images, labels)
 
 
+# UPDATE: For test_entire_test_set_using_single_episode setup and 
+# perform_filtration feature compatibility to the existing codebase. 
+# NOTE: make_one_source_episode_pipeline() Tested. 
+# This works without errors. For using only tesla, the following
+# function is enough
 def make_one_source_episode_pipeline(dataset_spec,
                                      use_dag_ontology,
                                      use_bilevel_ontology,
                                      split,
                                      episode_descr_config,
+                                     test_entire_test_set_using_single_episode,
                                      perform_filtration=False,
                                      pool=None,
                                      shuffle_buffer_size=None,
@@ -529,10 +539,13 @@ def make_one_source_episode_pipeline(dataset_spec,
     use_bilevel_ontology: Whether to use source's bilevel ontology (consisting
       of superclasses and subclasses) to sample episode classes.
     split: A learning_spec.Split object identifying the source (meta-)split.
-    perform_filtration: A boolean flag indicating whether filtration needs 
-      to be performed for tesla dataset
     episode_descr_config: An instance of EpisodeDescriptionConfig containing
       parameters relating to sampling shots and ways for episodes.
+    test_entire_test_set_using_single_episode: A boolean flag indicating whether 
+      the test has to be done using a single episode containing all support and 
+      query images of the test set.
+    perform_filtration: A boolean flag indicating whether filtration needs 
+      to be performed for tesla dataset.
     pool: String (optional), for example-split datasets, which example split to
       use ('train', 'valid', or 'test'), used at meta-test time only.
     shuffle_buffer_size: int or None, shuffle buffer size for each Dataset.
@@ -556,7 +569,7 @@ def make_one_source_episode_pipeline(dataset_spec,
     A Dataset instance that outputs tuples of fully-assembled and decoded
       episodes zipped with the ID of their data source of origin.
   """
-  use_all_classes = False
+  use_all_classes = test_entire_test_set_using_single_episode
   if pool is not None:
     if not data.POOL_SUPPORTED:
       raise NotImplementedError('Example-level splits or pools not supported.')
@@ -564,10 +577,12 @@ def make_one_source_episode_pipeline(dataset_spec,
     num_to_take = -1
 
   num_unique_descriptions = episode_descr_config.num_unique_descriptions
+
   episode_reader = reader.EpisodeReader(dataset_spec, split,
                                         shuffle_buffer_size,
                                         read_buffer_size_bytes, num_prefetch,
-                                        num_to_take, num_unique_descriptions)
+                                        num_to_take, num_unique_descriptions,
+                                        test_entire_test_set_using_single_episode)
   sampler = sampling.EpisodeDescriptionSampler(
       episode_reader.dataset_spec,
       split,
@@ -576,8 +591,11 @@ def make_one_source_episode_pipeline(dataset_spec,
       use_dag_hierarchy=use_dag_ontology,
       use_bilevel_hierarchy=use_bilevel_ontology,
       use_all_classes=use_all_classes,
-      ignore_hierarchy_probability=ignore_hierarchy_probability)
+      ignore_hierarchy_probability=ignore_hierarchy_probability,
+      test_entire_test_set_using_single_episode=test_entire_test_set_using_single_episode)
+
   dataset = episode_reader.create_dataset_input_pipeline(sampler, pool=pool)
+
   # Episodes coming out of `dataset` contain flushed examples and are internally
   # padded with placeholder examples. `process_episode` discards flushed
   # examples, splits the episode into support and query sets, removes the
@@ -602,11 +620,19 @@ def make_one_source_episode_pipeline(dataset_spec,
   return dataset
 
 
+# UPDATE: For test_entire_test_set_using_single_episode setup and 
+# perform_filtration feature compatibility to the existing codebase. 
+# NOTE: Testing required
+# TODO: Logically and syntactically correct. Test if this works correctly
+# Didn't test as for conducting experiments with tesla only 
+# make_one_source_episode_pipeline() was required
 def make_multisource_episode_pipeline(dataset_spec_list,
                                       use_dag_ontology_list,
                                       use_bilevel_ontology_list,
                                       split,
                                       episode_descr_config,
+                                      test_entire_test_set_using_single_episode,
+                                      perform_filtration,
                                       pool=None,
                                       shuffle_buffer_size=None,
                                       read_buffer_size_bytes=None,
@@ -630,6 +656,11 @@ def make_multisource_episode_pipeline(dataset_spec_list,
       same for all datasets.
     episode_descr_config: An instance of EpisodeDescriptionConfig containing
       parameters relating to sampling shots and ways for episodes.
+    test_entire_test_set_using_single_episode: A boolean flag indicating whether 
+      the test has to be done using a single episode containing all support and 
+      query images of the test set.
+    perform_filtration: A boolean flag indicating whether filtration needs 
+      to be performed for tesla dataset.
     pool: String (optional), for example-split datasets, which example split to
       use ('train', 'valid', or 'test'), used at meta-test time only.
     shuffle_buffer_size: int or None, shuffle buffer size for each Dataset.
@@ -650,6 +681,9 @@ def make_multisource_episode_pipeline(dataset_spec_list,
     A Dataset instance that outputs tuples of fully-assembled and decoded
       episodes zipped with the ID of their data source of origin.
   """
+  # UPDATE
+  use_all_classes = test_entire_test_set_using_single_episode
+
   if pool is not None:
     if not data.POOL_SUPPORTED:
       raise NotImplementedError('Example-level splits or pools not supported.')
@@ -668,14 +702,17 @@ def make_multisource_episode_pipeline(dataset_spec_list,
                                           shuffle_buffer_size,
                                           read_buffer_size_bytes, num_prefetch,
                                           num_to_take_for_dataset,
-                                          num_unique_descriptions)
+                                          num_unique_descriptions,
+                                          test_entire_test_set_using_single_episode)
     sampler = sampling.EpisodeDescriptionSampler(
         episode_reader.dataset_spec,
         split,
         episode_descr_config,
         pool=pool,
+        use_all_classes=use_all_classes,
         use_dag_hierarchy=use_dag_ontology,
-        use_bilevel_hierarchy=use_bilevel_ontology)
+        use_bilevel_hierarchy=use_bilevel_ontology,
+        test_entire_test_set_using_single_episode=test_entire_test_set_using_single_episode)
     dataset = episode_reader.create_dataset_input_pipeline(sampler, pool=pool)
     # Create a dataset to zip with the above for identifying the source.
     source_id_dataset = tf.data.Dataset.from_tensors(source_id).repeat()

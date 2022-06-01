@@ -19,3 +19,8 @@ Trainer.visualize_data = True
 # a boolean flag indicating whether filtration needs 
 # to be performed for tesla dataset
 Trainer.perform_filtration = True
+
+# A boolean flag indicating whether test has to be done
+# using a single episode containing all support and 
+# query images for the test 
+Trainer.non_episodic_test_setup = False

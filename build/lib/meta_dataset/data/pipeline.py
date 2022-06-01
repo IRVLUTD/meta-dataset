@@ -28,6 +28,7 @@ needed, decode the example strings, and resize the images.
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
+from email.mime import image
 
 import functools
 
@@ -35,12 +36,14 @@ from absl import logging
 import gin.tf
 from meta_dataset import data
 from meta_dataset.data import decoder
+from meta_dataset.data import providers
 from meta_dataset.data import learning_spec
 from meta_dataset.data import reader
 from meta_dataset.data import sampling
 from simclr import data_util
 from six.moves import zip
 import tensorflow.compat.v1 as tf
+import numpy as np
 
 tf.flags.DEFINE_float('color_jitter_strength', 1.0,
                       'The strength of color jittering for SimCLR episodes.')
@@ -245,7 +248,76 @@ def simclr_augment(image_batch, blur=False):
                             image_batch)
   image_batch = image_batch * 2.0 - 1.0
   return image_batch
+
+@gin.configurable(allowlist=['support_decoder', 'query_decoder'])
+def create_one_episode_for_all_tesla_test_set(
+  support_tfrecords_path, query_tfrecords_path,
+  image_size, support_decoder, query_decoder, n=125):
+  """Create a single episode for the entire test set.
+
+  This function is almost like `process_episode()` function, except:
+  - It doesn't need to call flush_and_chunk_episode().
+  - And the labels are read from the tf.Example directly. We assume that
+    labels are already mapped in to [0, n_ways - 1].
+
+  Args:
+    support_tfrecords_path: support data tfrecords file path
+    support_tfrecords_path: query data tfrecords file path
+    image_size: int, desired image size used during decoding.
+    support_decoder: If ImageDecoder, used to decode support set images. If
+      None, no decoding of support images is performed.
+    query_decoder: ImageDecoder, used to decode query set images. If
+      None, no decoding of query images is performed.
+    n: int, number to subtract to get label ids
+
+  Returns:
+    support_images, support_labels, support_labels, query_images,
+      query_labels, query_labels: Tensors, batches of images, labels, and
+      labels, for the support and query sets (respectively).
+  """
+
+
+  if isinstance(support_decoder, decoder.ImageDecoder):
+    log_data_augmentation(support_decoder.data_augmentation, 'support')
+    support_decoder.image_size = image_size
+
+  if isinstance(query_decoder, decoder.ImageDecoder):
+    log_data_augmentation(query_decoder.data_augmentation, 'query')
+    query_decoder.image_size = image_size
+
+  raw_support = tf.data.TFRecordDataset(support_tfrecords_path).take(-1)
+  support_images = raw_support.map(support_decoder)
+  support_class_ids = raw_support.map(decoder.get_class_id)
+  support_labels = raw_support.map(decoder.get_label)
   
+  raw_query = tf.data.TFRecordDataset(query_tfrecords_path).take(-1)
+  query_images = raw_query.map(query_decoder)
+  query_class_ids = raw_query.map(decoder.get_class_id)
+  query_labels = raw_query.map(decoder.get_label)
+
+  # with tf.Session() as sess:
+  #   source_id_dataset = tf.data.Dataset.from_tensors(0).repeat()
+  #   s = tf.data.Dataset.zip((support_class_ids, source_id_dataset))
+  #   q = tf.data.Dataset.zip((query_class_ids, source_id_dataset))
+  #   s = tf.data.make_one_shot_iterator(s)
+  #   q = tf.data.make_one_shot_iterator(q)
+
+  #   while True:
+  #     try: 
+  #       print("Support", sess.run(s.get_next()))
+  #     except:
+  #       break
+    
+  #   while True:
+  #     try: 
+  #       print("Query", sess.run(q.get_next()))
+  #     except:
+  #       break
+
+  episode = (support_images, support_labels, support_class_ids, query_images,
+            query_labels, query_class_ids)
+  return episode
+
 @gin.configurable(allowlist=['support_decoder', 'query_decoder'])
 def process_episode(example_strings, class_ids, dataset_name, data_split, 
                     perform_filtration, chunk_sizes, image_size, 
@@ -564,6 +636,7 @@ def make_one_source_episode_pipeline(dataset_spec,
     num_to_take = -1
 
   num_unique_descriptions = episode_descr_config.num_unique_descriptions
+
   episode_reader = reader.EpisodeReader(dataset_spec, split,
                                         shuffle_buffer_size,
                                         read_buffer_size_bytes, num_prefetch,
@@ -577,7 +650,9 @@ def make_one_source_episode_pipeline(dataset_spec,
       use_bilevel_hierarchy=use_bilevel_ontology,
       use_all_classes=use_all_classes,
       ignore_hierarchy_probability=ignore_hierarchy_probability)
+
   dataset = episode_reader.create_dataset_input_pipeline(sampler, pool=pool)
+
   # Episodes coming out of `dataset` contain flushed examples and are internally
   # padded with placeholder examples. `process_episode` discards flushed
   # examples, splits the episode into support and query sets, removes the
@@ -601,6 +676,158 @@ def make_one_source_episode_pipeline(dataset_spec,
   dataset = dataset.prefetch(1)
   return dataset
 
+# UDPATE: made using make_one_source_episode_pipeline
+def make_one_source_single_episode_pipeline_for_non_episodic_test_setup(dataset_spec,
+                                     use_dag_ontology,
+                                     use_bilevel_ontology,
+                                     split,
+                                     episode_descr_config,
+                                     perform_filtration=False,
+                                     pool=None,
+                                     shuffle_buffer_size=None,
+                                     read_buffer_size_bytes=None,
+                                     num_prefetch=0,
+                                     image_size=None,
+                                     num_to_take=None,
+                                     ignore_hierarchy_probability=0.0,
+                                     simclr_episode_fraction=0.0):
+  """Returns a pipeline emitting data from one single source as as single Episode.
+
+  Args:
+    dataset_spec: A DatasetSpecification object defining what to read from.
+    use_dag_ontology: Whether to use source's ontology in the form of a DAG to
+      sample episodes classes.
+    use_bilevel_ontology: Whether to use source's bilevel ontology (consisting
+      of superclasses and subclasses) to sample episode classes.
+    split: A learning_spec.Split object identifying the source (meta-)split.
+    perform_filtration: A boolean flag indicating whether filtration needs 
+      to be performed for tesla dataset
+    episode_descr_config: An instance of EpisodeDescriptionConfig containing
+      parameters relating to sampling shots and ways for episodes.
+    pool: String (optional), for example-split datasets, which example split to
+      use ('train', 'valid', or 'test'), used at meta-test time only.
+    shuffle_buffer_size: int or None, shuffle buffer size for each Dataset.
+    read_buffer_size_bytes: int or None, buffer size for each TFRecordDataset.
+    num_prefetch: int, the number of examples to prefetch for each class of each
+      dataset. Prefetching occurs just after the class-specific Dataset object
+      is constructed. If < 1, no prefetching occurs.
+    image_size: int, desired image size used during decoding.
+    num_to_take: Optional, an int specifying a number of elements to pick from
+      each class' tfrecord. If specified, the available images of each class
+      will be restricted to that int. By default no restriction is applied and
+      all data is used.
+    ignore_hierarchy_probability: Float, if using a hierarchy, this flag makes
+      the sampler ignore the hierarchy for this proportion of episodes and
+      instead sample categories uniformly.
+    simclr_episode_fraction: Float, fraction of episodes that will be converted
+      to SimCLR Episodes as described in the CrossTransformers paper.
+
+
+  Returns:
+    A Dataset instance that outputs tuples of fully-assembled and decoded
+      episodes zipped with the ID of their data source of origin.
+  """
+  use_all_classes = True # use all test classes
+  if pool is not None:
+    if not data.POOL_SUPPORTED:
+      raise NotImplementedError('Example-level splits or pools not supported.')
+  if num_to_take is None:
+    num_to_take = -1
+
+  num_unique_descriptions = episode_descr_config.num_unique_descriptions
+
+  # print(f"\n\n\n\n{num_unique_descriptions=}, {num_to_take=}\n\n\n\n")
+
+  episode_reader = reader.EpisodeReader(dataset_spec, split,
+                                        shuffle_buffer_size,
+                                        read_buffer_size_bytes, num_prefetch,
+                                        num_to_take, num_unique_descriptions)
+  sampler = sampling.EpisodeDescriptionSampler(
+      episode_reader.dataset_spec,
+      split,
+      episode_descr_config,
+      pool=pool,
+      use_dag_hierarchy=use_dag_ontology,
+      use_bilevel_hierarchy=use_bilevel_ontology,
+      use_all_classes=use_all_classes,
+      ignore_hierarchy_probability=ignore_hierarchy_probability)
+  
+  # print(f"\n\n\n\n{num_unique_descriptions=} {episode_reader=} {sampler=}\n\n\n\n")
+
+
+  dataset = episode_reader.create_dataset_input_pipeline(sampler, pool=pool)
+
+  # Episodes coming out of `dataset` contain flushed examples and are internally
+  # padded with placeholder examples. `process_episode` discards flushed
+  # examples, splits the episode into support and query sets, removes the
+  # placeholder examples and decodes the example strings.
+  chunk_sizes = sampler._compute_chunk_sizes()
+  map_fn = functools.partial(
+      process_episode,
+      dataset_name=episode_reader.dataset_spec.name, #UPDATE,
+      data_split=split,
+      perform_filtration=perform_filtration,
+      chunk_sizes=chunk_sizes,
+      image_size=image_size,
+      simclr_episode_fraction=simclr_episode_fraction)
+  dataset = dataset.map(map_fn)
+  # There is only one data source, so we know that all episodes belong to it,
+  # but for interface consistency, zip with a dataset identifying the source.
+  source_id_dataset = tf.data.Dataset.from_tensors(0).repeat()
+  dataset = tf.data.Dataset.zip((dataset, source_id_dataset))
+
+  # Overlap episode processing and training.
+  dataset = dataset.prefetch(1)
+  return dataset
+
+# UDPATE: made using make_one_source_episode_pipeline
+def make_one_source_episode_pipeline_from_tesla_support_query_tfrecords(
+  tesla_variant="tesla-mixture",
+  image_size=None,
+  simclr_episode_fraction=0.0):
+  """Returns a pipeline emitting data from one single source as Episodes.
+
+    Args:
+      tesla_variant: Tesla Dataset Variant, e.g.
+        - tesla-mixture
+        - tesla-unseen
+        - tesla-seen
+        - tesla-synthetic-unseen-13
+      image_size: int, desired image size used during decoding.
+      simclr_episode_fraction: Float, fraction of episodes that will be converted
+        to SimCLR Episodes as described in the CrossTransformers paper.
+    Returns:
+      A Dataset instance that outputs tuples of fully-assembled and decoded
+        episodes zipped with the ID of their data source of origin.
+    """
+  dataset = create_one_episode_for_all_tesla_test_set(
+    support_tfrecords_path = f"support_query_records/{tesla_variant}.support.tfrecords",
+    query_tfrecords_path = f"support_query_records/{tesla_variant}.query.tfrecords",
+    image_size=image_size)
+  
+  # There is only one data source, so we know that all episodes belong to it,
+  # but for interface consistency, zip with a dataset identifying the source.
+  source_id_dataset = tf.data.Dataset.from_tensors(0).repeat()
+  # tf.print(source_id_dataset)
+  dataset = tf.data.Dataset.zip((dataset, source_id_dataset))
+  data_limit = 10000000
+  dataset = dataset.batch(data_limit)
+  print("\n\n\nFFFFFFFFFFFFFFFFFFFFFFFFFFf")
+  t=tf.data.make_one_shot_iterator(dataset).get_next()
+  with tf.Session() as sess:
+    _ = sess.run([
+    t
+    ])
+  print("\n\n\na")
+  # print(_)
+  # print(sess.run(data_local.onehot_labels))
+  print("\n\n\nb")
+  print(len(_))
+  print("\n\n\nc")
+  print("\n\n\nFFFFFFFFFFFFFFFFFFFFFFFFFFf")
+  # Overlap episode processing and training.
+  # dataset = dataset.prefetch(data_limit)
+  return dataset
 
 def make_multisource_episode_pipeline(dataset_spec_list,
                                       use_dag_ontology_list,
@@ -695,7 +922,7 @@ def make_multisource_episode_pipeline(dataset_spec_list,
         *episode,
         dataset_name=episode_reader.dataset_spec.name, #UPDATE,
         data_split=split,
-        perform_filtration=perform_filtration,
+        # perform_filtration=perform_filtration,
         chunk_sizes=chunk_sizes,
         image_size=image_size,
         simclr_episode_fraction=simclr_episode_fraction), source_id

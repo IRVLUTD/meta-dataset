@@ -30,5 +30,6 @@ do
     --gin_bindings="Trainer.perform_filtration=$perform_filtration" \
     --gin_bindings="resnet34.max_stride=$max_stride" \
     --gin_bindings="bn.use_ema=$use_ema" \
+    --gin_bindings="Trainer.test_entire_test_set_using_single_episode=False" \
     --gin_bindings="EpisodeDescriptionConfig.max_support_size_contrib_per_class=100" # default value for MD imagenet
 done

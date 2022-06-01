@@ -5,7 +5,9 @@ __pycache__
 *.egg-info
 checkpoints/
 datasets/
-records/
 *experiment_output*/*
 .env
 logs/
+prediction-plots/*
+records*
+test_results_from_logs*

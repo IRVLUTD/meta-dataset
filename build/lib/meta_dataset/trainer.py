@@ -264,7 +264,8 @@ class Trainer(object):
       distribute,
       enable_tf_optimizations,
       visualize_data,
-      perform_filtration):
+      perform_filtration,
+      non_episodic_test_setup):
     # pyformat: disable
     """Initializes a Trainer.
 
@@ -345,6 +346,8 @@ class Trainer(object):
       visualize_data: bool indicating whether to visualize data before training.
       perform_filtration: A boolean flag indicating whether filtration needs 
       to be performed for tesla dataset
+      non_episodic_test_setup: A boolean flag indicating whether test has to be done
+      using a single episode containing all support and query images for the test 
     Raises:
       RuntimeError: If requested to meta-learn the initialization of the linear
           layer weights but they are unexpectedly omitted from saving/restoring.
@@ -375,6 +378,7 @@ class Trainer(object):
     self.enable_tf_optimizations = enable_tf_optimizations
     self.visualize_data = visualize_data
     self.perform_filtration = perform_filtration
+    self.non_episodic_test_setup = non_episodic_test_setup
     self.data_spec = None
 
     # Currently we are supporting single dataset when we read from fixed
@@ -552,6 +556,7 @@ class Trainer(object):
     self.predictions = {}
     self.losses = {}
     self.accuracies = {}
+    self.accuracies_raw = {}
     self.episode_info = {}
     for split in self.required_splits:
       if self.distribute:
@@ -583,17 +588,18 @@ class Trainer(object):
             self.data_fns[split]()).get_next()
         output = self.run_fns[split](data_tensors)
       
+
       loss = tf.reduce_mean(output['loss'])
       loss += self.regularizer_fns[split]()
 
       self.losses[split] = loss
       self.accuracies[split] = tf.reduce_mean(output['accuracy'])
+      self.accuracies_raw[split] = output['accuracy']
       self.predictions[split] = output['predictions']
       self.episode_info[split] = output['episode_info']
       
       if split == TRAIN_SPLIT and self.is_training:
         self.train_op = output['train_op']
-
 
     if self.checkpoint_dir is not None:
       if not tf.io.gfile.exists(self.checkpoint_dir):
@@ -607,7 +613,55 @@ class Trainer(object):
     self.initialize_saver()
     self.create_summary_writer()
 
-                
+    sc,sl,qc,ql, p, oh, top_5, ways, shots, cls_ids = self.sess.run([
+      data_tensors.support_class_ids,
+      data_tensors.support_labels,
+      data_tensors.query_class_ids,
+      data_tensors.query_labels,
+      # output['accuracy'],
+      # output['predictions'],
+      tf.argmax(output['predictions'], -1),
+      tf.argmax(data_tensors.onehot_labels, -1),
+      tf.math.top_k(output['predictions'], k=5),
+      output['episode_info']['way'],
+      output['episode_info']['shots'],
+      output['episode_info']['class_ids'], # actual class_ids 
+      ])
+    print("\n\n\n1")
+    print(sc, sl, qc, ql)
+    # print(sess.run(data_local.onehot_labels))
+    print("\n\n\n2")
+    print(len(sc), len(sl), len(qc), len(ql))
+    print("\n\n\n3")
+    # print(ac)
+    print("\n\n\n4")
+    # print(out)
+    print("\n\n\n5")
+    print(oh)
+    print("\n\n\n5")
+    # print(preds)
+    print("\n\n\n6")
+    print(p)
+    print("\n\n\n7")
+    print(len(oh))    
+    print("\n\n\n8")
+    print(top_5.indices)    
+    print("\n\n\n9")
+    print(f"{ways=}, {shots=}, {cls_ids=}")    
+    true_predictions = 0
+    true_predictions_top_5 = 0
+    total_query_samples = len(oh)
+    for i,j,k in zip(oh, p, top_5.indices):
+      if i == j:
+        true_predictions += 1
+      if i in k:
+        true_predictions_top_5 += 1
+    print(true_predictions, true_predictions_top_5, total_query_samples)
+    print(f"Top-1% Acc: {(true_predictions/total_query_samples)}")
+    print(f"Top-5% Acc: {(true_predictions_top_5/total_query_samples)}")
+    
+
+
     if self.visualize_data:
       (
         support_images, 
@@ -652,7 +706,7 @@ class Trainer(object):
 
         # plot support + query images for this class_label
         # setting values to rows and column variables
-        rows, columns = 7,7
+        rows, columns = 25,25
 
         # create figure
         fig = plt.figure(figsize=(100, 100))
@@ -690,8 +744,8 @@ class Trainer(object):
           plt.title(f"q; {predicted_class}")
           plt.plot()
         print(f"plotting label: {class_label} class_name:{class_name}")
-        plt.show()
-        # plt.savefig(f"{outdir}/{title.replace(' ', '_')}.jpg")
+        # plt.show()
+        plt.savefig(f"{outdir}/{title.replace(' ', '_')}.jpg")
 
 
 
@@ -810,6 +864,7 @@ class Trainer(object):
             predictions=predictions_dist,
             onehot_labels=data_local.onehot_labels)
         episode_info = self.get_episode_info(data_local)
+
         return {
             'predictions': predictions_dist,
             'loss': loss_dist,
@@ -1379,21 +1434,38 @@ class Trainer(object):
         use_dag_ontology = False
 
       with gin.config_scope(gin_scope_name):
-        data_pipeline = pipeline.make_one_source_episode_pipeline(
-            dataset_spec_list[0],
-            use_dag_ontology=use_dag_ontology,
-            use_bilevel_ontology=has_bilevel_ontology[0],
-            split=dataset_split,
-            episode_descr_config=episode_descr_config,
-            perform_filtration = self.perform_filtration,
-            shuffle_buffer_size=shuffle_buffer_size,
-            read_buffer_size_bytes=read_buffer_size_bytes,
-            num_prefetch=num_prefetch,
-            image_size=image_size,
-            num_to_take=num_per_class[0],
-            simclr_episode_fraction=simclr_episode_fraction,
-            ignore_hierarchy_probability=ignore_hierarchy_prob)
-
+        if self.non_episodic_test_setup:
+          print(f"{self.non_episodic_test_setup=}, make_one_source_single_episode_pipeline_for_non_episodic_test_setup")
+          data_pipeline = pipeline.make_one_source_single_episode_pipeline_for_non_episodic_test_setup(
+              dataset_spec_list[0],
+              use_dag_ontology=use_dag_ontology,
+              use_bilevel_ontology=has_bilevel_ontology[0],
+              split=dataset_split,
+              episode_descr_config=episode_descr_config,
+              perform_filtration = self.perform_filtration,
+              shuffle_buffer_size=shuffle_buffer_size,
+              read_buffer_size_bytes=read_buffer_size_bytes,
+              num_prefetch=num_prefetch,
+              image_size=image_size,
+              num_to_take=num_per_class[0],
+              simclr_episode_fraction=simclr_episode_fraction,
+              ignore_hierarchy_probability=ignore_hierarchy_prob)
+        else:
+          print(f"{self.non_episodic_test_setup=}, make_one_source_episode_pipeline")
+          data_pipeline = pipeline.make_one_source_episode_pipeline(
+              dataset_spec_list[0],
+              use_dag_ontology=use_dag_ontology,
+              use_bilevel_ontology=has_bilevel_ontology[0],
+              split=dataset_split,
+              episode_descr_config=episode_descr_config,
+              perform_filtration = self.perform_filtration,
+              shuffle_buffer_size=shuffle_buffer_size,
+              read_buffer_size_bytes=read_buffer_size_bytes,
+              num_prefetch=num_prefetch,
+              image_size=image_size,
+              num_to_take=num_per_class[0],
+              simclr_episode_fraction=simclr_episode_fraction,
+              ignore_hierarchy_probability=ignore_hierarchy_prob)
     else:
       if ignore_hierarchy_prob > 0.0:
         raise ValueError(
@@ -1424,7 +1496,8 @@ class Trainer(object):
           query_labels=query_labels,
           support_class_ids=support_class_ids,
           query_class_ids=query_class_ids)
-
+    print("data_pipeline:", data_pipeline)
+    print(data_pipeline.map(lambda x, y: x).map(create_episode_struct))
     return data_pipeline.map(lambda x, y: x).map(create_episode_struct)
 
   def _build_batch(self, split):
@@ -1678,6 +1751,49 @@ class Trainer(object):
         ci_acc_summary.value.add(tag='acc CI', simple_value=ci_acc)
 
     return mean_acc, ci_acc, mean_acc_summary, ci_acc_summary
+
+  # UPDATE
+  def evaluate_one_episode(self, split, step=0):
+    """Returns performance metrics across num_eval_trials episodes / batches."""
+    num_eval_trials = 1
+    data_local = self.next_data[split]
+    print("NNNNNNNNNNNNNNNNNN:", data_local)
+
+    logging.info('Performing evaluation of the %s split using %d episodes...',
+                 split, num_eval_trials)
+    accuracies, predictions, eps_info_list = [], [], []
+    total_samples = 0
+    for eval_trial_num in range(num_eval_trials):
+      # Following is used to normalize accuracies.
+      acc, summaries = self.sess.run(
+          [self.accuracies_raw[split], self.evaluation_summaries])
+      
+      # Write complete summaries during evaluation, but not training.
+      # Otherwise, validation summaries become too big.
+      if not self.is_training and self.summary_writer:
+        self.summary_writer.add_summary(summaries, eval_trial_num)
+      if self._fixed_eval == 'vtab':
+        accuracies.append(np.sum(acc))
+        total_samples += np.size(acc)
+        continue
+      accuracies.append(np.sum(acc))
+      total_samples += np.size(acc)
+
+    logging.info('Finished evaluation.')
+
+    sum_acc = np.sum(accuracies)
+
+    # VTAB evaluation has 1 episode.
+    if self._fixed_eval == 'vtab':
+      ci_acc = 0
+
+    if not self.is_training:
+      # Logging during training is handled by self.train() instead.
+      logging.info('Meta-%s split: Accuracy=%f, Samples=%f\n', split,
+                   sum_acc, total_samples)
+      print("ACC: ", accuracies)
+
+    return sum_acc, total_samples
 
   def add_eval_summaries(self):
     """Returns summaries of way / shot / classes/ logits / targets."""

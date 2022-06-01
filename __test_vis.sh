@@ -47,6 +47,7 @@ do
         --gin_bindings="EpisodeDescriptionConfig.num_ways=5" \
         --gin_bindings="EpisodeDescriptionConfig.num_query=5" \
         --gin_bindings="Trainer.num_eval_episodes=$eval_episodes" \
+        --gin_bindings="Trainer.test_entire_test_set_using_single_episode=False" \
         --gin_bindings="benchmark.eval_datasets='$DATASET'"
     else
       export BESTNUM=$(grep best_update_num ${EXPROOT}/best_$EXPNAME.txt | awk '{print $2;}')
@@ -64,6 +65,7 @@ do
         --gin_bindings="EpisodeDescriptionConfig.num_ways=5" \
         --gin_bindings="EpisodeDescriptionConfig.num_query=5" \
         --gin_bindings="Trainer.num_eval_episodes=$eval_episodes" \
+        --gin_bindings="Trainer.test_entire_test_set_using_single_episode=False" \
         --gin_bindings="benchmark.eval_datasets='$DATASET'"      
     fi
   done

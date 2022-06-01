@@ -14,14 +14,8 @@ git clone https://github.com/IRVLUTD/meta-dataset.git; cd meta-dataset;
 
 # If you want to use docker, open docker container in interactive mode
 docker run \
--it --rm --runtime=nvidia -p 7777:8888 \
--v <cloned-meta-dataset-dir-path>:/workspace \
---env=DISPLAY --workdir=/workspace \
---volume="/etc/group:/etc/group:ro" \
---volume="/etc/passwd:/etc/passwd:ro" \
---volume="/etc/shadow:/etc/shadow:ro" \
---volume="/etc/sudoers.d:/etc/sudoers.d:ro" \
---volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
+-it --rm --runtime=nvidia \
+-v <cloned-meta-dataset-dir-path>:/workspace --workdir=/workspace \
 --name meta-dataset -e NVIDIA_VISIBLE_DEVICES=<list-of-gpu-ids> \
 nvcr.io/nvidia/tensorflow:21.12-tf2-py3 # tensorflow 2
 
@@ -85,7 +79,8 @@ cd $ROOT_DIR
 python __select_and_create_test_classes_for_variants.py
 
 # create tfrecords
-bash __create_tesla_tfrecords.sh
+bash __create_tesla_tfrecords.sh <boolean-to-oversample-support-set-images>
+# E.g. bash __create_tesla_tfrecords.sh True/False
 
 get best from arxiv_v2_dev
 cd meta_dataset/learn/gin

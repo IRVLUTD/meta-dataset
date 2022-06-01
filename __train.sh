@@ -47,8 +47,9 @@ do
         --gin_config=meta_dataset/learn/gin/best/${EXPNAME}.gin \
         --gin_bindings="Trainer.experiment_name='${model}'" \
         --gin_bindings="Trainer.batch_size=$BS" \
-        --gin_bindings="DataConfig.image_height=126" \
+        --gin_bindings="DataConfig.image_height=84" \
         --gin_bindings="Trainer.num_eval_episodes=$num_valid_episodes" \
+        --gin_bindings="Trainer.test_entire_test_set_using_single_episode=False" \
         --gin_bindings="Trainer.perform_filtration=$perform_filtration" \
         --gin_bindings="Trainer.checkpoint_to_restore='${checkpoint_to_restore}'" \
         --gin_bindings="Trainer.pretrained_source='${pretrained_source}'"
@@ -64,10 +65,11 @@ do
         --gin_config=meta_dataset/learn/gin/best/${EXPNAME}.gin \
         --gin_bindings="Trainer.experiment_name='${model}'" \
         --gin_bindings="Trainer.batch_size=$BS" \
-        --gin_bindings="DataConfig.image_height=126" \
+        --gin_bindings="DataConfig.image_height=84" \
         --gin_bindings="Learner.embedding_fn=@${backbone}" \
         --gin_bindings="Trainer.learning_rate = 0.001052178216688174" \
         --gin_bindings="Trainer.num_eval_episodes=$num_valid_episodes" \
+        --gin_bindings="Trainer.test_entire_test_set_using_single_episode=False" \
         --gin_bindings="Trainer.perform_filtration=$perform_filtration" \
         --gin_bindings="Trainer.checkpoint_to_restore='${checkpoint_to_restore}'" \
         --gin_bindings="Trainer.pretrained_source='${pretrained_source}'"
@@ -81,9 +83,10 @@ do
         --gin_config=meta_dataset/learn/gin/best/${EXPNAME}.gin \
         --gin_bindings="Trainer.experiment_name='${model}'" \
         --gin_bindings="Trainer.batch_size=$BS" \
-        --gin_bindings="DataConfig.image_height=126" \
+        --gin_bindings="DataConfig.image_height=84" \
         --gin_bindings="Learner.embedding_fn=@${backbone}" \
         --gin_bindings="Trainer.num_eval_episodes=$num_valid_episodes" \
+        --gin_bindings="Trainer.test_entire_test_set_using_single_episode=False" \
         --gin_bindings="Trainer.perform_filtration=$perform_filtration" \
         --gin_bindings="Trainer.checkpoint_to_restore='${checkpoint_to_restore}'" \
         --gin_bindings="Trainer.pretrained_source='${pretrained_source}'"

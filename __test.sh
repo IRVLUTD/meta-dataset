@@ -42,6 +42,7 @@ do
         --gin_bindings="Trainer.perform_filtration=${perform_filtration_ds}" \
         --gin_bindings="DataConfig.image_height=126" \
         --gin_bindings="Trainer.num_eval_episodes=600" \
+        --gin_bindings="Trainer.test_entire_test_set_using_single_episode=False" \
         --gin_bindings="benchmark.eval_datasets='$DATASET'"
     else
 
@@ -58,6 +59,7 @@ do
         --gin_bindings="Learner.embedding_fn = @${_backbone}" \
         --gin_bindings="DataConfig.image_height=126" \
         --gin_bindings="Trainer.num_eval_episodes=600" \
+        --gin_bindings="Trainer.test_entire_test_set_using_single_episode=False" \
         --gin_bindings="benchmark.eval_datasets='$DATASET'"      
     fi
   done

@@ -16,6 +16,14 @@ Learner.backprop_through_moments = True
 # this is consistent with other datasets as well
 Trainer.visualize_data = False
 
+# UPDATE
 # a boolean flag indicating whether filtration needs 
 # to be performed for tesla dataset
 Trainer.perform_filtration = True
+
+# UPDATE
+# (For the non-episodic setup mentioned in the paper for joint segmentation)
+# A boolean flag indicating whether the test has to be 
+# done using a single episode containing all support and 
+# query images of the test set
+Trainer.test_entire_test_set_using_single_episode = False

@@ -132,6 +132,16 @@ tf.flags.DEFINE_string(
 tf.flags.DEFINE_string('splits_root', '',
                        'The root directory storing the splits of datasets.')
 
+tf.flags.DEFINE_bool(
+  'do_support_set_oversampling', False,
+  'Oversample support set of the dataset using query set size.')
+
+tf.flags.DEFINE_integer(
+  'image_filter_threshold', 1,
+  """
+  Threshold for excluding image from the tfrecords.
+  If width or height < threshold then exclude image
+  """)
 
 FLAGS = tf.flags.FLAGS
 DEFAULT_FILE_PATTERN = '{}.tfrecords'
@@ -535,18 +545,25 @@ def write_tfrecord_from_image_files_with_set_info(class_files,
     else:
       # This gets executed only if no Exception was raised
 
-      # UPDATE: Exclude an image if it's width or height is < 15 pixels
-      inclusion_threshold = 15
+      # UPDATE: For TESLA, exclude an image if it's width or height is < 15 pixels
+      inclusion_threshold = FLAGS.image_filter_threshold
       include_image = not (width < inclusion_threshold or height < inclusion_threshold)
-      
+
       if include_image:
         # UPDATE: Oversample tesla support images by a factor of math.ceil(k_query/k_support)
         # This is required as tensorflow's default shuffle operation don't allow
         # custom randomization for data sampling
         # do oversampling for tesla dataset's support set
         set_is_support = set_info == "support"
-        oversample_tesla_support = False
-        do_oversampling = dataset_is_tesla and set_is_support and oversample_tesla_support
+        
+        """
+        # for joint segmentation experiments
+        # Set FLAGS.do_support_set_oversampling = False
+        
+        # for few shot training and testing experiments
+        # Set FLAGS.do_support_set_oversampling = True
+        """
+        do_oversampling = dataset_is_tesla and set_is_support and FLAGS.do_support_set_oversampling
         repeat = math.ceil(k_query/k_support) if do_oversampling else 1
         example = get_example(img, 
                               class_label, 
@@ -566,10 +583,10 @@ def write_tfrecord_from_image_files_with_set_info(class_files,
   # are mixed randomly instead of having support examples first and 
   # query examples following it. This might aid in sampling more 
   # views instead of having same view image in the support set of an episode
-    # if shuffle_with_seed is not None \
-    #   and dataset_is_tesla and len(example_strings) > 1:
-    #   rng = np.random.RandomState(shuffle_with_seed)
-    #   rng.shuffle(example_strings)
+    if shuffle_with_seed is not None \
+      and dataset_is_tesla and len(example_strings) > 1:
+      rng = np.random.RandomState(shuffle_with_seed)
+      rng.shuffle(example_strings)
   
   # write tesla class samples to tfrecords
   for example_string in example_strings:
@@ -640,12 +657,12 @@ def write_tfrecord_from_tesla_directory_structure(class_directory,
     class_files.extend(get_classes_with_set_info(class_directory, class_set))
 
   # shuffle_with_seed=None
-  # if shuffle_with_seed is not None:
-  #   # UPDATE: Shuffle is a must requirement so that support and query images 
-  #   # are mixed randomly instead of having support examples first and 
-  #   # query examples following it
-  #   rng = np.random.RandomState(shuffle_with_seed)
-  #   rng.shuffle(class_files)
+  if shuffle_with_seed is not None:
+    # UPDATE: Shuffle is a must requirement so that support and query images 
+    # are mixed randomly instead of having support examples first and 
+    # query examples following it
+    rng = np.random.RandomState(shuffle_with_seed)
+    rng.shuffle(class_files)
 
   written_images_count, real_images_count = write_tfrecord_from_image_files_with_set_info(
       class_files,

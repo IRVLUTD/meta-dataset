@@ -4,7 +4,7 @@ source __select_best_model.sh $1 $2 $3 $4 $5 $7 $8
 # link dataset variant of choice, useful for tesla
 export TESLA_DATASET_VARIANT=$6
 
-eval_episodes=1 #600
+eval_episodes=1
 backbone=$8
 _backbone=$backbone
 if test "$backbone" = "convnet"
@@ -24,6 +24,7 @@ cd $RECORDS; rm tesla; ln -s $TESLA_DATASET_VARIANT tesla; cd $ROOT_DIR;
 ls -l $RECORDS # useful to check if sym links are correct
 
 
+
 for MODEL in $models
 do
   export EXP_GIN=${MODEL}_${SOURCE}
@@ -33,12 +34,13 @@ do
   do
     echo "MODEL-FILTER: $perform_filtration_model"
     echo "DATASET-FILTER: $perform_filtration_ds"
+    echo "ROOT_DIR: $ROOT_DIR"
     if test "$backbone" = "" # default backbone
     then
       # set BESTNUM to the "best_update_num" field in the corresponding best_....txt
       export BESTNUM=$(grep best_update_num ${EXPROOT}/best_$EXPNAME.txt | awk '{print $2;}')
       BESTNUM=$9
-      python -m meta_dataset.test_all_query_images \
+      python -m meta_dataset.train \
         --is_training=False \
         --records_root_dir=$RECORDS \
         --summary_dir=${EXPROOT}/summaries/${EXPNAME} \
@@ -48,11 +50,12 @@ do
         --gin_bindings="Trainer.perform_filtration=${perform_filtration_ds}" \
         --gin_bindings="DataConfig.image_height=126" \
         --gin_bindings="Trainer.num_eval_episodes=$eval_episodes" \
+        --gin_bindings="Trainer.test_entire_test_set_using_single_episode=${10}" \
         --gin_bindings="benchmark.eval_datasets='$DATASET'"
     else
       export BESTNUM=$(grep best_update_num ${EXPROOT}/best_$EXPNAME.txt | awk '{print $2;}')
       BESTNUM=$9
-      python -m meta_dataset.test_all_query_images \
+      python -m meta_dataset.train \
         --is_training=False \
         --records_root_dir=$RECORDS \
         --summary_dir=${EXPROOT}/summaries/${EXPNAME} \
@@ -63,6 +66,7 @@ do
         --gin_bindings="Learner.embedding_fn = @${_backbone}" \
         --gin_bindings="DataConfig.image_height=126" \
         --gin_bindings="Trainer.num_eval_episodes=$eval_episodes" \
+        --gin_bindings="Trainer.test_entire_test_set_using_single_episode=${10}" \
         --gin_bindings="benchmark.eval_datasets='$DATASET'"      
     fi
   done

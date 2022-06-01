@@ -39,6 +39,41 @@ def read_example_and_parse_image(example_string):
   return parsed_example
 
 
+def get_image(example_string):
+  """Reads the string and decodes the image."""
+  parsed_example = read_single_example(example_string)
+  image_decoded = tf.image.decode_image(parsed_example['image'], channels=3)
+  image_decoded = tf.cast(image_decoded, tf.float32)
+  image_decoded.set_shape([None, None, 3])
+  return  image_decoded
+
+
+def get_class_id(example_string):
+  """Reads the string and decodes the label."""
+  parsed_example = read_single_example(example_string)
+  return tf.cast(parsed_example['label'], dtype=tf.int32)
+
+def get_label(example_string):
+  """
+  Reads the string and decodes the label.
+  To be used only for TESLA dataset
+  """
+  parsed_example = read_single_example(example_string)
+  num_train_classes = 125
+  return tf.cast(
+    tf.math.subtract(parsed_example['label'], num_train_classes),
+    dtype=tf.int32)
+
+def get_set(example_string):
+  """
+  Reads the string and decodes the label.
+  To be used only for TESLA dataset
+  """
+  parsed_example = read_single_example(example_string)
+  num_train_classes = 125
+  return parsed_example['set']
+
+
 @gin.configurable
 class ImageDecoder(object):
   """Image decoder."""
@@ -88,7 +123,6 @@ class ImageDecoder(object):
 
     Args:
       example_string: str, an Example protocol buffer.
-
     Returns:
       image_rescaled: the image, resized to `image_size x image_size` and
         rescaled to [-1, 1]. Note that Gaussian data augmentation may cause
@@ -127,6 +161,7 @@ class ImageDecoder(object):
                                      [self.image_size, self.image_size, 3])
     
     return image, label, set
+
 
   def decode_with_label(self, example_string):
     """Processes a single example string.
