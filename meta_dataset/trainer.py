@@ -616,25 +616,33 @@ class Trainer(object):
     self.create_summary_writer()
 
     predictions, target, top_5 = self.sess.run([
-      tf.argmax(output['predictions'], -1),
+      output['predictions'],
       tf.argmax(data_tensors.onehot_labels, -1),
       tf.math.top_k(output['predictions'], k=5)
     ])
 
-    true_predictions = 0
-    true_predictions_top_5 = 0
-    total_query_samples = len(target)
-    for i,j,k in zip(target, predictions, top_5.indices):
-      if i == j:
-        true_predictions += 1
-      if i in k:
-        true_predictions_top_5 += 1
+    print(f"{predictions=} {target=} {top_5=}")
+
+    # predictions, target, top_5 = self.sess.run([
+    #   tf.argmax(output['predictions'], -1),
+    #   tf.argmax(data_tensors.onehot_labels, -1),
+    #   tf.math.top_k(output['predictions'], k=5)
+    # ])
+
+    # true_predictions = 0
+    # true_predictions_top_5 = 0
+    # total_query_samples = len(target)
+    # for i,j,k in zip(target, predictions, top_5.indices):
+    #   if i == j:
+    #     true_predictions += 1
+    #   if i in k:
+    #     true_predictions_top_5 += 1
     
-    def round_to_2_decimal(value):
-      return "{:0.2f}".format(value * 100.0)
+    # def round_to_2_decimal(value):
+    #   return "{:0.2f}".format(value * 100.0)
     
-    print(f"Top-1% Acc: {round_to_2_decimal(true_predictions/total_query_samples)}")
-    print(f"Top-5% Acc: {round_to_2_decimal(true_predictions_top_5/total_query_samples)}")
+    # print(f"Top-1% Acc: {round_to_2_decimal(true_predictions/total_query_samples)}")
+    # print(f"Top-5% Acc: {round_to_2_decimal(true_predictions_top_5/total_query_samples)}")
     
     if self.visualize_data:
       (
