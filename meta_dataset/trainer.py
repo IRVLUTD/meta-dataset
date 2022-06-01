@@ -615,26 +615,16 @@ class Trainer(object):
     self.initialize_saver()
     self.create_summary_writer()
 
-    sc,sl,qc,ql, acc, p, oh, top_5, ways, shots, cls_ids = self.sess.run([
-      data_tensors.support_class_ids,
-      data_tensors.support_labels,
-      data_tensors.query_class_ids,
-      data_tensors.query_labels,
-      # output['accuracy'],
-      # output['predictions'],
-      output['accuracy'],
+    predictions, target, top_5 = self.sess.run([
       tf.argmax(output['predictions'], -1),
       tf.argmax(data_tensors.onehot_labels, -1),
-      tf.math.top_k(output['predictions'], k=5),
-      output['episode_info']['way'],
-      output['episode_info']['shots'],
-      output['episode_info']['class_ids'], # actual class_ids 
-      ])
+      tf.math.top_k(output['predictions'], k=5)
+    ])
 
     true_predictions = 0
     true_predictions_top_5 = 0
-    total_query_samples = len(oh)
-    for i,j,k in zip(oh, p, top_5.indices):
+    total_query_samples = len(target)
+    for i,j,k in zip(target, predictions, top_5.indices):
       if i == j:
         true_predictions += 1
       if i in k:
@@ -646,8 +636,6 @@ class Trainer(object):
     print(f"Top-1% Acc: {round_to_2_decimal(true_predictions/total_query_samples)}")
     print(f"Top-5% Acc: {round_to_2_decimal(true_predictions_top_5/total_query_samples)}")
     
-
-
     if self.visualize_data:
       (
         support_images, 
