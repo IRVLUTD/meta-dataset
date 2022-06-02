@@ -266,7 +266,8 @@ class Trainer(object):
       enable_tf_optimizations,
       visualize_data,
       perform_filtration,
-      test_entire_test_set_using_single_episode):
+      test_entire_test_set_using_single_episode,
+      topK):
     # pyformat: disable
     """Initializes a Trainer.
 
@@ -350,6 +351,8 @@ class Trainer(object):
       test_entire_test_set_using_single_episode: A boolean flag indicating whether 
         the test has to be done using a single episode containing all support and 
         query images of the test set.
+      topK: A list of "K" values for generating the results for 
+        test_entire_test_set_using_single_episode setup
     Raises:
       RuntimeError: If requested to meta-learn the initialization of the linear
           layer weights but they are unexpectedly omitted from saving/restoring.
@@ -381,6 +384,7 @@ class Trainer(object):
     self.visualize_data = visualize_data
     self.perform_filtration = perform_filtration
     self.test_entire_test_set_using_single_episode = test_entire_test_set_using_single_episode
+    self.topK = topK
     self.data_spec = None
 
     # Currently we are supporting single dataset when we read from fixed
@@ -615,62 +619,34 @@ class Trainer(object):
     self.initialize_saver()
     self.create_summary_writer()
 
-    predictions, target, top_1, top_2, top_3, top_4, top_5, top_10 = \
-    self.sess.run([
-      tf.argmax(output['predictions'], -1),
-      tf.argmax(data_tensors.onehot_labels, -1),
-      tf.math.top_k(output['predictions'], k=1),
-      tf.math.top_k(output['predictions'], k=2),
-      tf.math.top_k(output['predictions'], k=3),
-      tf.math.top_k(output['predictions'], k=4),
-      tf.math.top_k(output['predictions'], k=5),
-      tf.math.top_k(output['predictions'], k=10),
-    ])
-
-    # true_predictions, true_predictions_top_1, true_predictions_top_2
-    # true_predictions_top_3, true_predictions_top_4, true_predictions_top_5
-    # true_predictions_top_10
-
-    true_predictions = [0] * 7
-    
-    total_query_samples = len(target)
-    for true_labels, pred_labels, \
-            top1_preds, top2_preds, top3_preds, top4_preds, top5_preds, top10_preds \
-            in zip(target, predictions, top_1.indices, top_2.indices, top_3.indices, 
-                top_4.indices, top_5.indices, top_10.indices):
+    if self.test_entire_test_set_using_single_episode:
+      lenK = len(self.topK)
+      topK_predictions = [None] * lenK
+      predictions = output['predictions']
       
-        if pred_labels == true_labels:
-            true_predictions[0] += 1
+      for idx, k in enumerate(self.topK):
+        topK_predictions[idx] = tf.math.top_k(predictions, k=k).indices
+
+      target, predictions, topK_predictions = \
+      self.sess.run([
+        tf.argmax(data_tensors.onehot_labels, -1),
+        predictions,
+        topK_predictions
+      ])
+
+      num_correct_predictions = [0] * lenK
+      total_query_samples = len(target)
+
+      for top_i in range(lenK):
+        for _ in zip(target, topK_predictions[top_i]):
+            if _[0] in _[1]:
+              num_correct_predictions[top_i] += 1
+
+      def round_to_2_decimal(value):
+          return "{:0.2f}".format(value * 100.0)
       
-        if true_labels in top1_preds:
-            true_predictions[1] += 1
-
-        if true_labels in top2_preds:
-            true_predictions[2] += 1
-
-        if true_labels in top3_preds:
-            true_predictions[3] += 1
-
-        if true_labels in top4_preds:
-            true_predictions[4] += 1
-
-        if true_labels in top5_preds:
-            true_predictions[5] += 1
-
-        if true_labels in top10_preds:
-            true_predictions[6] += 1
-
-    def round_to_2_decimal(value):
-        return "{:0.2f}".format(value * 100.0)
-    
-    for idx, true_preds in enumerate(true_predictions):
-        _ = idx + 1
-        if idx > 0:
-            if idx == 6:
-                _ = 10
-            print(f"Top-{_}% Acc: {round_to_2_decimal(true_predd/total_query_samples)}")
-        else:
-            print(f"Top-{_}% Acc: {round_to_2_decimal(true_predd/total_query_samples)} (cross-check top-1)")
+      for idx, num_correct_predictions in enumerate(num_correct_predictions):
+          print(f"Top-{self.topK[idx]}% Acc: {round_to_2_decimal(num_correct_predictions/total_query_samples)}")
 
     if self.visualize_data:
       (

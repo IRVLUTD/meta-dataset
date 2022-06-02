@@ -7,7 +7,6 @@ backbone=$6
 bestnum=$7
 
 for tesla_dataset_variant in tesla-mixture tesla-unseen tesla-seen tesla-synthetic-unseen-13
-# for tesla_dataset_variant in tesla-synthetic-unseen-13
 do
     # For each trained model it is possible test on w/wo filtered tesla variants
     for perform_filtration_ds in False True
