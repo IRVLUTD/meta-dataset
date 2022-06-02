@@ -143,6 +143,13 @@ tf.flags.DEFINE_integer(
   If width or height < threshold then exclude image
   """)
 
+tf.flags.DEFINE_string(
+  'required_sets', 'TRAIN,VALID,TEST',
+  """
+  Specifies which set should be included in tfrecords
+  E.g: "TRAIN", "TRAIN,VALID", "TRAIN,VALID,TEST", "TEST"
+  """)
+
 FLAGS = tf.flags.FLAGS
 DEFAULT_FILE_PATTERN = '{}.tfrecords'
 TRAIN_TEST_FILE_PATTERN = '{}_{}.tfrecords'
@@ -1253,15 +1260,21 @@ class TeslaConverter(DatasetConverter):
     test_classes = sorted(tf.io.gfile.listdir(data_path_test))
     assert len(test_classes) in [11, 13, 41, 52] # for variants
 
-    self.parse_split_data(learning_spec.Split.TRAIN,
-                          training_classes,
-                          data_path_trainval)
-    self.parse_split_data(learning_spec.Split.VALID,
-                          validation_classes,
-                          data_path_trainval)
-    self.parse_split_data(learning_spec.Split.TEST,
-                          test_classes,
-                          data_path_test)
+    required_sets = FLAGS.required_sets.upper().split(",")
+    
+    if "TRAIN" in required_sets:
+      self.parse_split_data(learning_spec.Split.TRAIN,
+                            training_classes,
+                            data_path_trainval)
+    if "VALID" in required_sets:
+      self.parse_split_data(learning_spec.Split.VALID,
+                            validation_classes,
+                            data_path_trainval)
+
+    if "TEST" in required_sets:
+      self.parse_split_data(learning_spec.Split.TEST,
+                            test_classes,
+                            data_path_test)
 
 
 

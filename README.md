@@ -79,8 +79,9 @@ cd $ROOT_DIR
 python __select_and_create_test_classes_for_variants.py
 
 # create tfrecords
-bash __create_tesla_tfrecords.sh <boolean-to-oversample-support-set-images>
-# E.g. bash __create_tesla_tfrecords.sh True/False
+bash __create_tesla_tfrecords.sh <boolean-to-oversample-support-set-images> <required-sets>
+# for <required-sets> use CAPITAL LETTER and don't use spaces
+# E.g. bash __create_tesla_tfrecords.sh True/False "TRAIN,VALID,TEST"
 
 get best from arxiv_v2_dev
 cd meta_dataset/learn/gin

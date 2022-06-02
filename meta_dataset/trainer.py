@@ -618,7 +618,7 @@ class Trainer(object):
     predictions, target, top_5 = self.sess.run([
       tf.argmax(output['predictions'], -1),
       tf.argmax(data_tensors.onehot_labels, -1),
-      tf.math.top_k(output['predictions'], k=5)
+      tf.math.top_k(output['predictions'], k=3)
     ])
 
     true_predictions = 0
