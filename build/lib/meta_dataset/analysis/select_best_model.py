@@ -337,14 +337,6 @@ def extract_best_from_event_file(event_path, smooth_window, log_details=False):
         .format(' or '.join(VALIDATION_ACCURACY_TAGS), event_path))
     return 0, 0
   
-  # UPDATE: used for ckpt every 1000 updates setup
-  skip_500th_ckpt= False
-  if skip_500th_ckpt:
-    print("1", steps[1::2])
-    del steps[1::2]
-    print("2", steps)
-    del valid_accs[1::2]
-  
   if smooth_window > 1:
     valid_accs = moving_average(valid_accs, smooth_window)
   argmax_ind = np.argmax(valid_accs)

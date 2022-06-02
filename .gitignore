@@ -11,3 +11,4 @@ logs/
 prediction-plots/*
 records*
 test_results_from_logs*
+*.7z

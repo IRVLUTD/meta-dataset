@@ -232,7 +232,8 @@ class EpisodeDescriptionSampler(object):
                use_dag_hierarchy=False,
                use_bilevel_hierarchy=False,
                use_all_classes=False,
-               ignore_hierarchy_probability=0.0):
+               ignore_hierarchy_probability=0.0,
+               test_entire_test_set_using_single_episode=False):
     """Initializes an EpisodeDescriptionSampler.episode_config.
 
     Args:
@@ -252,6 +253,9 @@ class EpisodeDescriptionSampler(object):
       ignore_hierarchy_probability: Float, if using a hierarchy, this flag makes
         the sampler ignore the hierarchy for this proportion of episodes and
         instead sample categories uniformly.
+      test_entire_test_set_using_single_episode: A boolean flag indicating whether 
+        the test has to be done using a single episode containing all support and 
+        query images of the test set.
 
     Raises:
       RuntimeError: if required parameters are missing.
@@ -268,6 +272,7 @@ class EpisodeDescriptionSampler(object):
     self.use_dag_hierarchy = use_dag_hierarchy
     self.use_bilevel_hierarchy = use_bilevel_hierarchy
     self.ignore_hierarchy_probability = ignore_hierarchy_probability
+    self.test_entire_test_set_using_single_episode = test_entire_test_set_using_single_episode
     self.use_all_classes = use_all_classes
     self.num_ways = episode_descr_config.num_ways
     self.num_support = episode_descr_config.num_support
@@ -479,6 +484,9 @@ class EpisodeDescriptionSampler(object):
 
     return episode_classes_rel
 
+
+  # UPDATE: For test_entire_test_set_using_single_episode 
+  # setup compatibility to the existing codebase
   def sample_episode_description(self):
     """Returns the composition of an episode.
 
@@ -487,67 +495,59 @@ class EpisodeDescriptionSampler(object):
         relative `class_id` is an integer in [0, self.num_classes).
     """
     class_ids = self.sample_class_ids()
-    # print(f"{class_ids=}")
-    images_per_class = np.array([
-        self.dataset_spec.get_total_images_per_class(
-            self.class_set[cid], pool=self.pool) for cid in class_ids
-    ])
-    # print(f"{images_per_class=}")
-    # print(f"{self.class_set=}")
-    
-    if self.num_query is not None:
-      num_query = self.num_query
-    else:
-      num_query = compute_num_query(
-          images_per_class,
-          max_num_query=self.max_num_query,
-          num_support=self.num_support)
 
-    if self.num_support is not None:
-      if isinstance(self.num_support, int):
-        if any(self.num_support + num_query > images_per_class):
-          raise ValueError('Some classes do not have enough examples.')
-        num_support = self.num_support
-      else:
-        start, end = self.num_support
-        if any(end + num_query > images_per_class):
-          raise ValueError('The range provided for uniform sampling of the '
-                           'number of support examples per class is not valid: '
-                           'some classes do not have enough examples.')
-        num_support = self._rng.randint(low=start, high=end + 1)
-      num_support_per_class = [num_support for _ in class_ids]
-    else:
-      num_remaining_per_class = images_per_class - num_query
-      support_set_size = sample_support_set_size(
-          num_remaining_per_class,
-          self.max_support_size_contrib_per_class,
-          max_support_set_size=self.max_support_set_size,
-          rng=self._rng)
-      num_support_per_class = sample_num_support_per_class(
-          images_per_class,
-          num_remaining_per_class,
-          support_set_size,
-          min_log_weight=self.min_log_weight,
-          max_log_weight=self.max_log_weight,
-          rng=self._rng)
-    
-    sampling_setup = 0
-    if sampling_setup:    
-      x = tuple(
-          (class_id, num_support, num_query)
-          for class_id, num_support in zip(class_ids, num_support_per_class))
-        
-      # print(f"{x=} {num_support_per_class=} {num_query=}")
-      return x
-    else:
-      # print(self.dataset_spec.images_per_class.keys(), type(self.dataset_spec.images_per_class))
-      x = tuple(
+    if self.test_entire_test_set_using_single_episode:
+      return tuple(
         (class_id, 
         self.dataset_spec.images_per_class[self.class_set[class_id]]['support'],
         self.dataset_spec.images_per_class[self.class_set[class_id]]['query']) 
-        for class_id in class_ids)
-      # print(f"{x=}")
-      return x 
+        for class_id in class_ids)   
+    else:
+      images_per_class = np.array([
+          self.dataset_spec.get_total_images_per_class(
+              self.class_set[cid], pool=self.pool) for cid in class_ids
+      ])
+      
+      if self.num_query is not None:
+        num_query = self.num_query
+      else:
+        num_query = compute_num_query(
+            images_per_class,
+            max_num_query=self.max_num_query,
+            num_support=self.num_support)
+
+      if self.num_support is not None:
+        if isinstance(self.num_support, int):
+          if any(self.num_support + num_query > images_per_class):
+            raise ValueError('Some classes do not have enough examples.')
+          num_support = self.num_support
+        else:
+          start, end = self.num_support
+          if any(end + num_query > images_per_class):
+            raise ValueError('The range provided for uniform sampling of the '
+                            'number of support examples per class is not valid: '
+                            'some classes do not have enough examples.')
+          num_support = self._rng.randint(low=start, high=end + 1)
+        num_support_per_class = [num_support for _ in class_ids]
+      else:
+        num_remaining_per_class = images_per_class - num_query
+        support_set_size = sample_support_set_size(
+            num_remaining_per_class,
+            self.max_support_size_contrib_per_class,
+            max_support_set_size=self.max_support_set_size,
+            rng=self._rng)
+        num_support_per_class = sample_num_support_per_class(
+            images_per_class,
+            num_remaining_per_class,
+            support_set_size,
+            min_log_weight=self.min_log_weight,
+            max_log_weight=self.max_log_weight,
+            rng=self._rng)
+      
+      return tuple(
+          (class_id, num_support, num_query)
+          for class_id, num_support in zip(class_ids, num_support_per_class))
+      
 
   def get_fixed_episode_description(self):
     """Returns the composition of an episode.
@@ -600,6 +600,9 @@ class EpisodeDescriptionSampler(object):
         (class_id, num_support, num_query)
         for class_id, num_support in zip(class_ids, num_support_per_class))
 
+
+  # UPDATE: For test_entire_test_set_using_single_episode 
+  # setup compatibility to the existing codebase
   def compute_chunk_sizes(self):
     """Computes the maximal sizes for the flush, support, and query chunks.
 
@@ -620,6 +623,10 @@ class EpisodeDescriptionSampler(object):
     Returns:
       The sizes of the flush, support, and query chunks.
     """
+    if self.test_entire_test_set_using_single_episode:
+      self.max_ways_upper_bound, self.max_support_set_size, \
+      max_query_set_size, max_num_query = self.get_compute_chunk_artifacts()
+
     if self.num_ways is None:
       max_num_ways = self.max_ways_upper_bound
     else:
@@ -637,75 +644,29 @@ class EpisodeDescriptionSampler(object):
       max_num_query = self.max_num_query
     else:
       max_num_query = self.num_query
-    query_chunk_size = max_num_ways * max_num_query
+    query_chunk_size = max_query_set_size \
+      if self.test_entire_test_set_using_single_episode \
+      else max_num_ways * max_num_query
 
     flush_chunk_size = support_chunk_size + query_chunk_size
     return (flush_chunk_size, support_chunk_size, query_chunk_size)
 
+
   # UPDATE
   def get_compute_chunk_artifacts(self):
+    """
+    Returns required artifacts for compute_chunk_sizes() function
+    which would be used in test_entire_test_set_using_single_episode setup
+    """
     total_classes, max_support_set_size, max_query_set_size = 0, 0, 0
     max_num_query = np.iinfo(0).min
-    # print(f"{self.class_set}=")
+
     for class_id in self.class_set:
       total_classes += 1
       class_set_info=self.dataset_spec.images_per_class[class_id]
       max_support_set_size += class_set_info['support']
-      max_num_query = np.maximum(class_set_info['query'], max_num_query)
       max_query_set_size += class_set_info['query']
+      max_num_query = np.maximum(class_set_info['query'], max_num_query)
+
     return total_classes, max_support_set_size, max_query_set_size, max_num_query
 
-
-  # UPDATE: made from compute_chunk_sizes
-  def _compute_chunk_sizes(self):
-    """Computes the maximal sizes for the flush, support, and query chunks.
-
-    Sequences of dataset IDs are padded with placeholder IDs to make sure they
-    can be batched into episodes of equal sizes.
-
-    The "flush" part of the sequence has a size that is upper-bounded by the
-    size of the "support" and "query" parts.
-
-    If variable, the size of the "support" part is in the worst case
-
-        max_support_set_size,
-
-    and the size of the "query" part is in the worst case
-
-        max_ways_upper_bound * max_num_query.
-
-    Returns:
-      The sizes of the flush, support, and query chunks.
-    """
-
-    total_classes, max_support_set_size, \
-      max_query_set_size, max_num_query = self.get_compute_chunk_artifacts()
-    # print(f"{(total_classes)=} {max_support_set_size=} {max_num_query=}")
-
-    if self.num_ways is None:
-      max_num_ways = total_classes
-    else:
-      max_num_ways = self.num_ways
-
-    if self.num_support is None:
-      support_chunk_size = max_support_set_size
-    elif isinstance(self.num_support, int):
-      support_chunk_size = max_num_ways * self.num_support
-    else:
-      largest_num_support_per_class = self.num_support[1]
-      support_chunk_size = max_num_ways * largest_num_support_per_class
-
-    if self.num_query is None:
-      max_num_query = max_num_query
-    else:
-      max_num_query = self.num_query
-    query_chunk_size = max_num_ways * max_num_query
-
-    query_chunk_size = np.minimum(max_query_set_size, query_chunk_size)
-
-    # print(f"{(max_num_ways)=} {support_chunk_size=} {query_chunk_size=}")
-    # raise SystemExit()
-
-    flush_chunk_size = support_chunk_size + query_chunk_size
-    # print(f"{(flush_chunk_size, support_chunk_size, query_chunk_size)=} {max_num_query=}")
-    return (flush_chunk_size, support_chunk_size, query_chunk_size)

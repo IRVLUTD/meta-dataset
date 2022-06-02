@@ -132,6 +132,23 @@ tf.flags.DEFINE_string(
 tf.flags.DEFINE_string('splits_root', '',
                        'The root directory storing the splits of datasets.')
 
+tf.flags.DEFINE_bool(
+  'do_support_set_oversampling', False,
+  'Oversample support set of the dataset using query set size.')
+
+tf.flags.DEFINE_integer(
+  'image_filter_threshold', 1,
+  """
+  Threshold for excluding image from the tfrecords.
+  If width or height < threshold then exclude image
+  """)
+
+tf.flags.DEFINE_string(
+  'required_sets', 'TRAIN,VALID,TEST',
+  """
+  Specifies which set should be included in tfrecords
+  E.g: "TRAIN", "TRAIN,VALID", "TRAIN,VALID,TEST", "TEST"
+  """)
 
 FLAGS = tf.flags.FLAGS
 DEFAULT_FILE_PATTERN = '{}.tfrecords'
@@ -535,18 +552,25 @@ def write_tfrecord_from_image_files_with_set_info(class_files,
     else:
       # This gets executed only if no Exception was raised
 
-      # UPDATE: Exclude an image if it's width or height is < 15 pixels
-      inclusion_threshold = 15
+      # UPDATE: For TESLA, exclude an image if it's width or height is < 15 pixels
+      inclusion_threshold = FLAGS.image_filter_threshold
       include_image = not (width < inclusion_threshold or height < inclusion_threshold)
-      include_image = True
+
       if include_image:
         # UPDATE: Oversample tesla support images by a factor of math.ceil(k_query/k_support)
         # This is required as tensorflow's default shuffle operation don't allow
         # custom randomization for data sampling
         # do oversampling for tesla dataset's support set
         set_is_support = set_info == "support"
-        # do_oversampling = dataset_is_tesla and set_is_support
-        do_oversampling = False
+        
+        """
+        # for joint segmentation experiments
+        # Set FLAGS.do_support_set_oversampling = False
+        
+        # for few shot training and testing experiments
+        # Set FLAGS.do_support_set_oversampling = True
+        """
+        do_oversampling = dataset_is_tesla and set_is_support and FLAGS.do_support_set_oversampling
         repeat = math.ceil(k_query/k_support) if do_oversampling else 1
         example = get_example(img, 
                               class_label, 
@@ -1236,15 +1260,21 @@ class TeslaConverter(DatasetConverter):
     test_classes = sorted(tf.io.gfile.listdir(data_path_test))
     assert len(test_classes) in [11, 13, 41, 52] # for variants
 
-    self.parse_split_data(learning_spec.Split.TRAIN,
-                          training_classes,
-                          data_path_trainval)
-    self.parse_split_data(learning_spec.Split.VALID,
-                          validation_classes,
-                          data_path_trainval)
-    self.parse_split_data(learning_spec.Split.TEST,
-                          test_classes,
-                          data_path_test)
+    required_sets = FLAGS.required_sets.upper().split(",")
+    
+    if "TRAIN" in required_sets:
+      self.parse_split_data(learning_spec.Split.TRAIN,
+                            training_classes,
+                            data_path_trainval)
+    if "VALID" in required_sets:
+      self.parse_split_data(learning_spec.Split.VALID,
+                            validation_classes,
+                            data_path_trainval)
+
+    if "TEST" in required_sets:
+      self.parse_split_data(learning_spec.Split.TEST,
+                            test_classes,
+                            data_path_test)
 
 
 

@@ -53,7 +53,6 @@ def _pad(dataset_indices, chunk_size, placeholder_dataset_id):
     placeholder_dataset_id: int, placeholder value to pad with.
   """
   pad_size = chunk_size - sum(n for i, n in dataset_indices)
-  # print(f"{chunk_size=} | {pad_size=} {dataset_indices=} {placeholder_dataset_id=} {chunk_size=}")
   assert pad_size >= 0
   dataset_indices.append([placeholder_dataset_id, pad_size])
 
@@ -105,14 +104,12 @@ def episode_representation_generator(dataset_spec, split, pool, sampler):
     episode_representation: tensor of shape [N, 2], where N varies dynamically
       between episodes.
   """
-  # chunk_sizes = sampler.compute_chunk_sizes()
-  chunk_sizes = sampler._compute_chunk_sizes()
+  chunk_sizes = sampler.compute_chunk_sizes()
   
   # An episode always starts with a "flush" chunk to allow flushing examples at
   # class epoch boundaries, and contains `len(chunk_sizes) - 1` additional
   # chunks.
   flush_chunk_size, other_chunk_sizes = chunk_sizes[0], chunk_sizes[1:]
-  # print(f"{chunk_sizes=}")
   class_set = dataset_spec.get_classes(split)
   num_classes = len(class_set)
   placeholder_dataset_id = num_classes
@@ -143,7 +140,6 @@ def episode_representation_generator(dataset_spec, split, pool, sampler):
     for element in episode_description:
       class_idx, distribution = element[0], element[1:]
       total_requested = sum(distribution)
-      # print(f"{element=} {class_idx=} {total_requested=} {total_images_per_class[class_idx]=}")
       if total_requested > total_images_per_class[class_idx]:
         raise ValueError("Requesting more images than what's available for the "
                          'whole class')
@@ -155,7 +151,6 @@ def episode_representation_generator(dataset_spec, split, pool, sampler):
       remaining = total_images_per_class[class_idx] - cursors[class_idx]
       if total_requested > remaining:
         flushed_dataset_indices.append([class_idx, remaining])
-        # print(f"{flushed_dataset_indices=} {total_requested=} {remaining=}")
         cursors[class_idx] = 0
       # Elements of `distribution` correspond to how many examples of class
       # `class_idx` to allocate for each chunk (e.g. in a few-shot learning
@@ -171,7 +166,6 @@ def episode_representation_generator(dataset_spec, split, pool, sampler):
     # An episode sequence is generated in multiple phases, each padded with an
     # agreed-upon number of placeholder dataset IDs.
 
-    # print(f"{flushed_dataset_indices=}, {flush_chunk_size=}, {placeholder_dataset_id=}")
     _pad(flushed_dataset_indices, flush_chunk_size, placeholder_dataset_id)
     for dataset_indices, chunk_size in zip(selected_dataset_indices,
                                            other_chunk_sizes):
@@ -182,7 +176,7 @@ def episode_representation_generator(dataset_spec, split, pool, sampler):
             itertools.chain(flushed_dataset_indices,
                             *selected_dataset_indices)),
         dtype='int64')
-    # print(f"{episode_representation=}")
+    
     yield episode_representation
 
 
@@ -216,7 +210,8 @@ class Reader(object):
                read_buffer_size_bytes,
                num_prefetch,
                num_to_take=-1,
-               num_unique_descriptions=0):
+               num_unique_descriptions=0,
+               test_entire_test_set_using_single_episode=False):
     """Initializes a Reader from a source.
 
     The source is identified by dataset_spec and split.
@@ -240,6 +235,9 @@ class Reader(object):
         when running on TPUs as it avoids the use of
         tf.data.Dataset.from_generator. If set to x = 0, no such upper bound on
         number of unique episode descriptions is set.
+      test_entire_test_set_using_single_episode: A boolean flag indicating whether 
+        the test has to be done using a single episode containing all support and 
+        query images of the test set.
     """
     self.dataset_spec = dataset_spec
     self.split = split
@@ -253,7 +251,6 @@ class Reader(object):
     self.class_set = self.dataset_spec.get_classes(self.split)
     self.num_classes = len(self.class_set)
 
-    # print(self.__dict__)
   def construct_class_datasets(self,
                                pool=None,
                                repeat=True,
@@ -400,8 +397,7 @@ class EpisodeReaderMixin(object):
                                                         choice_dataset)
 
     # Episodes have a fixed size prescribed by `sampler.compute_chunk_sizes`.
-    # dataset = dataset.batch(sum(sampler.compute_chunk_sizes()))
-    dataset = dataset.batch(sum(sampler._compute_chunk_sizes()))
+    dataset = dataset.batch(sum(sampler.compute_chunk_sizes()))
     # Overlap batching and episode processing.
     dataset = dataset.prefetch(1)
     return dataset

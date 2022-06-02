@@ -615,27 +615,63 @@ class Trainer(object):
     self.initialize_saver()
     self.create_summary_writer()
 
-    predictions, target, top_5 = self.sess.run([
+    predictions, target, top_1, top_2, top_3, top_4, top_5, top_10 = \
+    self.sess.run([
       tf.argmax(output['predictions'], -1),
       tf.argmax(data_tensors.onehot_labels, -1),
-      tf.math.top_k(output['predictions'], k=3)
+      tf.math.top_k(output['predictions'], k=1),
+      tf.math.top_k(output['predictions'], k=2),
+      tf.math.top_k(output['predictions'], k=3),
+      tf.math.top_k(output['predictions'], k=4),
+      tf.math.top_k(output['predictions'], k=5),
+      tf.math.top_k(output['predictions'], k=10),
     ])
 
-    true_predictions = 0
-    true_predictions_top_5 = 0
+    # true_predictions, true_predictions_top_1, true_predictions_top_2
+    # true_predictions_top_3, true_predictions_top_4, true_predictions_top_5
+    # true_predictions_top_10
+
+    true_predictions = [0] * 7
+    
     total_query_samples = len(target)
-    for i,j,k in zip(target, predictions, top_5.indices):
-      if i == j:
-        true_predictions += 1
-      if i in k:
-        true_predictions_top_5 += 1
-    
+    for true_labels, pred_labels, \
+            top1_preds, top2_preds, top3_preds, top4_preds, top5_preds, top10_preds \
+            in zip(target, predictions, top_1.indices, top_2.indices, top_3.indices, 
+                top_4.indices, top_5.indices, top_10.indices):
+      
+        if pred_labels == true_labels:
+            true_predictions[0] += 1
+      
+        if true_labels in top1_preds:
+            true_predictions[1] += 1
+
+        if true_labels in top2_preds:
+            true_predictions[2] += 1
+
+        if true_labels in top3_preds:
+            true_predictions[3] += 1
+
+        if true_labels in top4_preds:
+            true_predictions[4] += 1
+
+        if true_labels in top5_preds:
+            true_predictions[5] += 1
+
+        if true_labels in top10_preds:
+            true_predictions[6] += 1
+
     def round_to_2_decimal(value):
-      return "{:0.2f}".format(value * 100.0)
+        return "{:0.2f}".format(value * 100.0)
     
-    print(f"Top-1% Acc: {round_to_2_decimal(true_predictions/total_query_samples)}")
-    print(f"Top-5% Acc: {round_to_2_decimal(true_predictions_top_5/total_query_samples)}")
-    
+    for idx, true_preds in enumerate(true_predictions):
+        _ = idx + 1
+        if idx > 0:
+            if idx == 6:
+                _ = 10
+            print(f"Top-{_}% Acc: {round_to_2_decimal(true_predd/total_query_samples)}")
+        else:
+            print(f"Top-{_}% Acc: {round_to_2_decimal(true_predd/total_query_samples)} (cross-check top-1)")
+
     if self.visualize_data:
       (
         support_images, 

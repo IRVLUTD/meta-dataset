@@ -14,9 +14,17 @@ pretrained_source=$SOURCE_FOR_PRETRAINING
 source __set_suffix.sh $perform_filtration $num_valid_episodes $5
 source set_env.sh
 
+image_height=126
+
 for MODEL in $models 
 do
     export EXPNAME=${MODEL}_${SOURCE}
+
+    if [ "$MODEL" == "baselinefinetune" ];
+    then
+	image_height=84
+    fi
+
     if test "$pretrained_source" = "imagenet"
     then
         # TODO: make the script compatible for using pretrained backbones
@@ -47,7 +55,7 @@ do
         --gin_config=meta_dataset/learn/gin/best/${EXPNAME}.gin \
         --gin_bindings="Trainer.experiment_name='${model}'" \
         --gin_bindings="Trainer.batch_size=$BS" \
-        --gin_bindings="DataConfig.image_height=84" \
+        --gin_bindings="DataConfig.image_height=${image_height}" \
         --gin_bindings="Trainer.num_eval_episodes=$num_valid_episodes" \
         --gin_bindings="Trainer.test_entire_test_set_using_single_episode=False" \
         --gin_bindings="Trainer.perform_filtration=$perform_filtration" \
@@ -65,7 +73,7 @@ do
         --gin_config=meta_dataset/learn/gin/best/${EXPNAME}.gin \
         --gin_bindings="Trainer.experiment_name='${model}'" \
         --gin_bindings="Trainer.batch_size=$BS" \
-        --gin_bindings="DataConfig.image_height=84" \
+        --gin_bindings="DataConfig.image_height=${image_height}" \
         --gin_bindings="Learner.embedding_fn=@${backbone}" \
         --gin_bindings="Trainer.learning_rate = 0.001052178216688174" \
         --gin_bindings="Trainer.num_eval_episodes=$num_valid_episodes" \
@@ -83,7 +91,7 @@ do
         --gin_config=meta_dataset/learn/gin/best/${EXPNAME}.gin \
         --gin_bindings="Trainer.experiment_name='${model}'" \
         --gin_bindings="Trainer.batch_size=$BS" \
-        --gin_bindings="DataConfig.image_height=84" \
+        --gin_bindings="DataConfig.image_height=${image_height}" \
         --gin_bindings="Learner.embedding_fn=@${backbone}" \
         --gin_bindings="Trainer.num_eval_episodes=$num_valid_episodes" \
         --gin_bindings="Trainer.test_entire_test_set_using_single_episode=False" \
