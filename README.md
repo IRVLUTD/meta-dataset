@@ -83,7 +83,7 @@ bash __create_tesla_tfrecords.sh <boolean-to-oversample-support-set-images> <req
 # for <required-sets> use CAPITAL LETTER and don't use spaces
 # E.g. bash __create_tesla_tfrecords.sh True/False "TRAIN,VALID,TEST"
 
-get best from arxiv_v2_dev
+# get best from arxiv_v2_dev
 cd meta_dataset/learn/gin
 svn checkout https://github.com/google-research/meta-dataset/branches/arxiv_v2_dev/meta_dataset/learn/gin/best
 cd best

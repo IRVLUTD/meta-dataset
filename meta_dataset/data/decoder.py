@@ -48,32 +48,6 @@ def get_image(example_string):
   return  image_decoded
 
 
-def get_class_id(example_string):
-  """Reads the string and decodes the label."""
-  parsed_example = read_single_example(example_string)
-  return tf.cast(parsed_example['label'], dtype=tf.int32)
-
-def get_label(example_string):
-  """
-  Reads the string and decodes the label.
-  To be used only for TESLA dataset
-  """
-  parsed_example = read_single_example(example_string)
-  num_train_classes = 125
-  return tf.cast(
-    tf.math.subtract(parsed_example['label'], num_train_classes),
-    dtype=tf.int32)
-
-def get_set(example_string):
-  """
-  Reads the string and decodes the label.
-  To be used only for TESLA dataset
-  """
-  parsed_example = read_single_example(example_string)
-  num_train_classes = 125
-  return parsed_example['set']
-
-
 @gin.configurable
 class ImageDecoder(object):
   """Image decoder."""

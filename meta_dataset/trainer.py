@@ -53,7 +53,7 @@ import matplotlib.pyplot as plt
 
 import cv2
 import time
-
+import json
 
 # Enable tf.data optimizations, which are applied to the input data pipeline.
 # It may be helpful to disable them when investigating regressions due to
@@ -619,6 +619,54 @@ class Trainer(object):
     self.initialize_saver()
     self.create_summary_writer()
 
+    # for tesla dataset
+    if self.data_spec.name == 'tesla':
+      meta = {
+        52: "tesla-mixture",
+        41: "tesla-unseen",
+        11: "tesla-seen",
+        13: "tesla-synthetic-unseen-13" # not required for joint segmentation
+      }
+    
+    # get test classes
+    total_classes = list(self.data_spec.classes_per_split.values())[2]
+    
+    _ = meta[total_classes]
+    prefix = \
+      "clean-training" if "filtered" in self.checkpoint_to_restore.split("/")[-4] else "cluttered-training"
+    
+    suffix="-clean-support" if self.perform_filtration else "-cluttered-support"
+    
+    __ = f"all-test-data-setup" \
+      if self.test_entire_test_set_using_single_episode \
+      else "sampled-data-setup"
+    
+    prediction_plots_dir= \
+      os.path.join(os.getcwd(), "prediction-plots", __, prefix, self.experiment_name, _, suffix[1:])
+    joint_segment_result_dir = os.path.join(os.getcwd(), "joint-segmentation-results")
+    
+    tf.io.gfile.makedirs(prediction_plots_dir)
+    tf.io.gfile.makedirs(joint_segment_result_dir)
+
+    joint_segment_exp_name= "+".join([prefix, self.experiment_name, _, suffix[1:]])
+    
+    tesla_variant = \
+      meta[self.data_spec.classes_per_split[learning_spec.Split.TEST]]
+
+    gt_image_stats_file_path = os.path.join(
+      os.getcwd(), "img_per_class", f"{tesla_variant}.test.gt.json")
+    
+    with open(gt_image_stats_file_path, 'r') as f:
+      img_per_class = json.load(f)
+      query_images_per_class, total_query_samples = collections.defaultdict(int), 0
+      for class_id, info in img_per_class['images_per_class'].items():
+        class_name = img_per_class['class_names'][class_id]
+        query_images_per_class[class_name] = info['query']
+        total_query_samples += info['query']
+      
+     # no longer required
+    del img_per_class
+
     if self.test_entire_test_set_using_single_episode:
       lenK = len(self.topK)
       topK_predictions = [None] * lenK
@@ -634,19 +682,52 @@ class Trainer(object):
         topK_predictions
       ])
 
+      # TopK for all classes together
       num_correct_predictions = [0] * lenK
-      total_query_samples = len(target)
 
+      # TopK for each class
+      class_topK = collections.defaultdict(lambda: [0] * lenK)
+
+      _ = []
       for top_i in range(lenK):
-        for _ in zip(target, topK_predictions[top_i]):
-            if _[0] in _[1]:
-              num_correct_predictions[top_i] += 1
-
+        for real_class_id, predicted_class_ids in \
+          zip(target, topK_predictions[top_i]):
+            _offset = 0
+            if real_class_id in predicted_class_ids:
+              _offset = 1
+            num_correct_predictions[top_i] += _offset
+            class_name = \
+              self.data_spec.class_names[real_class_id]
+            class_topK[class_name][top_i] += _offset
+              
       def round_to_2_decimal(value):
           return "{:0.2f}".format(value * 100.0)
+
+      for class_name in class_topK.keys():
+          class_topK[class_name] = \
+            list(
+              map(
+                lambda correct_preds: \
+                  round_to_2_decimal(
+                    correct_preds/query_images_per_class[class_name]),
+                  class_topK[class_name]
+            ))
       
-      for idx, num_correct_predictions in enumerate(num_correct_predictions):
-          print(f"Top-{self.topK[idx]}% Acc: {round_to_2_decimal(num_correct_predictions/total_query_samples)}")
+      topK_dict = {
+        "experiment": self.experiment_name,
+        "setting-info": joint_segment_exp_name,
+        "best_model": self.checkpoint_to_restore.split("/")[-1],
+        "K": self.topK,
+        "num_classes": len(class_topK.keys()),
+        "query_samples": total_query_samples,
+        "topK_all": list(map(lambda x: round_to_2_decimal(x/total_query_samples), num_correct_predictions)),
+        "topK_per_class": dict(class_topK)
+      }
+
+      # Save topK_dict
+      topK_file_path = os.path.join(joint_segment_result_dir, f"{joint_segment_exp_name}.json")
+      with open(topK_file_path, 'w') as out:
+        json.dump(topK_dict, out)
 
     if self.visualize_data:
       (
@@ -678,28 +759,7 @@ class Trainer(object):
           color = [0, 255, 0] # green
         top, bottom, left, right = [7]*4
         return cv2.copyMakeBorder(img, top, bottom, left, right, cv2.BORDER_CONSTANT, value=color)
-
-
-      suffix="-clean-support" if self.perform_filtration else "-cluttered-support"
-      _ = ""
       
-      # TODO: remove save as jpg option
-      # for tesla dataset
-      if self.data_spec.name == 'tesla':
-        meta = {
-          52: "tesla-mixture",
-          41: "tesla-unseen",
-          11: "tesla-seen"
-        }
-        # get test classes
-        total_classes = list(self.data_spec.classes_per_split.values())[2]
-        _ = meta[total_classes]
-      
-      __ = f"all-test-data-setup" if self.test_entire_test_set_using_single_episode else "sampled-setup"
-
-      outdir=os.path.join(os.getcwd(), "prediction-plots", __, self.experiment_name, _, suffix[1:])     
-      tf.io.gfile.makedirs(outdir)
-
       # make plot for way classes
       for class_label in range(N):
         # get indices for this class_label
@@ -750,9 +810,9 @@ class Trainer(object):
         # plt.show()
 
         # TODO: remove save as jpg option
-        plt.savefig(f"{outdir}/{title.replace(' ', '_')}.jpg")
+        plt.savefig(f"{prediction_plots_dir}/{title.replace(' ', '_')}.jpg")
 
-      logging.info(f"Prediction plots for experiment: {self.experiment_name} are saved in {outdir}")
+      logging.info(f"Prediction plots for experiment: {self.experiment_name} are saved in {prediction_plots_dir}")
 
 
   def build_learner(self, split):
