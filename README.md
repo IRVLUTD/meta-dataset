@@ -150,6 +150,9 @@ bash __test_on_all_tesla_variants.sh \
 
 # get test results from logs
 bash __logs_filter.sh
+
+# for testing joint segmentation; NOTE: link the appropriate tfrecords dir to records-non-oversampled before running
+bash __test_joint_segmentation.sh <model> <gpu-id> <clean or cluttered-training> <num-valid-episodes> <tesla-variant> <use_pretrained_backbone or _> <backbone> <bestnum>
 ```
 
 ### To run experiments with other datasets
