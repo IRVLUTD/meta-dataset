@@ -655,13 +655,16 @@ class Trainer(object):
     
     with open(gt_image_stats_file_path, 'r') as f:
       img_per_class = json.load(f)
-      query_images_per_class, total_query_samples = collections.defaultdict(int), 0
+      query_images_per_class = collections.defaultdict(int)
+      total_gt_query_samples, total_segmented_query_samples = 0, 0
       for class_id, info in img_per_class['images_per_class'].items():
         class_name = img_per_class['class_names'][class_id]
         query_images_per_class[class_name] = info['query']
-        total_query_samples += info['query']
-      
-     # no longer required
+        total_gt_query_samples += info['query']
+        total_segmented_query_samples += \
+          self.data_spec.images_per_class[int(class_id)]['query']
+    
+    # no longer required
     del img_per_class
 
     if self.test_entire_test_set_using_single_episode:
@@ -672,10 +675,9 @@ class Trainer(object):
       for idx, k in enumerate(self.topK):
         topK_predictions[idx] = tf.math.top_k(predictions, k=k).indices
 
-      target, predictions, topK_predictions = \
+      target, topK_predictions = \
       self.sess.run([
         tf.argmax(data_tensors.onehot_labels, -1),
-        predictions,
         topK_predictions
       ])
 
@@ -716,8 +718,9 @@ class Trainer(object):
         "best_model": self.checkpoint_to_restore.split("/")[-1],
         "K": self.topK,
         "num_classes": len(class_topK.keys()),
-        "query_samples": total_query_samples,
-        "topK_all": list(map(lambda x: round_to_2_decimal(x/total_query_samples), num_correct_predictions)),
+        "gt_query_samples": total_gt_query_samples,
+        "segmented_query_samples": total_segmented_query_samples,
+        "topK_all": list(map(lambda x: round_to_2_decimal(x/total_gt_query_samples), num_correct_predictions)),
         "topK_per_class": dict(class_topK)
       }
 
