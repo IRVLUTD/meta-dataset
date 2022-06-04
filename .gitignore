@@ -8,7 +8,8 @@ datasets/
 *experiment_output*/*
 .env
 logs/
-prediction-plots/*
+prediction-plots/
 records*
 test_results_from_logs*
 *.7z
+joint-segmentation-results/
