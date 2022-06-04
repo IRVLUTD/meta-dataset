@@ -1,11 +1,11 @@
 #!/bin/bash
-source __select_best_model.sh $1 $2 $3 True $4 $6 $7
+source __select_best_model.sh $1 $2 $3 True $4 use_pretrained_backbone $6
 
 # link dataset variant of choice, useful for tesla
 export TESLA_DATASET_VARIANT=$5
 
 eval_episodes=1
-backbone=$7
+backbone=$6
 _backbone=$backbone
 if test "$backbone" = "convnet"
 then
@@ -43,7 +43,7 @@ do
     then
       # set BESTNUM to the "best_update_num" field in the corresponding best_....txt
       export BESTNUM=$(grep best_update_num ${EXPROOT}/best_$EXPNAME.txt | awk '{print $2;}')
-      BESTNUM=$8
+      BESTNUM=$7
       python -m meta_dataset.train \
         --is_training=False \
         --records_root_dir=$RECORDS \
@@ -58,7 +58,7 @@ do
         --gin_bindings="benchmark.eval_datasets='$DATASET'"
     else
       export BESTNUM=$(grep best_update_num ${EXPROOT}/best_$EXPNAME.txt | awk '{print $2;}')
-      BESTNUM=$8
+      BESTNUM=$7
       python -m meta_dataset.train \
         --is_training=False \
         --records_root_dir=$RECORDS \
