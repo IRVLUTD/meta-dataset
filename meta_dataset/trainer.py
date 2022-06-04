@@ -645,9 +645,6 @@ class Trainer(object):
       os.path.join(os.getcwd(), "prediction-plots", __, prefix, self.experiment_name, _, suffix[1:])
     joint_segment_result_dir = os.path.join(os.getcwd(), "joint-segmentation-results")
     
-    tf.io.gfile.makedirs(prediction_plots_dir)
-    tf.io.gfile.makedirs(joint_segment_result_dir)
-
     joint_segment_exp_name= "+".join([prefix, self.experiment_name, _, suffix[1:]])
     
     tesla_variant = \
@@ -671,7 +668,7 @@ class Trainer(object):
       lenK = len(self.topK)
       topK_predictions = [None] * lenK
       predictions = output['predictions']
-      
+
       for idx, k in enumerate(self.topK):
         topK_predictions[idx] = tf.math.top_k(predictions, k=k).indices
 
@@ -725,11 +722,13 @@ class Trainer(object):
       }
 
       # Save topK_dict
+      tf.io.gfile.makedirs(joint_segment_result_dir)
       topK_file_path = os.path.join(joint_segment_result_dir, f"{joint_segment_exp_name}.json")
       with open(topK_file_path, 'w') as out:
         json.dump(topK_dict, out)
 
     if self.visualize_data:
+      tf.io.gfile.makedirs(prediction_plots_dir)
       (
         support_images, 
         support_labels, 
