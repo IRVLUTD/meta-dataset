@@ -650,24 +650,24 @@ class Trainer(object):
     tesla_variant = \
       meta[self.data_spec.classes_per_split[learning_spec.Split.TEST]]
 
-    gt_image_stats_file_path = os.path.join(
+    if self.test_entire_test_set_using_single_episode:
+      gt_image_stats_file_path = os.path.join(
       os.getcwd(), "img_per_class", f"{tesla_variant}.test.gt.json")
     
-    with open(gt_image_stats_file_path, 'r') as f:
-      img_per_class = json.load(f)
-      query_images_per_class = collections.defaultdict(int)
-      total_gt_query_samples, total_segmented_query_samples = 0, 0
-      for class_id, info in img_per_class['images_per_class'].items():
-        class_name = img_per_class['class_names'][class_id]
-        query_images_per_class[class_name] = info['query']
-        total_gt_query_samples += info['query']
-        total_segmented_query_samples += \
-          self.data_spec.images_per_class[int(class_id)]['query']
-    
-    # no longer required
-    del img_per_class
-
-    if self.test_entire_test_set_using_single_episode:
+      with open(gt_image_stats_file_path, 'r') as f:
+        img_per_class = json.load(f)
+        query_images_per_class = collections.defaultdict(int)
+        total_gt_query_samples, total_segmented_query_samples = 0, 0
+        for class_id, info in img_per_class['images_per_class'].items():
+          class_name = img_per_class['class_names'][class_id]
+          query_images_per_class[class_name] = info['query']
+          total_gt_query_samples += info['query']
+          total_segmented_query_samples += \
+            self.data_spec.images_per_class[int(class_id)]['query']
+      
+      # no longer required
+      del img_per_class
+      
       lenK = len(self.topK)
       topK_predictions = [None] * lenK
       predictions = output['predictions']
@@ -723,6 +723,8 @@ class Trainer(object):
         "topK_all": list(map(lambda x: round_to_2_decimal(x/total_gt_query_samples), num_correct_predictions)),
         "topK_per_class": dict(class_topK)
       }
+
+      print(topK_dict['topK_all'])
 
       # Save topK_dict
       tf.io.gfile.makedirs(joint_segment_result_dir)
