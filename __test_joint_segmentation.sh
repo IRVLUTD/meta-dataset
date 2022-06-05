@@ -22,6 +22,12 @@ ls -l $RECORDS # useful to check if sym links are correct
 
 image_height=126
 
+# required for joint segmentation 
+# as tesla-mixture has 52 classes
+# works for tesla-{unseen, seen}
+# required for maml/prot-maml
+max_ways_upper_bound=52
+
 for MODEL in $models
 do
   export EXP_GIN=${MODEL}_${SOURCE}
@@ -52,6 +58,7 @@ do
       --gin_bindings="Learner.embedding_fn = @${backbone}" \
       --gin_bindings="DataConfig.image_height=${image_height}" \
       --gin_bindings="Trainer.num_eval_episodes=$eval_episodes" \
+      --gin_bindings="EpisodeDescriptionConfig.max_ways_upper_bound=$max_ways_upper_bound" \
       --gin_bindings="Trainer.test_entire_test_set_using_single_episode=True" \
       --gin_bindings="benchmark.eval_datasets='$DATASET'"      
   done
