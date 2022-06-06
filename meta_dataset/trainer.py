@@ -631,6 +631,8 @@ class Trainer(object):
     # get test classes
     total_classes = list(self.data_spec.classes_per_split.values())[2]
     
+    print(f"\n\n\n\n{total_classes=}\n\n\n\n")
+
     _ = meta[total_classes]
     prefix = \
       "clean-training" if "filtered" in self.checkpoint_to_restore.split("/")[-4] else "cluttered-training"
