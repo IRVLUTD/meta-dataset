@@ -622,6 +622,7 @@ class Trainer(object):
     # for tesla dataset
     if self.data_spec.name == 'tesla':
       meta = {
+        0: "train-only-setup", # for 4.3 sim+real train-set
         52: "tesla-mixture",
         41: "tesla-unseen",
         11: "tesla-seen",
@@ -630,10 +631,12 @@ class Trainer(object):
     
     # get test classes
     total_classes = list(self.data_spec.classes_per_split.values())[2]
-    
-    print(f"\n\n\n\n{total_classes=}\n\n\n\n")
 
-    _ = meta[total_classes]
+    if total_classes in meta.keys():
+      _ = meta[total_classes]
+    else:
+      _ = "qualitative-results-in-the-real-world"
+    
     prefix = \
       "clean-training" if "filtered" in self.checkpoint_to_restore.split("/")[-4] else "cluttered-training"
     
