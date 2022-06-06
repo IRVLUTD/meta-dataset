@@ -9,7 +9,7 @@ image_filter_threshold=15
 DATASET_DIR_NAMES=("tesla-mixture" "tesla-unseen" "tesla-seen" "tesla-synthetic-unseen-13")
 end=4
 
-if [ "$oversample_support_set" == "False" ];
+if [ "$oversample_support_set" == "False" ]; # for 4.2
 then
    RECORDS="${RECORDS}-non-oversampled"
    end=3
@@ -17,6 +17,10 @@ then
 fi
 
 _RECORDS=${RECORDS}
+
+cd $SPLITS/splits;
+rm tesla_splits.json; ln -s tesla_splits.4.1-2.json tesla_splits.json;
+cd $ROOT_DIR;
 
 for DATASET_DIR_NAME in ${DATASET_DIR_NAMES[@]:0:$end};
 do
