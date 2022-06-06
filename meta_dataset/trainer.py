@@ -667,7 +667,7 @@ class Trainer(object):
       
       # no longer required
       del img_per_class
-      
+
       lenK = len(self.topK)
       topK_predictions = [None] * lenK
       predictions = output['predictions']
@@ -723,8 +723,6 @@ class Trainer(object):
         "topK_all": list(map(lambda x: round_to_2_decimal(x/total_gt_query_samples), num_correct_predictions)),
         "topK_per_class": dict(class_topK)
       }
-
-      print(topK_dict['topK_all'])
 
       # Save topK_dict
       tf.io.gfile.makedirs(joint_segment_result_dir)
