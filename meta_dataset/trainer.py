@@ -777,7 +777,7 @@ class Trainer(object):
         return cv2.copyMakeBorder(img, top, bottom, left, right, cv2.BORDER_CONSTANT, value=color)
       
       # make plot for way classes
-      for class_label in range(N):
+      for class_label in range(1):
         # get indices for this class_label
         support_indices = np.where(support_labels == class_label)
         query_indices = np.where(query_labels == class_label)
@@ -785,7 +785,7 @@ class Trainer(object):
 
         # plot support + query images for this class_label
         # setting values to rows and column variables
-        rows, columns = 34,9
+        rows, columns = 16, 5
 
         # create figure
         fig = plt.figure(figsize=(50, 50))
@@ -796,33 +796,17 @@ class Trainer(object):
         fig.canvas.set_window_title(title)
         
 
-        # plot support images
-        _ = 0 
-        for idx, im in enumerate(support_images[support_indices]):
+        # plot real query images
+        for idx, im in enumerate(query_images[query_indices]):
           # Adds a subplot at the nth position
           fig.add_subplot(rows, columns, idx+1)
           im = self.convert_to_pseudo_original_form(im)
           # showing image
           plt.imshow(im)
           plt.axis('off')
-          plt.title(f"s; {self.data_spec.class_names[class_ids[support_labels[support_indices][idx]]]}")
-          plt.plot()
-          _ = idx + 2
-        
-
-        # plot query images with green and red borders indicating correct and wrong predictions
-        for _idx, im in enumerate(query_images[query_indices]):
-          # Adds a subplot at the nth position
-          fig.add_subplot(rows, columns, _idx+_)
-          im = self.convert_to_pseudo_original_form(im)
-          im = frame_image(im, pred_boolean_mask[query_indices][_idx])
-          # showing image
-          plt.imshow(im)
-          plt.axis('off')
-          predicted_class = self.data_spec.class_names[class_ids[predictions[query_indices][_idx]]]
+          predicted_class = self.data_spec.class_names[class_ids[predictions[query_indices][idx]]]
           plt.title(f"q; {predicted_class}")
           plt.plot()
-        print(f"plotting label: {class_label} class_name:{class_name}")
         # plt.show()
 
         # TODO: remove save as jpg option
