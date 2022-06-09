@@ -785,10 +785,10 @@ class Trainer(object):
 
         # plot support + query images for this class_label
         # setting values to rows and column variables
-        rows, columns = 16, 5
+        rows, columns = 5, 5 # plot max 25 objects
 
         # create figure
-        fig = plt.figure(figsize=(50, 50))
+        fig = plt.figure(figsize=(25, 25))
 
         # set window title
         class_name = self.data_spec.class_names[class_ids[class_label]]
