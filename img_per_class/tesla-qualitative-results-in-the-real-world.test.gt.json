@@ -1,0 +1,1005 @@
+{
+  "name": "tesla",
+  "classes_per_split": {
+    "TRAIN": 0,
+    "VALID": 0,
+    "TEST": 198
+  },
+  "images_per_class": {
+    "0": {
+      "support": 9,
+      "query": 0
+    },
+    "1": {
+      "support": 9,
+      "query": 0
+    },
+    "2": {
+      "support": 9,
+      "query": 0
+    },
+    "3": {
+      "support": 9,
+      "query": 0
+    },
+    "4": {
+      "support": 27,
+      "query": 0
+    },
+    "5": {
+      "support": 9,
+      "query": 0
+    },
+    "6": {
+      "support": 9,
+      "query": 0
+    },
+    "7": {
+      "support": 27,
+      "query": 0
+    },
+    "8": {
+      "support": 36,
+      "query": 0
+    },
+    "9": {
+      "support": 9,
+      "query": 0
+    },
+    "10": {
+      "support": 18,
+      "query": 0
+    },
+    "11": {
+      "support": 18,
+      "query": 0
+    },
+    "12": {
+      "support": 9,
+      "query": 0
+    },
+    "13": {
+      "support": 9,
+      "query": 0
+    },
+    "14": {
+      "support": 9,
+      "query": 0
+    },
+    "15": {
+      "support": 18,
+      "query": 0
+    },
+    "16": {
+      "support": 18,
+      "query": 0
+    },
+    "17": {
+      "support": 18,
+      "query": 0
+    },
+    "18": {
+      "support": 9,
+      "query": 0
+    },
+    "19": {
+      "support": 45,
+      "query": 0
+    },
+    "20": {
+      "support": 9,
+      "query": 0
+    },
+    "21": {
+      "support": 18,
+      "query": 0
+    },
+    "22": {
+      "support": 9,
+      "query": 0
+    },
+    "23": {
+      "support": 27,
+      "query": 0
+    },
+    "24": {
+      "support": 9,
+      "query": 0
+    },
+    "25": {
+      "support": 9,
+      "query": 0
+    },
+    "26": {
+      "support": 9,
+      "query": 0
+    },
+    "27": {
+      "support": 9,
+      "query": 0
+    },
+    "28": {
+      "support": 18,
+      "query": 0
+    },
+    "29": {
+      "support": 36,
+      "query": 0
+    },
+    "30": {
+      "support": 9,
+      "query": 0
+    },
+    "31": {
+      "support": 9,
+      "query": 0
+    },
+    "32": {
+      "support": 9,
+      "query": 0
+    },
+    "33": {
+      "support": 18,
+      "query": 0
+    },
+    "34": {
+      "support": 18,
+      "query": 0
+    },
+    "35": {
+      "support": 9,
+      "query": 0
+    },
+    "36": {
+      "support": 9,
+      "query": 0
+    },
+    "37": {
+      "support": 9,
+      "query": 0
+    },
+    "38": {
+      "support": 18,
+      "query": 0
+    },
+    "39": {
+      "support": 18,
+      "query": 0
+    },
+    "40": {
+      "support": 18,
+      "query": 0
+    },
+    "41": {
+      "support": 9,
+      "query": 0
+    },
+    "42": {
+      "support": 27,
+      "query": 0
+    },
+    "43": {
+      "support": 9,
+      "query": 0
+    },
+    "44": {
+      "support": 27,
+      "query": 0
+    },
+    "45": {
+      "support": 9,
+      "query": 0
+    },
+    "46": {
+      "support": 9,
+      "query": 0
+    },
+    "47": {
+      "support": 9,
+      "query": 0
+    },
+    "48": {
+      "support": 9,
+      "query": 0
+    },
+    "49": {
+      "support": 9,
+      "query": 0
+    },
+    "50": {
+      "support": 9,
+      "query": 0
+    },
+    "51": {
+      "support": 9,
+      "query": 0
+    },
+    "52": {
+      "support": 9,
+      "query": 0
+    },
+    "53": {
+      "support": 9,
+      "query": 0
+    },
+    "54": {
+      "support": 18,
+      "query": 0
+    },
+    "55": {
+      "support": 9,
+      "query": 0
+    },
+    "56": {
+      "support": 9,
+      "query": 0
+    },
+    "57": {
+      "support": 9,
+      "query": 0
+    },
+    "58": {
+      "support": 27,
+      "query": 0
+    },
+    "59": {
+      "support": 27,
+      "query": 0
+    },
+    "60": {
+      "support": 9,
+      "query": 0
+    },
+    "61": {
+      "support": 45,
+      "query": 0
+    },
+    "62": {
+      "support": 9,
+      "query": 0
+    },
+    "63": {
+      "support": 9,
+      "query": 0
+    },
+    "64": {
+      "support": 9,
+      "query": 0
+    },
+    "65": {
+      "support": 27,
+      "query": 0
+    },
+    "66": {
+      "support": 9,
+      "query": 0
+    },
+    "67": {
+      "support": 18,
+      "query": 0
+    },
+    "68": {
+      "support": 18,
+      "query": 0
+    },
+    "69": {
+      "support": 27,
+      "query": 0
+    },
+    "70": {
+      "support": 27,
+      "query": 0
+    },
+    "71": {
+      "support": 9,
+      "query": 0
+    },
+    "72": {
+      "support": 9,
+      "query": 0
+    },
+    "73": {
+      "support": 9,
+      "query": 0
+    },
+    "74": {
+      "support": 27,
+      "query": 0
+    },
+    "75": {
+      "support": 9,
+      "query": 0
+    },
+    "76": {
+      "support": 27,
+      "query": 0
+    },
+    "77": {
+      "support": 27,
+      "query": 0
+    },
+    "78": {
+      "support": 9,
+      "query": 0
+    },
+    "79": {
+      "support": 9,
+      "query": 0
+    },
+    "80": {
+      "support": 9,
+      "query": 0
+    },
+    "81": {
+      "support": 9,
+      "query": 0
+    },
+    "82": {
+      "support": 18,
+      "query": 0
+    },
+    "83": {
+      "support": 18,
+      "query": 0
+    },
+    "84": {
+      "support": 9,
+      "query": 0
+    },
+    "85": {
+      "support": 9,
+      "query": 0
+    },
+    "86": {
+      "support": 9,
+      "query": 0
+    },
+    "87": {
+      "support": 18,
+      "query": 0
+    },
+    "88": {
+      "support": 9,
+      "query": 0
+    },
+    "89": {
+      "support": 54,
+      "query": 0
+    },
+    "90": {
+      "support": 9,
+      "query": 0
+    },
+    "91": {
+      "support": 36,
+      "query": 0
+    },
+    "92": {
+      "support": 18,
+      "query": 0
+    },
+    "93": {
+      "support": 27,
+      "query": 0
+    },
+    "94": {
+      "support": 9,
+      "query": 0
+    },
+    "95": {
+      "support": 18,
+      "query": 0
+    },
+    "96": {
+      "support": 9,
+      "query": 0
+    },
+    "97": {
+      "support": 27,
+      "query": 0
+    },
+    "98": {
+      "support": 9,
+      "query": 0
+    },
+    "99": {
+      "support": 9,
+      "query": 0
+    },
+    "100": {
+      "support": 18,
+      "query": 0
+    },
+    "101": {
+      "support": 9,
+      "query": 0
+    },
+    "102": {
+      "support": 9,
+      "query": 0
+    },
+    "103": {
+      "support": 9,
+      "query": 0
+    },
+    "104": {
+      "support": 9,
+      "query": 0
+    },
+    "105": {
+      "support": 18,
+      "query": 0
+    },
+    "106": {
+      "support": 9,
+      "query": 0
+    },
+    "107": {
+      "support": 45,
+      "query": 0
+    },
+    "108": {
+      "support": 9,
+      "query": 0
+    },
+    "109": {
+      "support": 9,
+      "query": 0
+    },
+    "110": {
+      "support": 9,
+      "query": 0
+    },
+    "111": {
+      "support": 18,
+      "query": 0
+    },
+    "112": {
+      "support": 18,
+      "query": 0
+    },
+    "113": {
+      "support": 9,
+      "query": 0
+    },
+    "114": {
+      "support": 9,
+      "query": 0
+    },
+    "115": {
+      "support": 9,
+      "query": 0
+    },
+    "116": {
+      "support": 9,
+      "query": 0
+    },
+    "117": {
+      "support": 9,
+      "query": 0
+    },
+    "118": {
+      "support": 18,
+      "query": 0
+    },
+    "119": {
+      "support": 9,
+      "query": 0
+    },
+    "120": {
+      "support": 9,
+      "query": 0
+    },
+    "121": {
+      "support": 9,
+      "query": 0
+    },
+    "122": {
+      "support": 9,
+      "query": 0
+    },
+    "123": {
+      "support": 9,
+      "query": 0
+    },
+    "124": {
+      "support": 9,
+      "query": 0
+    },
+    "125": {
+      "support": 9,
+      "query": 0
+    },
+    "126": {
+      "support": 9,
+      "query": 0
+    },
+    "127": {
+      "support": 45,
+      "query": 0
+    },
+    "128": {
+      "support": 18,
+      "query": 0
+    },
+    "129": {
+      "support": 9,
+      "query": 0
+    },
+    "130": {
+      "support": 9,
+      "query": 0
+    },
+    "131": {
+      "support": 9,
+      "query": 0
+    },
+    "132": {
+      "support": 27,
+      "query": 0
+    },
+    "133": {
+      "support": 9,
+      "query": 0
+    },
+    "134": {
+      "support": 9,
+      "query": 0
+    },
+    "135": {
+      "support": 9,
+      "query": 0
+    },
+    "136": {
+      "support": 18,
+      "query": 0
+    },
+    "137": {
+      "support": 18,
+      "query": 0
+    },
+    "138": {
+      "support": 9,
+      "query": 0
+    },
+    "139": {
+      "support": 9,
+      "query": 0
+    },
+    "140": {
+      "support": 9,
+      "query": 0
+    },
+    "141": {
+      "support": 18,
+      "query": 0
+    },
+    "142": {
+      "support": 9,
+      "query": 0
+    },
+    "143": {
+      "support": 9,
+      "query": 0
+    },
+    "144": {
+      "support": 27,
+      "query": 0
+    },
+    "145": {
+      "support": 9,
+      "query": 0
+    },
+    "146": {
+      "support": 18,
+      "query": 0
+    },
+    "147": {
+      "support": 27,
+      "query": 0
+    },
+    "148": {
+      "support": 9,
+      "query": 0
+    },
+    "149": {
+      "support": 9,
+      "query": 0
+    },
+    "150": {
+      "support": 18,
+      "query": 0
+    },
+    "151": {
+      "support": 45,
+      "query": 0
+    },
+    "152": {
+      "support": 9,
+      "query": 0
+    },
+    "153": {
+      "support": 36,
+      "query": 0
+    },
+    "154": {
+      "support": 9,
+      "query": 0
+    },
+    "155": {
+      "support": 36,
+      "query": 0
+    },
+    "156": {
+      "support": 18,
+      "query": 0
+    },
+    "157": {
+      "support": 36,
+      "query": 0
+    },
+    "158": {
+      "support": 36,
+      "query": 0
+    },
+    "159": {
+      "support": 9,
+      "query": 0
+    },
+    "160": {
+      "support": 9,
+      "query": 0
+    },
+    "161": {
+      "support": 9,
+      "query": 0
+    },
+    "162": {
+      "support": 9,
+      "query": 0
+    },
+    "163": {
+      "support": 9,
+      "query": 0
+    },
+    "164": {
+      "support": 9,
+      "query": 0
+    },
+    "165": {
+      "support": 9,
+      "query": 0
+    },
+    "166": {
+      "support": 9,
+      "query": 0
+    },
+    "167": {
+      "support": 18,
+      "query": 0
+    },
+    "168": {
+      "support": 18,
+      "query": 0
+    },
+    "169": {
+      "support": 27,
+      "query": 0
+    },
+    "170": {
+      "support": 9,
+      "query": 0
+    },
+    "171": {
+      "support": 9,
+      "query": 0
+    },
+    "172": {
+      "support": 9,
+      "query": 0
+    },
+    "173": {
+      "support": 9,
+      "query": 0
+    },
+    "174": {
+      "support": 18,
+      "query": 0
+    },
+    "175": {
+      "support": 18,
+      "query": 0
+    },
+    "176": {
+      "support": 18,
+      "query": 0
+    },
+    "177": {
+      "support": 27,
+      "query": 0
+    },
+    "178": {
+      "support": 9,
+      "query": 0
+    },
+    "179": {
+      "support": 36,
+      "query": 0
+    },
+    "180": {
+      "support": 9,
+      "query": 0
+    },
+    "181": {
+      "support": 36,
+      "query": 0
+    },
+    "182": {
+      "support": 9,
+      "query": 0
+    },
+    "183": {
+      "support": 9,
+      "query": 0
+    },
+    "184": {
+      "support": 27,
+      "query": 0
+    },
+    "185": {
+      "support": 18,
+      "query": 0
+    },
+    "186": {
+      "support": 18,
+      "query": 0
+    },
+    "187": {
+      "support": 18,
+      "query": 0
+    },
+    "188": {
+      "support": 36,
+      "query": 0
+    },
+    "189": {
+      "support": 9,
+      "query": 0
+    },
+    "190": {
+      "support": 9,
+      "query": 0
+    },
+    "191": {
+      "support": 9,
+      "query": 0
+    },
+    "192": {
+      "support": 9,
+      "query": 0
+    },
+    "193": {
+      "support": 18,
+      "query": 0
+    },
+    "194": {
+      "support": 9,
+      "query": 0
+    },
+    "195": {
+      "support": 9,
+      "query": 0
+    },
+    "196": {
+      "support": 9,
+      "query": 0
+    },
+    "197": {
+      "support": 9,
+      "query": 0
+    }
+  },
+  "class_names": {
+    "0": "adapter_cable",
+    "1": "air_duster_can",
+    "2": "air_purifying_bag",
+    "3": "aluminum_foil_box",
+    "4": "apple",
+    "5": "arm_filter_holder",
+    "6": "avocado",
+    "7": "baking_tray",
+    "8": "ball",
+    "9": "ball_of_wool",
+    "10": "banana",
+    "11": "baseball_ball",
+    "12": "basket",
+    "13": "basting_brush",
+    "14": "battery",
+    "15": "beanie",
+    "16": "bell_pepper",
+    "17": "binder",
+    "18": "book",
+    "19": "bowl",
+    "20": "bucket",
+    "21": "bulb_box",
+    "22": "cabbage",
+    "23": "cable",
+    "24": "camera",
+    "25": "can_opener",
+    "26": "carrot",
+    "27": "carrying_case",
+    "28": "cellphone",
+    "29": "cereal_box",
+    "30": "charger",
+    "31": "chili_powder_bottle",
+    "32": "chocolate_banana_box",
+    "33": "clamp",
+    "34": "cleaning_brush",
+    "35": "cling_wrap_box",
+    "36": "clock",
+    "37": "coffee_bottle",
+    "38": "coffee_can",
+    "39": "comb",
+    "40": "cracker_box",
+    "41": "cream_jar",
+    "42": "cream_tube",
+    "43": "cucumber",
+    "44": "cup",
+    "45": "digestive_health_box",
+    "46": "donut_sticks_box",
+    "47": "drano_dual_force_bottle",
+    "48": "egg",
+    "49": "egg_box",
+    "50": "eggplant",
+    "51": "electric_toothbrush",
+    "52": "fig_bar_box",
+    "53": "flash_drive",
+    "54": "flashlight",
+    "55": "fly_pan",
+    "56": "foam_brick",
+    "57": "folder",
+    "58": "food_bag",
+    "59": "food_storage_container",
+    "60": "football",
+    "61": "fork",
+    "62": "game_controller",
+    "63": "garlic",
+    "64": "ginger",
+    "65": "glass",
+    "66": "glasses_box",
+    "67": "glove",
+    "68": "glue_bottle",
+    "69": "glue_stick",
+    "70": "goggle",
+    "71": "golf_ball",
+    "72": "goo_gone_bottle",
+    "73": "hair_brush",
+    "74": "hammer",
+    "75": "hand_sanitizer",
+    "76": "handy_pot",
+    "77": "headphone",
+    "78": "hole_punch",
+    "79": "honey_bottle",
+    "80": "instant_noodle_packet",
+    "81": "jar",
+    "82": "jello_box",
+    "83": "juice_bottle",
+    "84": "juice_pouch",
+    "85": "kettle",
+    "86": "key",
+    "87": "keyboard",
+    "88": "kiwi",
+    "89": "knife",
+    "90": "label_marker",
+    "91": "ladle",
+    "92": "lego_block",
+    "93": "lemon",
+    "94": "lighter",
+    "95": "lime",
+    "96": "lint_roller",
+    "97": "marker",
+    "98": "mask",
+    "99": "meat_can",
+    "100": "milk_box",
+    "101": "milk_frothing_pitcher",
+    "102": "milk_jug",
+    "103": "mms_package",
+    "104": "mold_star_bottle",
+    "105": "mouse",
+    "106": "muffin_mix_box",
+    "107": "mug",
+    "108": "mustard_bottle",
+    "109": "newspaper",
+    "110": "notebook",
+    "111": "onion",
+    "112": "orange",
+    "113": "oven_glove",
+    "114": "padlock",
+    "115": "palmolive_bottle",
+    "116": "peach",
+    "117": "peanut_jar",
+    "118": "pear",
+    "119": "peeler",
+    "120": "pen",
+    "121": "pencil",
+    "122": "pepper_sprinkler",
+    "123": "pill_bottle",
+    "124": "pitcher",
+    "125": "pizza_cutter",
+    "126": "plant_vase",
+    "127": "plate",
+    "128": "pliers",
+    "129": "potato",
+    "130": "potato_masher",
+    "131": "potato_starch_package",
+    "132": "power_drill",
+    "133": "pringles_can",
+    "134": "protein_bar",
+    "135": "pump_bottle",
+    "136": "remote_controller",
+    "137": "rinse_aid_bottle",
+    "138": "root_beer_bottle",
+    "139": "rubiks_cube",
+    "140": "ruler",
+    "141": "salt_bottle",
+    "142": "salt_can",
+    "143": "scale",
+    "144": "scissors",
+    "145": "scoop",
+    "146": "screwdriver",
+    "147": "shampoo_bottle",
+    "148": "shaver",
+    "149": "shoe",
+    "150": "slipper",
+    "151": "soda_can",
+    "152": "soft_scrub_cleanser_bottle",
+    "153": "soup_can",
+    "154": "spaghetti_spoon",
+    "155": "spatula",
+    "156": "sponge",
+    "157": "spoon",
+    "158": "spray_bottle",
+    "159": "stapler",
+    "160": "sticky_notes",
+    "161": "strawberry",
+    "162": "sugar_box",
+    "163": "sugar_package",
+    "164": "sunscreen_bottle",
+    "165": "sweet_potato",
+    "166": "t-handle",
+    "167": "tape",
+    "168": "tape_dispenser",
+    "169": "tape_measure",
+    "170": "tea_tin",
+    "171": "tennis_ball",
+    "172": "thermometer_box",
+    "173": "timer",
+    "174": "tissue_box",
+    "175": "tofu_package",
+    "176": "tomato",
+    "177": "tong",
+    "178": "toothbrush",
+    "179": "toothpaste",
+    "180": "toothpaste_box",
+    "181": "towel",
+    "182": "travel_pillow",
+    "183": "trowel",
+    "184": "tuna_can",
+    "185": "umbrella",
+    "186": "wafer_roll_can",
+    "187": "watch",
+    "188": "water_bottle",
+    "189": "watermelon",
+    "190": "wine_bottle",
+    "191": "wine_glass",
+    "192": "wipes_bottle",
+    "193": "wood_block",
+    "194": "wood_box",
+    "195": "wood_pestle",
+    "196": "wood_plate",
+    "197": "wrench"
+  },
+  "path": "/home/jishnu/Documents/github/meta-dataset/records/tesla",
+  "file_pattern": "{}.tfrecords",
+  "__class__": "TeslaDatasetSpecification"
+}

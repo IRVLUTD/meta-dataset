@@ -33,7 +33,7 @@ do
     if test "$backbone" = "" # default backbone
     then
       # set BESTNUM to the "best_update_num" field in the corresponding best_....txt
-      export BESTNUM=$(grep best_update_num ${EXPROOT}/best_$EXPNAME.txt | awk '{print $2;}')
+      export BESTNUM=$9
       python -m meta_dataset.train \
         --is_training=False \
         --records_root_dir=$RECORDS \
@@ -50,7 +50,7 @@ do
         --gin_bindings="Trainer.test_entire_test_set_using_single_episode=False" \
         --gin_bindings="benchmark.eval_datasets='$DATASET'"
     else
-      export BESTNUM=$(grep best_update_num ${EXPROOT}/best_$EXPNAME.txt | awk '{print $2;}')
+      export BESTNUM=$9
       python -m meta_dataset.train \
         --is_training=False \
         --records_root_dir=$RECORDS \

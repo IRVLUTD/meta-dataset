@@ -14,7 +14,7 @@ Learner.backprop_through_moments = True
 
 # UPDATE
 # this is consistent with other datasets as well
-Trainer.visualize_data = False
+Trainer.visualize_data = True
 
 # UPDATE
 # a boolean flag indicating whether filtration needs 

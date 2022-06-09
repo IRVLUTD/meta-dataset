@@ -622,7 +622,8 @@ class Trainer(object):
     # for tesla dataset
     if self.data_spec.name == 'tesla':
       meta = {
-        0: "train-only-setup", # for 4.3 sim+real train-set
+        198: "tesla-qualitative-results-in-the-real-world", # for 4.3 real test-set (198 classes)
+        0: "train-only-setup", # for 4.3 sim+real train-set (323 classes, 125+198)
         52: "tesla-mixture",
         41: "tesla-unseen",
         11: "tesla-seen",
@@ -632,10 +633,7 @@ class Trainer(object):
     # get test classes
     total_classes = list(self.data_spec.classes_per_split.values())[2]
 
-    if total_classes in meta.keys():
-      _ = meta[total_classes]
-    else:
-      _ = "qualitative-results-in-the-real-world"
+    _ = meta[total_classes]
     
     prefix = \
       "clean-training" if "filtered" in self.checkpoint_to_restore.split("/")[-4] else "cluttered-training"
@@ -707,7 +705,15 @@ class Trainer(object):
       def round_to_2_decimal(value):
           return "{:0.2f}".format(value * 100.0)
 
+      
+      # As the query set size is zero for most classes in the tfrecord form
+      # before running the fetch joint segmentation+few shot classification test
+      # Smoothing is required for "qualitative-results-in-the-real-world" case
+      smoothing_factor = 1e-5
+
       for class_name in class_topK.keys():
+          if query_images_per_class[class_name] == 0:
+            query_images_per_class[class_name] = smoothing_factor
           class_topK[class_name] = \
             list(
               map(
@@ -717,6 +723,9 @@ class Trainer(object):
                   class_topK[class_name]
             ))
       
+      if total_gt_query_samples == 0:
+        total_gt_query_samples = smoothing_factor
+
       topK_dict = {
         "experiment": self.experiment_name,
         "setting-info": joint_segment_exp_name,
@@ -725,7 +734,7 @@ class Trainer(object):
         "num_classes": len(class_topK.keys()),
         "gt_query_samples": total_gt_query_samples,
         "segmented_query_samples": total_segmented_query_samples,
-        "topK_all": list(map(lambda x: round_to_2_decimal(x/total_gt_query_samples), num_correct_predictions)),
+        "topK_all": list(map(lambda x: round_to_2_decimal(x/(total_gt_query_samples)), num_correct_predictions)),
         "topK_per_class": dict(class_topK)
       }
 

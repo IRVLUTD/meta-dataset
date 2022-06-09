@@ -572,12 +572,12 @@ def write_tfrecord_from_image_files_with_set_info(class_files,
                 set_is_support = set_info == "support"
 
                 """
-        # for joint segmentation experiments
-        # Set FLAGS.do_support_set_oversampling = False
-        
-        # for few shot training and testing experiments
-        # Set FLAGS.do_support_set_oversampling = True
-        """
+                - for joint segmentation experiments
+                  Set FLAGS.do_support_set_oversampling = False
+                
+                - for few shot training and testing experiments
+                  Set FLAGS.do_support_set_oversampling = True
+                """
                 do_oversampling = dataset_is_tesla and set_is_support and FLAGS.do_support_set_oversampling
                 repeat = math.ceil(k_query/k_support) if do_oversampling else 1
                 example = get_example(img,
