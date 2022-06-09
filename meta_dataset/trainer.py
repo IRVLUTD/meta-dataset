@@ -788,7 +788,7 @@ class Trainer(object):
         rows, columns = 5, 5 # plot max 25 objects
 
         # create figure
-        fig = plt.figure(figsize=(25, 25))
+        fig = plt.figure(figsize=(14, 14))
 
         # set window title
         class_name = self.data_spec.class_names[class_ids[class_label]]
@@ -805,7 +805,7 @@ class Trainer(object):
           plt.imshow(im)
           plt.axis('off')
           predicted_class = self.data_spec.class_names[class_ids[predictions[query_indices][idx]]]
-          plt.title(f"q; {predicted_class}")
+          plt.title(predicted_class)
           plt.plot()
         # plt.show()
 
