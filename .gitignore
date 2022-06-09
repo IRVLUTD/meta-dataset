@@ -14,4 +14,4 @@ test_results_from_logs*
 *.7z
 joint-segmentation-results*/
 *.out
-sample_query/
+sample_query*

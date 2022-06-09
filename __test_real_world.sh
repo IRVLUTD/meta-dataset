@@ -1,4 +1,8 @@
 #!/bin/bash
+
+# add query images from sample_query dir to tfrecords
+python process_real_query_images.py; 
+
 # set the required env vars
 models=$1
 gpu_ids=$2
