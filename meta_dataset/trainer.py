@@ -785,7 +785,7 @@ class Trainer(object):
 
         # plot support + query images for this class_label
         # setting values to rows and column variables
-        rows, columns = 11, 6 # plot max rows*columns objects
+        rows, columns = 8, 4 # plot max rows*columns objects
 
         # create figure
         fig = plt.figure(figsize=(50, 50))
