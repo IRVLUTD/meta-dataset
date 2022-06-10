@@ -31,4 +31,4 @@ Trainer.test_entire_test_set_using_single_episode = False
 # UPDATE
 # Top "K" values for generating results for 
 # test_entire_test_set_using_single_episode setup
-Trainer.topK = [1, 2, 3, 4, 5, 10]
+Trainer.topK = [ 1, 2, 3, 4, 5 ]

@@ -754,7 +754,7 @@ class Trainer(object):
         N, 
         K_per_class, 
         class_ids, 
-        predictions
+        predictions_classes
       )  = self.sess.run([
         data_tensors.support_images,
         data_tensors.support_labels,
@@ -763,18 +763,18 @@ class Trainer(object):
         output['episode_info']['way'],
         output['episode_info']['shots'],
         output['episode_info']['class_ids'], # actual class_ids 
-        tf.argmax(output['predictions'], -1), # preds
+        tf.math.top_k(predictions, k=k).indices, # preds
       ])
       
-      max_K = np.max(K_per_class)
-      pred_boolean_mask = query_labels == predictions
+      predictions = []
 
-      def frame_image(img, prediction_correct):
-        color = [255, 0, 0] # red
-        if prediction_correct:
-          color = [0, 255, 0] # green
-        top, bottom, left, right = [7]*4
-        return cv2.copyMakeBorder(img, top, bottom, left, right, cv2.BORDER_CONSTANT, value=color)
+      for pred_idx in range(len(predictions_classes)):
+        row = []
+        for pred_class_id in range(len(predictions_classes[pred_idx])):
+          row.append(self.data_spec.class_names[predictions_classes[pred_idx][pred_class_id]])
+        predictions.append(row)
+    
+      max_K = np.max(K_per_class)
       
       # make plot for way classes
       for class_label in range(1):
@@ -785,10 +785,10 @@ class Trainer(object):
 
         # plot support + query images for this class_label
         # setting values to rows and column variables
-        rows, columns = 5, 5 # plot max 25 objects
+        rows, columns = 11, 6 # plot max rows*columns objects
 
         # create figure
-        fig = plt.figure(figsize=(14, 14))
+        fig = plt.figure(figsize=(75, 75))
 
         # set window title
         class_name = self.data_spec.class_names[class_ids[class_label]]
@@ -804,8 +804,8 @@ class Trainer(object):
           # showing image
           plt.imshow(im)
           plt.axis('off')
-          predicted_class = self.data_spec.class_names[class_ids[predictions[query_indices][idx]]]
-          plt.title(predicted_class)
+          predicted_classes = ",".join(predictions[idx])
+          plt.title(predicted_classes)
           plt.plot()
         # plt.show()
 

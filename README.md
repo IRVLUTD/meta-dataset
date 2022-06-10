@@ -156,6 +156,9 @@ bash __test_joint_segmentation.sh \
 <model> <gpu-id> <clean or cluttered-training> \
 <tesla-variant> <bestnum> 
 # e.g.bash __test_joint_segmentation.sh crosstransformer 1 True tesla-seen 51000
+
+# create real test data
+python create_test_data_for_4.3.real.py <absolute-path>
 ```
 
 ### To run experiments with other datasets

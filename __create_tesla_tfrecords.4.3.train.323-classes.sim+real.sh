@@ -9,7 +9,7 @@ SPLITS="$ROOT_DIR/meta_dataset/dataset_conversion";
 cd $SPLITS/splits;
 rm tesla_splits.json; ln -s tesla_splits.4.3.train.sim+real.323-classes.json tesla_splits.json;
 cd $ROOT_DIR;
-
+ 
 # NOTE: make sure to take backup of existing $ROOT_DIR/records/ directory
 timestamp=`date --rfc-3339=seconds`; timestamp=`echo ${timestamp// /_}`;
 mv $RECORDS $RECORDS.bak.$timestamp
