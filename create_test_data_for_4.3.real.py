@@ -23,10 +23,12 @@ if __name__ == "__main__":
     real_world_data_dir = sys.argv[1]
 
     cwd = os.getcwd()
-    out_dir_path = os.path.join(cwd, 'sample_query')
-    out_dir_path_wo_bg = os.path.join(real_world_data_dir, 'real_objects_wo_bg')
+    _ = 'real-world-samples'
+    out_dir_path_bg = os.path.join(cwd, _, 'sample_query-w-bg')
+    out_dir_path_wo_bg = os.path.join(cwd, _, 'sample_query-wo-bg')
+    real_objects_wo_bg = os.path.join(cwd, _, 'real_objects_wo_bg')
 
-    for dir in [out_dir_path, out_dir_path_wo_bg]:
+    for dir in [out_dir_path_bg, out_dir_path_wo_bg, real_objects_wo_bg]:
         if not os.path.exists(dir):
             os.makedirs(dir)
     
@@ -55,9 +57,9 @@ if __name__ == "__main__":
             cropped_img_name_wo_bg = f"{mat_file.split('/')[-1].replace('.mat', '')}_obj_{obj_id}_wo_bg.png"
             # To handle: error: (-215:Assertion failed) !_img.empty() in function 'imwrite'
             try:
-                cv2.imwrite(os.path.join(out_dir_path, cropped_img_name), cropped_img)
-                cv2.imwrite(os.path.join(out_dir_path, cropped_img_name_wo_bg), cropped_img_without_bg)
+                cv2.imwrite(os.path.join(out_dir_path_bg, cropped_img_name), cropped_img)
+                cv2.imwrite(os.path.join(out_dir_path_wo_bg, cropped_img_name_wo_bg), cropped_img_without_bg)
                 # TODO: remove follwing
-                cv2.imwrite(os.path.join(out_dir_path_wo_bg, cropped_img_name_wo_bg), orig_img_without_bg)
+                cv2.imwrite(os.path.join(real_objects_wo_bg, cropped_img_name_wo_bg), orig_img_without_bg)
             except:
                 pass
