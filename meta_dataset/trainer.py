@@ -788,7 +788,7 @@ class Trainer(object):
         rows, columns = 11, 6 # plot max rows*columns objects
 
         # create figure
-        fig = plt.figure(figsize=(75, 75))
+        fig = plt.figure(figsize=(45, 45))
 
         # set window title
         class_name = self.data_spec.class_names[class_ids[class_label]]
