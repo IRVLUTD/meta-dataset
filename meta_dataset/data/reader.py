@@ -42,6 +42,7 @@ import tensorflow.compat.v1 as tf
 # are used for padding only.
 PLACEHOLDER_CLASS_ID = -1
 
+SEED=20220610
 
 def _pad(dataset_indices, chunk_size, placeholder_dataset_id):
   """Pads `dataset_indices` with placeholders so it has length `chunk_size`.
@@ -255,7 +256,7 @@ class Reader(object):
                                pool=None,
                                repeat=True,
                                shuffle=True,
-                               shuffle_seed=None):
+                               shuffle_seed=SEED):
     """Constructs the list of class datasets.
 
     Args:
@@ -332,7 +333,7 @@ class EpisodeReaderMixin(object):
   def create_dataset_input_pipeline(self,
                                     sampler,
                                     pool=None,
-                                    shuffle_seed=None):
+                                    shuffle_seed=SEED):
     """Creates a Dataset encapsulating the input pipeline for one data source.
 
     Args:
@@ -431,7 +432,7 @@ class BatchReaderMixin(object):
                                     batch_size,
                                     offset=0,
                                     pool=None,
-                                    shuffle_seed=None):
+                                    shuffle_seed=SEED):
     """Creates a Dataset encapsulating the input pipeline for one data source.
 
     Args:
