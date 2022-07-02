@@ -1,6 +1,42 @@
-### TODO: Give a suitable title
-- This a forked repository of [Meta-Dataset](https://github.com/google-research/meta-dataset/). (Commit: [c67dd2b](https://github.com/google-research/meta-dataset/commit/c67dd2bb66fb2a4ce7e4e9906878e13d9b851eb5))
-- Full documentation can be found [here](README-original.md).
+# FewSOL
+This is the code for our paper [FewSOL: A Dataset for Few-Shot Object Learning in Robotic Environments](https://irvlutd.github.io/FewSOL/)[1].
+
+TODO: ADD a jumbotron image from the paper (if needed).
+
+- The code is build upon [Meta-Dataset](https://github.com/google-research/meta-dataset/):[c67dd2b](https://github.com/google-research/meta-dataset/commit/c67dd2bb66fb2a4ce7e4e9906878e13d9b851eb5)[*].In case of any query relating to this, please contact [Meta-Dataset](https://github.com/google-research/meta-dataset/)'s authors.
+- Modifications have been made to [c67dd2b](https://github.com/google-research/meta-dataset/commit/c67dd2bb66fb2a4ce7e4e9906878e13d9b851eb5) in order to perform the following experiments. 
+  - Few-Shot Classification (FSC) [Section: 4.1 in [1]]
+  - Joint Object Segmentation and Few-Shot Classification (JOS-FCS) [Section: 4.2 in [1]]
+  - Real world setting for JOS-FCS  [Section: 4.3 in [1]]
+
+# Requirements
+- Python >= 3.7.5, pip
+- zip, unzip, 7z
+- Docker (Recommended)
+- Tensorflow
+
+# Helpful pointers
+- Docker Image: [nvcr.io/nvidia/tensorflow](https://catalog.ngc.nvidia.com/orgs/nvidia/containers/tensorflow)[2] can be used. Use the `21.12-tf1-py3` tag.
+    - ```bash
+      docker run --gpus all -id --rm -v <cloned-meta-dataset-dir-path>:/workspace --workdir=/workspace --name fewsol nvcr.io/nvidia/tensorflow:21.12-tf1-py3
+      ```
+    - TODO: Link setup Setup the environment using instructions in [Setup](#setup) 
+- Alternatively, Docker Image: [irvlutd/meta-datatset-fewsol](https://hub.docker.com/r/irvlutd/meta-datatset-fewsol)[3] can be used as well. It's build upon [2] and contains all the packages for conducting the experiments. Use `latest` tag for image without models.
+    - ```bash
+      docker run --gpus all -id --rm -v <cloned-meta-dataset-dir-path>:/workspace --workdir=/workspace --name fewsol irvlutd/meta-datatset-fewsol:latest
+      ```
+    - All the required packages and models (from the extended study with better performance) are readily available in [3].
+        - Model location within the docker container: `/workspace/experiment_output`
+            - `/workspace/experiment_output/tesla` contains models trained with tesla's `cluttered support set` setup.
+            - `/workspace/experiment_output/tesla-filtered` contains models trained with tesla's `clean support set` setup.
+            - `/workspace/experiment_output/pretrained-backbones` contains pretrained backbone models trained with `imagenet`.
+- The experiments have been done using [2]. The packages' version in `requirements.txt` have been set accordingly. This may vary w.r.t. [*].
+- Models will be saved with `<model-alias>_all-<num-validation-episodes><phrase>-<backbone>`
+  - `<model-alias>`: alias used in [c67dd2b](https://github.com/google-research/meta-dataset/commit/c67dd2bb66fb2a4ce7e4e9906878e13d9b851eb5)
+  - `<num-validation-episodes>`: Number of validation episodes used during training
+  - `<phrase>`: If pretrained backbone is used then "-using-pretrained-backbone" else ""
+  - `<backbone>`: alias of the backbone used in [c67dd2b](https://github.com/google-research/meta-dataset/commit/c67dd2bb66fb2a4ce7e4e9906878e13d9b851eb5)
+
 
 ### Before starting
   - Be sure to set the env variables in [set_env.sh](set_env.sh) and [usr.env](usr.env).
@@ -13,14 +49,11 @@
 git clone https://github.com/IRVLUTD/meta-dataset.git; cd meta-dataset;
 
 # If you want to use docker, open docker container in interactive mode
-docker run \
--it --rm --runtime=nvidia \
--v <cloned-meta-dataset-dir-path>:/workspace --workdir=/workspace \
---name meta-dataset -e NVIDIA_VISIBLE_DEVICES=<list-of-gpu-ids> \
-nvcr.io/nvidia/tensorflow:21.12-tf2-py3 # tensorflow 2
 
-# run inside docker
-apt-get update; apt install python3-tk pkg-config libcairo2-dev python-gi python-gi-cairo python3-gi python3-gi-cairo gir1.2-gtk-3.0;
+# Install necessary packages
+apt-get update; 
+apt install python3-tk pkg-config libcairo2-dev python-gi \
+            python-gi-cairo python3-gi python3-gi-cairo gir1.2-gtk-3.0;
 
 # install dependencies
 pip install -r requirements.txt
@@ -33,7 +66,8 @@ cd task_adaptation; python setup.py install; cd ..;
 export PYTHONPATH=$PYTHONPATH:$PWD
 ```
 
-- For testing any dataset, set perform_filtration=True/False in (trainer_config.gin)[meta_dataset/learn/gin/setups/trainer_config.gin]
+- For using Clean/Cluttered support set setup
+  - Set `perform_filtration`=True/False in [trainer_config.gin](meta_dataset/learn/gin/setups/trainer_config.gin)
 ### To run experiments with tesla dataset, following commands can be used
 ```bash
 # TODO: remove/archive install.sh before paper submission
