@@ -1,4 +1,6 @@
 .DS_Store
+.vscode
+.ipynb_checkpoints
 *.pyc
 __pycache__
 *.swp
