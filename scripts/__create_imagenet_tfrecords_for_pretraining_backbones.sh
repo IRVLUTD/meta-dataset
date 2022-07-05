@@ -1,4 +1,4 @@
-source set_env.sh
+cd ..; source set_env.sh; cd scripts
 
 python -m meta_dataset.dataset_conversion.convert_datasets_to_records \
   --dataset=ilsvrc_2012 \

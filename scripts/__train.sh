@@ -12,7 +12,7 @@ checkpoint_to_restore=''
 pretrained_source=$SOURCE_FOR_PRETRAINING
 
 source __set_suffix.sh $perform_filtration $num_valid_episodes $5
-source set_env.sh
+cd ..; source set_env.sh; cd scripts
 
 image_height=126
 

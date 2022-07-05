@@ -1,4 +1,4 @@
-source set_env.sh
+cd ..; source set_env.sh; cd scripts
 
 logs_dir="$ROOT_DIR/logs"
 out_file="$ROOT_DIR/test_results_from_logs.csv"

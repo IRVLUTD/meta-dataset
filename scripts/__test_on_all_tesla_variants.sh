@@ -25,7 +25,7 @@ do
 done
 
 # set the tesla symbolic link to tesla-unseen, reset to default
-source set_env.sh
+cd ..; source set_env.sh;
 cd $RECORDS; rm tesla; ln -s tesla-unseen tesla; cd $ROOT_DIR;
 
 # To check whether symbolic link points to tesla-unseen
