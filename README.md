@@ -11,7 +11,7 @@ This is the code for our paper [FewSOL: A Dataset for Few-Shot Object Learning i
 
 # Requirements
 - Python >= 3.7.5, pip
-- zip, unzip, 7z
+- zip, unzip, 7z, curl, svn
 - Docker (Recommended)
 - Tensorflow
 
@@ -73,111 +73,125 @@ cd task_adaptation; python setup.py install; cd ..;
 export PYTHONPATH=$PYTHONPATH:$PWD
 ```
 
-- **For using Clean/Cluttered support set setup**
-  - Set `perform_filtration`=True/False in [trainer_config.gin](meta_dataset/learn/gin/setups/trainer_config.gin)
-- **REQUIRED:** Copy all scripts to the `cloned` directory
-    - `cp scripts/* .` 
-
-# Environment Variables Setup
-  - Be sure to set the env variables in [set_env.sh](set_env.sh) and [usr.env](usr.env).
-  - Set respective dataset names in [all_datasets.gin](meta_dataset/learn/gin/setups/all_datasets.gin).
+# Setup Variables
+  - Be sure to set the env variables in [set_env.sh](set_env.sh) and [usr.env](usr.env). Each file has adequate information in the form of comments.
+  - Set respective dataset names in [all_datasets.gin](meta_dataset/learn/gin/setups/all_datasets.gin). Use the default setup for conducting experiments with tesla (FewSOL).
   - **NOTE**: Any gin parameter initialized via the shell script files starting with "__" will override them. Please be careful about the parameters initialized via script files. Use the mandatory ones in scripts and keep the rest inside respective gin configs.
 
 
-### To run experiments with tesla dataset, following commands can be used
+
+### Data and Pretrained Models
+TODO: Download links and other information
+
+
+
+### To run experiments with tesla dataset
+#### Step. 1
+**REQUIRED:** Copy all scripts to the `cloned` directory's root.
 ```bash
-# TODO: remove/archive install.sh before paper submission
-# bugs exist in the script, needs debugging
-# hence download only required datasets
-# recommended: imagenet only
-# bash install.sh
+cp scripts/* .
+```
 
-# set required env variables
-# change as per your need
+#### Step. 2
+Populate required variables. 
+```bash
 source set_env.sh
+```
 
-# Download the TESLA dataset
-# NOTE: make sure that the download directory
-# has ample amount of disk space as the following
-# 2 steps after download will also need additional space
+#### Step. 3
+Download the TESLA dataset. **NOTE**: make sure that the download directory has ample amount of disk space as the following 2 steps after download will also need additional space.
 
+```bash
 # move to DATASET_DOWNLOAD_DIR
 cd $DATASET_DOWNLOAD_DIR
 
 # download dataset
-wget $DATASET_URL
+curl -L $DATASET_URL --output Experiment-Dataset.zip
 
-# uncompress to TESLA directory: this might take a while
-7za x FSL-Sim2Real-IRVL-2022.7z -o$DATASET_DOWNLOAD_DIR/$UNCOMPRESSED_DATASET_DIR_NAME
+# unzip to TESLA directory: this might take a while
+unzip Experiment-Dataset.zip -d $DATASET_DOWNLOAD_DIR/$UNCOMPRESSED_DATASET_DIR_NAME
+cd $DATASET_DOWNLOAD_DIR/$UNCOMPRESSED_DATASET_DIR_NAME; 7z x *.zip -o\*; cd $ROOT_DIR;
+```
 
-# replace " " in class names with "_"
-cd $UNCOMPRESSED_DATASET_DIR_NAME
-for data in training_data test_data
-do
-  cd $data; for file in *; do mv "$file" `echo $file | tr ' ' '_'` ; done; cd ..
-done
-
-# rename m&m's package class in test_set
-mv m\&m\'s_package/ $(echo "m\&m\'s_package/" | sed -e 's/[^A-Za-z0-9._-]//g')
-# rename m&m's package class in test_set
-mv rubik\'s_cube/ $(echo "rubik\'s_cube" | sed -e 's/[^A-Za-z0-9._-]//g')
-
-# move back to meta-dataset root
-cd $ROOT_DIR
-
-# filter variant classes to represent mixture(52), unseen(41), seen(11)
+#### Step. 4
+Create TESLA test data variants.
+```bash
 python __select_and_create_test_classes_for_variants.py
+```
 
-# create tfrecords
+#### Step. 5 
+Create TFRecords from raw data. This step is optional.
+Download TFRecords used in our experiments from [https://utdallas.box.com/v/FewSOL-Experiment-TFRecords](https://utdallas.box.com/v/FewSOL-Experiment-TFRecords){:target="_blank"}
+
+```bash
 bash __create_tesla_tfrecords.sh <boolean-to-oversample-support-set-images> <required-sets>
-# for <required-sets> use CAPITAL LETTER and don't use spaces
 # E.g. bash __create_tesla_tfrecords.sh True/False "TRAIN,VALID,TEST"
+```
+- For `<required-sets>` use CAPITAL LETTERS and don't use spaces. Based on the requirement, `<required-sets>` can be used to create TFRecords of the desired set. This save tfrecord formation time and disk space.
+  - Possible values: {`'TRAIN'`, `'VALID'`, `'TEST'`, `'TRAIN,VALID'`, `'VALID,TEST'`, `'TRAIN,VALID'`, `'TRAIN,VALID,TEST'`}
+- In order to oversample the support set, use `True` for `<boolean-to-oversample-support-set-images>`.
 
-# get best from arxiv_v2_dev
-cd meta_dataset/learn/gin
+#### Step. 6
+Get the best hyperparameters from [arxiv_v2_dev](https://github.com/google-research/meta-dataset/tree/arxiv_v2_dev){:target="_blank"}
+
+```bash
+cd $ROOT_DIR/meta_dataset/learn/gin
 svn checkout https://github.com/google-research/meta-dataset/branches/arxiv_v2_dev/meta_dataset/learn/gin/best
-cd best
-sed -i 's/models/learners/g' *
-ln -s best best_v2
-cd $ROOT_DIR
+cd best; sed -i 's/models/learners/g' *; ln -s best best_v2; cd $ROOT_DIR
+```
 
-# reproduce the results
-# TODO: should be removed before paper submission
-# trained on prototypical/matching networks
-# bash reproduce_best_results.sh
-
-# create imagenet tfrecords for backbone pretraining
+#### Step. 7
+Create imagenet tfrecords for backbone pretraining
+```bash
 bash __create_imagenet_tfrecords_for_pretraining_backbones.sh
+```
+- `IMAGENET_DATASET_DIR` variable in [usr.env](scripts/usr.env) has to be set with the ImageNet dataset's absolute path.
 
-# pretrain-baseline
+#### Step. 8
+Pre-train backbones.
+```bash
 bash __baseline_and_pretraining_on_imagenet.sh  <models> <gpu-ids> <resnet34-max-stride>
-# e.g. bash __baseline_and_pretraining_on_imagenet.sh  "resnet mamlconvnet mamlresnet" "0"  "4/8/16/32/None"
+# e.g. bash __baseline_and_pretraining_on_imagenet.sh  "resnet/resnet34" "0"  "4/8/16/32/None"
+```
+- Use `max-stride=16` for **CrossTransformers** and `None` elsewhere.
 
-# select best pre-trained backbones
+
+#### Step. 9 
+Select best pre-trained backbones.
+```bash
 bash __select_best_pretrained_backbone_models.sh
-
-# Train TESLA; For other md-datasets, always set <perform-filtration-flag> as False
-bash __train.sh \
-<models> \
-<gpu-ids> \
-<perform-filtration-flag> \
-<num-validation-episodes> \
-<use-pretrained-backbone or _>
-<backbone>
-# e.g. bash __train.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" "True/False" use_pretrained_backbone resnet34/resnet_ctx/""
-
-# To select and see the best model after training
-# __test.sh does run __select_best_model.sh
-# hence use this just to see the best model specs
-# For datasets other than TESLA, always set <perform-filtration-flag> as False
-# bash __select_best_model.sh <models> <gpu-ids>  <perform-filtration-flag-for-model> _ <num-valid-episodes> <use_pretrained_backbone or _> <backbone> #uncomment this
-# e.g. bash __select_best_model.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" "True/False" _ 60 use_pretrained_backbone resnet34/resnet_ctx/""
+```
 
 
-# evaluate the trained models
-# tested on prototypical/matching networks
-# For datasets other than TESLA, always set 
-# <perform-filtration-flag-for-model> and <perform-filtration-flag-for-model> as False
+#### Step. 10
+Train TESLA. For all other md-datasets, always set `<perform-filtration-flag>` as `False`.
+- **For using Clean/Cluttered support set setup**
+  - Set `Trainer.perform_filtration`=`True/False` in [trainer_config.gin](meta_dataset/learn/gin/setups/trainer_config.gin). `True/False` value's datatype should be boolean. Don't use string.
+- To visualize data. Set `Trainer.visualize_data = True`.
+- To use non-episodic testing as discussed in the paper, Set `Trainer.test_entire_test_set_using_single_episode = False`
+- To get the topK results, Set `Trainer.topK = [1, 2, 3, 4, 5, .....]`; where each list element is a `k`.
+    ```bash
+    bash __train.sh \
+    <models> \
+    <gpu-ids> \
+    <perform-filtration-flag> \
+    <num-validation-episodes> \
+    <use-pretrained-backbone or _>
+    <backbone>
+    # e.g. bash __train.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" "True/False" use_pretrained_backbone resnet34/resnet_ctx/""
+    ```
+
+- To select and see the best model after training
+    ```bash
+    bash __select_best_model.sh <models> <gpu-ids>  <perform-filtration-flag-for-model> _ <num-valid-episodes> <use_pretrained_backbone or _> <backbone>
+    # e.g. bash __select_best_model.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" "True/False" _ 60 use_pretrained_backbone resnet34/resnet_ctx
+    ```
+
+
+#### Step. 11.a
+Test the trained models. For datasets other than TESLA, always set `<perform-filtration-flag-for-model>` and `<perform-filtration-flag-for-dataset>` as `False`.
+
+```bash
 bash __test.sh <models> \
 <gpu-ids> \
 <perform-filtration-flag-for-model> \
@@ -186,9 +200,12 @@ bash __test.sh <models> \
 <tesla-dataset-variant> \
 <use-pretrained-backbone or _>
 <backbone>
-# e.g. bash __test.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" "True/False" "True/False" 60 "tesla-mixture" use_pretrained_backbone resnet/""
+# e.g. bash __test.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" "True/False" "True/False" 60 "tesla-mixture" use_pretrained_backbone resnet/resnet34
+```
 
-# To test on all tesla variants
+#### Step. 11.b
+To test on all tesla variants
+```bash
 bash __test_on_all_tesla_variants.sh \
 <model> \
 <gpu_id> \
@@ -197,47 +214,35 @@ bash __test_on_all_tesla_variants.sh \
 <use-pretrained-backbone or _>
 <backbone>
 # e.g. bash __test_on_all_tesla_variants.sh "maml" 0 False 60
+```
 
-# get test results from logs
+
+#### Step. 11.c
+Get test results from logs.
+```bash
 bash __logs_filter.sh
+```
 
-# for testing joint segmentation; NOTE: link the appropriate tfrecords dir to records-non-oversampled before running
+#### Step. 12
+Test joint object segmentation and few shot classification
+**NOTE**: Link the appropriate tfrecords dir to records-non-oversampled before running
+
+```bash
 bash __test_joint_segmentation.sh \
 <model> <gpu-id> <clean or cluttered-training> \
 <tesla-variant> <bestnum> 
 # e.g.bash __test_joint_segmentation.sh crosstransformer 1 True tesla-seen 51000
 ```
 
+#### TODO: Write about real-world testing and other details about tfrecords structure and creation. sample_query directory and how can anyone else use a custom script to generate sample queries from real world. We have JOS+FSC.
+
 ### To run experiments with other datasets
-#### NOTE: 
-  - Set DATASET_DIR_NAME to predefined dataset alias (E.g. omniglot, fungi) from Meta-Dataset in [usr.env](usr.env).
-    - The only variables that need to be changed are DATASET_DIR_NAME and BS (as per user's need).
+##### NOTE: 
+  - Set `DATASET_DIR_NAME` to predefined dataset alias (E.g. omniglot, fungi) from Meta-Dataset in [usr.env](scripts/usr.env).
+    - The only variables that need to be changed are `DATASET_DIR_NAME` and `BS` (as per user's need).
   - Set respective dataset names in [all_datasets.gin](meta_dataset/learn/gin/setups/all_datasets.gin). 
-  - Run the following commands after dataset download and conversion. Refer [this](doc/dataset_conversion.md) for more details.
-```bash
-# For other md-datasets, always set <perform-filtration-flag> as False
-bash __train.sh \
-<models> \
-<gpu-ids> \
-False \
-<num-validation-episodes> \
-<use-pretrained-backbone or _>
-<backbone>
-bash __train.sh <models> <gpu-ids> False
-# e.g. bash __train.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" False 60 use_pretrained_backbone resnet/""
-
-# To select and see the best model after training
-# __test.sh does run __select_best_model.sh
-# hence use this just to see the best model specs
-# bash __select_best_model.sh <models> <gpu-ids>  False _ <num-valid-episodes> <use-pretrained-backbone or _> <backbone> #uncomment this
-# e.g. bash __select_best_model.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" False _ 60 use_pretrained_backbone resnet/""
-
-
-# evaluate the trained models
-# tested on prototypical/matching networks
-bash __test.sh <models> <gpu-ids> False False <dataset-name> <use-pretrained-backbone or _> <backbone>
-# e.g. bash __test.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" False False imagenet use_pretrained_backbone resnet/""
-```
+  - For data download and conversion, refer [this](doc/dataset_conversion.md) for more details.
+  - To train, test and select best checkpoint, refer Step. 10-12
 
 ### Citation:
 Please cite the following if you incorporate our work.

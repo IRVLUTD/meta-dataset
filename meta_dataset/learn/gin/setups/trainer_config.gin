@@ -18,7 +18,8 @@ Trainer.visualize_data = True
 
 # UPDATE
 # a boolean flag indicating whether filtration needs 
-# to be performed for tesla dataset
+# to be performed for tesla dataset, i.e. whether to use
+# clean (True) or cluttered (False) support set.
 Trainer.perform_filtration = True
 
 # UPDATE
