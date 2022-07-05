@@ -236,7 +236,7 @@ bash scripts/__test_joint_segmentation.sh \
   - For data download and conversion, refer [this](doc/dataset_conversion.md) for more details.
   - To train, test and select best checkpoint, refer Step. 10-12
 
-# Citation:
+# Citation
 Please cite the following if you incorporate our work.
 
 ```bibtex
