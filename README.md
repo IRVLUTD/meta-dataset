@@ -137,7 +137,7 @@ Create imagenet tfrecords for backbone pretraining
 ```bash
 bash scripts/__create_imagenet_tfrecords_for_pretraining_backbones.sh
 ```
-- `IMAGENET_DATASET_DIR` variable in [usr.env](scripts/usr.env) has to be set with the ImageNet dataset's absolute path.
+- `IMAGENET_DATASET_DIR` variable in [usr.env](usr.env) has to be set with the ImageNet dataset's absolute path.
 
 ### Step. 8
 Pre-train backbones.
@@ -230,7 +230,7 @@ bash scripts/__test_joint_segmentation.sh \
 
 # To run experiments with other datasets
 #### NOTE: 
-  - Set `DATASET_DIR_NAME` to predefined dataset alias (E.g. omniglot, fungi) from Meta-Dataset in [usr.env](scripts/usr.env).
+  - Set `DATASET_DIR_NAME` to predefined dataset alias (E.g. omniglot, fungi) from Meta-Dataset in [usr.env](usr.env).
     - The only variables that need to be changed are `DATASET_DIR_NAME` and `BS` (as per user's need).
   - Set respective dataset names in [all_datasets.gin](meta_dataset/learn/gin/setups/all_datasets.gin). 
   - For data download and conversion, refer [this](doc/dataset_conversion.md) for more details.
