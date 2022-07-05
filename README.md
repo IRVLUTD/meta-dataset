@@ -34,7 +34,7 @@ This is the code for our paper [FewSOL: A Dataset for Few-Shot Object Learning i
 - Models will be saved with `<model-alias>_all-<num-validation-episodes><phrase>-<backbone>`
   - `<model-alias>`: alias used in [c67dd2b](https://github.com/google-research/meta-dataset/commit/c67dd2bb66fb2a4ce7e4e9906878e13d9b851eb5)
   - `<num-validation-episodes>`: Number of validation episodes used during training
-  - `<phrase>`: If pretrained backbone is used then "-using-pretrained-backbone" else ""
+  - `<phrase>`: If pretrained backbone is used then `'-using-pretrained-backbone'` else `''`
   - `<backbone>`: alias of the backbone used in [c67dd2b](https://github.com/google-research/meta-dataset/commit/c67dd2bb66fb2a4ce7e4e9906878e13d9b851eb5)
 
 # Alias
