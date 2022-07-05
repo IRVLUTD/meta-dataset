@@ -10,7 +10,7 @@ export SOURCE=all #tesla
 export CUDA_VISIBLE_DEVICES=$gpu_ids
 
 source __set_suffix.sh $perform_filtration_model $num_valid_episodes $use_pretrained_backbone
-source set_env.sh
+cd ..; source set_env.sh; cd scripts
 
 for MODEL in $models
 do

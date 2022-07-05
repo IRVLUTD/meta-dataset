@@ -14,7 +14,7 @@ export CUDA_VISIBLE_DEVICES=$gpu_ids
 export TESLA_DATASET_VARIANT="qualitative-results-in-the-real-world"
 
 source __set_suffix.sh $perform_filtration_model 60 use_pretrained_backbone
-source set_env.sh
+cd ..; source set_env.sh; cd scripts
 
 # link dataset variant of choice, useful for tesla
 eval_episodes=1

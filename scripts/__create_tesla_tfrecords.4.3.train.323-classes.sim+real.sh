@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # set the required env vars
-source set_env.sh
+cd ..; source set_env.sh; cd scripts
 
 required_sets="TRAIN,VALID"
 SPLITS="$ROOT_DIR/meta_dataset/dataset_conversion";

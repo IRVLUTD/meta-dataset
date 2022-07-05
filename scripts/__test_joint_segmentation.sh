@@ -8,7 +8,7 @@ export SOURCE=all #tesla
 export CUDA_VISIBLE_DEVICES=$gpu_ids
 
 source __set_suffix.sh $perform_filtration_model 60 use_pretrained_backbone
-source set_env.sh
+cd ..; source set_env.sh; cd scripts
 
 # link dataset variant of choice, useful for tesla
 export TESLA_DATASET_VARIANT=$4

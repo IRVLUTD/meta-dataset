@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # set the required env vars
-source set_env.sh
+cd ..; source set_env.sh; cd scripts
 
 oversample_support_set=$1
 required_sets=$2

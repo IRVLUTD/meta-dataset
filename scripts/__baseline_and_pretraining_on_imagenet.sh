@@ -3,7 +3,7 @@ backbones=$1
 gpu_ids=$2
 max_stride=$3 # only for crosstransformer resnet34
 export CUDA_VISIBLE_DEVICES=$gpu_ids
-source set_env.sh
+cd ..; source set_env.sh; cd scripts
 
 # for imagenet filtration is not required
 perform_filtration='False'
