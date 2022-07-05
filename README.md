@@ -1,7 +1,7 @@
 # FewSOL
-This is the code for our paper [FewSOL: A Dataset for Few-Shot Object Learning in Robotic Environments](https://irvlutd.github.io/FewSOL/)[1].
+This is the code for our paper [FewSOL: A Dataset for Few-Shot Object Learning in Robotic Environments](https://irvlutd.github.io/FewSOL)[1].
 
-TODO: ADD a jumbotron image from the paper (if needed).
+TODO: ADD figures/segmentation.pdf as the jumbotron image from the paper (if needed). 
 
 - The code is build upon [Meta-Dataset](https://github.com/google-research/meta-dataset/):[c67dd2b](https://github.com/google-research/meta-dataset/commit/c67dd2bb66fb2a4ce7e4e9906878e13d9b851eb5)[*].In case of any query relating to this, please contact [Meta-Dataset](https://github.com/google-research/meta-dataset/)'s authors.
 - Modifications have been made to [c67dd2b](https://github.com/google-research/meta-dataset/commit/c67dd2bb66fb2a4ce7e4e9906878e13d9b851eb5) in order to perform the following experiments. 
@@ -25,7 +25,7 @@ TODO: ADD a jumbotron image from the paper (if needed).
     - ```bash
       docker run --gpus all -id --rm -v <cloned-meta-dataset-dir-path>:/workspace --workdir=/workspace --name fewsol irvlutd/meta-datatset-fewsol:latest
       ```
-    - All the required packages and models (from the extended study with better performance) are readily available in [3].
+    - All the required packages and models (from the extended study with better performance) are readily available in [3]. If any issues arise, please use the contact mediums mentioned [Contact](#contact) section.
         - Model location within the docker container: `/workspace/experiment_output`
             - `/workspace/experiment_output/tesla` contains models trained with tesla's `cluttered support set` setup.
             - `/workspace/experiment_output/tesla-filtered` contains models trained with tesla's `clean support set` setup.
@@ -36,28 +36,34 @@ TODO: ADD a jumbotron image from the paper (if needed).
   - `<num-validation-episodes>`: Number of validation episodes used during training
   - `<phrase>`: If pretrained backbone is used then "-using-pretrained-backbone" else ""
   - `<backbone>`: alias of the backbone used in [c67dd2b](https://github.com/google-research/meta-dataset/commit/c67dd2bb66fb2a4ce7e4e9906878e13d9b851eb5)
+### Alias
+- **FewSOL** has been nicknamed `TESLA` in the codebase. This is due to the fact that at the start of the project, the name of the dataset was not decided and FewSOL was finalized as it promptly describes its purpose. Hence, when referring to any code related to FewSOL search for `TESLA, Tesla, tesla` keywords in the codebase. (If you are curious, `TESLA` stands for mul**T**i-view RGB-D dataset for f**E**w-**S**hot **L**e**A**rning)
+- The test data variants for few-shot classification and joint object segmentation and few-shot classification have code aliases as follows:
 
+    |     **Variant**    	| **Classes** 	|         **Alias**         	|
+    |:------------------:	|:-----------:	|:-------------------------:	|
+    |         All        	|      52     	|       tesla-mixture       	|
+    |       Unseen       	|      41     	|        tesla-unseen       	|
+    |        Seen        	|      11     	|         tesla-seen        	|
+    | Unseen (Synthetic) 	|      13     	| tesla-synthetic-unseen-13 	|
 
-### Before starting
-  - Be sure to set the env variables in [set_env.sh](set_env.sh) and [usr.env](usr.env).
-  - Set respective dataset names in [all_datasets.gin](meta_dataset/learn/gin/setups/all_datasets.gin).
-  - **NOTE**: Any gin parameter initialized via the script files starting with "__" will override them. Please be careful about the parameters initialized via script files. Use the mandatory ones in scripts and keep the rest inside respective gin configs.
+- **NOTE**: Henceforth, these aliases will be used.
 
 ### Setup
 ```bash
-# clone and cd
+# clone
 git clone https://github.com/IRVLUTD/meta-dataset.git; cd meta-dataset;
 
 # If you want to use docker, open docker container in interactive mode
 
 # Install necessary packages
-apt-get update; 
+apt-get update; # required for docker
 apt install python3-tk pkg-config libcairo2-dev python-gi \
             python-gi-cairo python3-gi python3-gi-cairo gir1.2-gtk-3.0;
 
 # install dependencies
 pip install -r requirements.txt
-python setup.py install
+python setup.py install 
 
 # In order to use data.read_episodes module, task_adaptation code is required
 # as per https://github.com/google-research/meta-dataset#adding-task_adaptation-code-to-the-path
@@ -66,8 +72,18 @@ cd task_adaptation; python setup.py install; cd ..;
 export PYTHONPATH=$PYTHONPATH:$PWD
 ```
 
-- For using Clean/Cluttered support set setup
+- **For using Clean/Cluttered support set setup**
   - Set `perform_filtration`=True/False in [trainer_config.gin](meta_dataset/learn/gin/setups/trainer_config.gin)
+- **REQUIRED:** Copy all scripts to the `cloned` directory
+    - `cp scripts/* .` 
+
+### Environment Variables Setup
+  - Be sure to set the env variables in [set_env.sh](set_env.sh) and [usr.env](usr.env).
+    - 
+  - Set respective dataset names in [all_datasets.gin](meta_dataset/learn/gin/setups/all_datasets.gin).
+  - **NOTE**: Any gin parameter initialized via the shell script files starting with "__" will override them. Please be careful about the parameters initialized via script files. Use the mandatory ones in scripts and keep the rest inside respective gin configs.
+
+
 ### To run experiments with tesla dataset, following commands can be used
 ```bash
 # TODO: remove/archive install.sh before paper submission
@@ -222,3 +238,16 @@ bash __train.sh <models> <gpu-ids> False
 bash __test.sh <models> <gpu-ids> False False <dataset-name> <use-pretrained-backbone or _> <backbone>
 # e.g. bash __test.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" False False imagenet use_pretrained_backbone resnet/""
 ```
+
+### Citation:
+Please cite the following if you incorporate our work.
+
+```bibtex
+Coming soon...
+```
+
+### Contact
+Following 3 options are available for any clarification, comments or suggestions
+- Join the [discussion forum](https://github.com/IRVLUTD/meta-dataset/discussions/). TODO: create a discussion forum.
+- Create an [issue](https://github.com/IRVLUTD/meta-dataset/issues).
+- Contact [Jishnu](https://jishnujayakumar.github.io/).
