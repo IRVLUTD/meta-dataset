@@ -213,7 +213,7 @@ bash __test_on_all_tesla_variants.sh \
 <num-validation-episodes>
 <use-pretrained-backbone or _>
 <backbone>
-# e.g. bash __test_on_all_tesla_variants.sh "maml" 0 False 60
+# e.g. bash __test_on_all_tesla_variants.sh "maml" 0 False 60 resnet34
 ```
 
 
