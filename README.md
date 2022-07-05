@@ -1,7 +1,7 @@
 # FewSOL
 This is the code for our paper [FewSOL: A Dataset for Few-Shot Object Learning in Robotic Environments](https://irvlutd.github.io/FewSOL)[1].
 
-TODO: ADD figures/segmentation.pdf as the jumbotron image from the paper (if needed). 
+![data capture image](figures/data_capture.pdf)
 
 - The code is build upon [Meta-Dataset](https://github.com/google-research/meta-dataset/):[c67dd2b](https://github.com/google-research/meta-dataset/commit/c67dd2bb66fb2a4ce7e4e9906878e13d9b851eb5)[*].In case of any query relating to this, please contact [Meta-Dataset](https://github.com/google-research/meta-dataset/)'s authors.
 - Modifications have been made to [c67dd2b](https://github.com/google-research/meta-dataset/commit/c67dd2bb66fb2a4ce7e4e9906878e13d9b851eb5) in order to perform the following experiments. 
@@ -36,7 +36,8 @@ TODO: ADD figures/segmentation.pdf as the jumbotron image from the paper (if nee
   - `<num-validation-episodes>`: Number of validation episodes used during training
   - `<phrase>`: If pretrained backbone is used then "-using-pretrained-backbone" else ""
   - `<backbone>`: alias of the backbone used in [c67dd2b](https://github.com/google-research/meta-dataset/commit/c67dd2bb66fb2a4ce7e4e9906878e13d9b851eb5)
-### Alias
+
+# Alias
 - **FewSOL** has been nicknamed `TESLA` in the codebase. This is due to the fact that at the start of the project, the name of the dataset was not decided and FewSOL was finalized as it promptly describes its purpose. Hence, when referring to any code related to FewSOL search for `TESLA, Tesla, tesla` keywords in the codebase. (If you are curious, `TESLA` stands for mul**T**i-view RGB-D dataset for f**E**w-**S**hot **L**e**A**rning)
 - The test data variants for few-shot classification and joint object segmentation and few-shot classification have code aliases as follows:
 
@@ -49,7 +50,7 @@ TODO: ADD figures/segmentation.pdf as the jumbotron image from the paper (if nee
 
 - **NOTE**: Henceforth, these aliases will be used.
 
-### Setup
+# Setup
 ```bash
 # clone
 git clone https://github.com/IRVLUTD/meta-dataset.git; cd meta-dataset;
@@ -77,9 +78,8 @@ export PYTHONPATH=$PYTHONPATH:$PWD
 - **REQUIRED:** Copy all scripts to the `cloned` directory
     - `cp scripts/* .` 
 
-### Environment Variables Setup
+# Environment Variables Setup
   - Be sure to set the env variables in [set_env.sh](set_env.sh) and [usr.env](usr.env).
-    - 
   - Set respective dataset names in [all_datasets.gin](meta_dataset/learn/gin/setups/all_datasets.gin).
   - **NOTE**: Any gin parameter initialized via the shell script files starting with "__" will override them. Please be careful about the parameters initialized via script files. Use the mandatory ones in scripts and keep the rest inside respective gin configs.
 
