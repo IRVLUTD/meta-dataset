@@ -168,7 +168,7 @@ Train TESLA. For all other md-datasets, always set `<perform-filtration-flag>` a
     <gpu-ids> \
     <perform-filtration-flag> \
     <num-validation-episodes> \
-    <use-pretrained-backbone or _>
+    <use-pretrained-backbone or _> \
     <backbone>
     # e.g. bash scripts/__train.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" "True/False" use_pretrained_backbone resnet34/resnet_ctx/""
     ```
@@ -190,7 +190,7 @@ bash scripts/__test.sh <models> \
 <perform-filtration-flag-for-dataset> \
 <num-validation-episodes> \
 <tesla-dataset-variant> \
-<use-pretrained-backbone or _>
+<use-pretrained-backbone or _> \
 <backbone>
 # e.g. bash scripts/__test.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" "True/False" "True/False" 60 "tesla-mixture" use_pretrained_backbone resnet/resnet34
 ```
@@ -202,8 +202,8 @@ bash scripts/__test_on_all_tesla_variants.sh \
 <model> \
 <gpu_id> \
 <perform_filtration-flag> \
-<num-validation-episodes>
-<use-pretrained-backbone or _>
+<num-validation-episodes> \
+<use-pretrained-backbone or _> \
 <backbone>
 # e.g. bash scripts/__test_on_all_tesla_variants.sh "maml" 0 False 60
 ```
