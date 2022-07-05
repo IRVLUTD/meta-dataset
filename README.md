@@ -73,24 +73,24 @@ cd task_adaptation; python setup.py install; cd ..;
 export PYTHONPATH=$PYTHONPATH:$PWD
 ```
 
-### Data and Pretrained Models
+# Data and Pretrained Models
 TODO: Download links and other information
 
 
 
-### To run experiments with tesla dataset
-#### Step. 1
+# To run experiments with tesla dataset
+### Step. 1
 Setup required variables.
   - Be sure to set the env variables in [set_env.sh](set_env.sh) and [usr.env](usr.env). Each file has adequate information in the form of comments.
   - Set respective dataset names in [all_datasets.gin](meta_dataset/learn/gin/setups/all_datasets.gin). Use the default setup for conducting experiments with tesla (FewSOL).
   - **NOTE**: Any gin parameter initialized via the shell script files starting with "__" will override them. Please be careful about the parameters initialized via script files. Use the mandatory ones in scripts and keep the rest inside respective gin configs.
-#### Step. 2
+### Step. 2
 Load required variables. 
 ```bash
 source set_env.sh
 ```
 
-#### Step. 3
+### Step. 3
 Download the TESLA dataset. **NOTE**: make sure that the download directory has ample amount of disk space as the following 2 steps after download will also need additional space.
 
 ```bash
@@ -105,13 +105,13 @@ unzip Experiment-Dataset.zip -d $DATASET_DOWNLOAD_DIR/$UNCOMPRESSED_DATASET_DIR_
 cd $DATASET_DOWNLOAD_DIR/$UNCOMPRESSED_DATASET_DIR_NAME; 7z x *.zip -o\*; cd $ROOT_DIR;
 ```
 
-#### Step. 4
+### Step. 4
 Create TESLA test data variants.
 ```bash
 python scripts/__select_and_create_test_classes_for_variants.py
 ```
 
-#### Step. 5 
+### Step. 5 
 Create TFRecords from raw data. This step is optional.
 Download TFRecords used in our experiments from [https://utdallas.box.com/v/FewSOL-Experiment-TFRecords](https://utdallas.box.com/v/FewSOL-Experiment-TFRecords){:target="_blank"}
 
@@ -123,7 +123,7 @@ bash scripts/__create_tesla_tfrecords.sh <boolean-to-oversample-support-set-imag
   - Possible values: {`'TRAIN'`, `'VALID'`, `'TEST'`, `'TRAIN,VALID'`, `'VALID,TEST'`, `'TRAIN,VALID'`, `'TRAIN,VALID,TEST'`}
 - In order to oversample the support set, use `True` for `<boolean-to-oversample-support-set-images>`.
 
-#### Step. 6
+### Step. 6
 Get the best hyperparameters from [arxiv_v2_dev](https://github.com/google-research/meta-dataset/tree/arxiv_v2_dev){:target="_blank"}
 
 ```bash
@@ -132,14 +132,14 @@ svn checkout https://github.com/google-research/meta-dataset/branches/arxiv_v2_d
 cd best; sed -i 's/models/learners/g' *; ln -s best best_v2; cd $ROOT_DIR
 ```
 
-#### Step. 7
+### Step. 7
 Create imagenet tfrecords for backbone pretraining
 ```bash
 bash scripts/__create_imagenet_tfrecords_for_pretraining_backbones.sh
 ```
 - `IMAGENET_DATASET_DIR` variable in [usr.env](scripts/usr.env) has to be set with the ImageNet dataset's absolute path.
 
-#### Step. 8
+### Step. 8
 Pre-train backbones.
 ```bash
 bash scripts/__baseline_and_pretraining_on_imagenet.sh  <models> <gpu-ids> <resnet34-max-stride>
@@ -148,14 +148,14 @@ bash scripts/__baseline_and_pretraining_on_imagenet.sh  <models> <gpu-ids> <resn
 - Use `max-stride=16` for **CrossTransformers** and `None` elsewhere.
 
 
-#### Step. 9 
+### Step. 9 
 Select best pre-trained backbones.
 ```bash
 bash scripts/__select_best_pretrained_backbone_models.sh
 ```
 
 
-#### Step. 10
+### Step. 10
 Train TESLA. For all other md-datasets, always set `<perform-filtration-flag>` as `False`.
 - **For using Clean/Cluttered support set setup**
   - Set `Trainer.perform_filtration`=`True/False` in [trainer_config.gin](meta_dataset/learn/gin/setups/trainer_config.gin). `True/False` value's datatype should be boolean. Don't use string.
@@ -180,7 +180,7 @@ Train TESLA. For all other md-datasets, always set `<perform-filtration-flag>` a
     ```
 
 
-#### Step. 11.a
+### Step. 11.a
 Test the trained models. For datasets other than TESLA, always set `<perform-filtration-flag-for-model>` and `<perform-filtration-flag-for-dataset>` as `False`.
 
 ```bash
@@ -195,7 +195,7 @@ bash scripts/__test.sh <models> \
 # e.g. bash scripts/__test.sh "baseline baselinefinetune matching prototypical maml maml_init_with_proto" "0" "True/False" "True/False" 60 "tesla-mixture" use_pretrained_backbone resnet/resnet34
 ```
 
-#### Step. 11.b
+### Step. 11.b
 To test on all tesla variants
 ```bash
 bash scripts/__test_on_all_tesla_variants.sh \
@@ -209,13 +209,13 @@ bash scripts/__test_on_all_tesla_variants.sh \
 ```
 
 
-#### Step. 11.c
+### Step. 11.c
 Get test results from logs.
 ```bash
 bash scripts/__logs_filter.sh
 ```
 
-#### Step. 12
+### Step. 12
 Test joint object segmentation and few shot classification
 **NOTE**: Link the appropriate tfrecords dir to records-non-oversampled before running
 
