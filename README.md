@@ -113,7 +113,7 @@ python scripts/__select_and_create_test_classes_for_variants.py
 
 ### Step. 5 
 Create TFRecords from raw data. This step is optional.
-Download TFRecords used in our experiments from [https://utdallas.box.com/v/FewSOL-Experiment-TFRecords](https://utdallas.box.com/v/FewSOL-Experiment-TFRecords){:target="_blank"}
+Download TFRecords used in our experiments from [https://utdallas.box.com/v/FewSOL-Experiment-TFRecords](https://utdallas.box.com/v/FewSOL-Experiment-TFRecords)
 
 ```bash
 bash scripts/__create_tesla_tfrecords.sh <boolean-to-oversample-support-set-images> <required-sets>
@@ -124,7 +124,7 @@ bash scripts/__create_tesla_tfrecords.sh <boolean-to-oversample-support-set-imag
 - In order to oversample the support set, use `True` for `<boolean-to-oversample-support-set-images>`.
 
 ### Step. 6
-Get the best hyperparameters from [arxiv_v2_dev](https://github.com/google-research/meta-dataset/tree/arxiv_v2_dev){:target="_blank"}
+Get the best hyperparameters from [arxiv_v2_dev](https://github.com/google-research/meta-dataset/tree/arxiv_v2_dev)
 
 ```bash
 cd $ROOT_DIR/meta_dataset/learn/gin
