@@ -228,22 +228,22 @@ bash scripts/__test_joint_segmentation.sh \
 
 #### TODO: Write about real-world testing and other details about tfrecords structure and creation. sample_query directory and how can anyone else use a custom script to generate sample queries from real world. We have JOS+FSC.
 
-### To run experiments with other datasets
-##### NOTE: 
+# To run experiments with other datasets
+#### NOTE: 
   - Set `DATASET_DIR_NAME` to predefined dataset alias (E.g. omniglot, fungi) from Meta-Dataset in [usr.env](scripts/usr.env).
     - The only variables that need to be changed are `DATASET_DIR_NAME` and `BS` (as per user's need).
   - Set respective dataset names in [all_datasets.gin](meta_dataset/learn/gin/setups/all_datasets.gin). 
   - For data download and conversion, refer [this](doc/dataset_conversion.md) for more details.
   - To train, test and select best checkpoint, refer Step. 10-12
 
-### Citation:
+# Citation:
 Please cite the following if you incorporate our work.
 
 ```bibtex
 Coming soon...
 ```
 
-### Contact
+# Contact
 Following 3 options are available for any clarification, comments or suggestions
 - Join the [discussion forum](https://github.com/IRVLUTD/meta-dataset/discussions/). TODO: create a discussion forum.
 - Create an [issue](https://github.com/IRVLUTD/meta-dataset/issues).
