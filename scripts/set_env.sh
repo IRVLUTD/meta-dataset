@@ -3,7 +3,7 @@ source usr.env
 # Reference: https://github.com/google-research/meta-dataset/blob/main/doc/reproducing_best_results.md#training-and-evaluating-on-all-datasets
 ulimit -u 10000
 
-DATASET_URL="https://utdallas.app.box.com/v/FewSOL-experiment-datasets"
+DATASET_URL="https://utdallas.box.com/shared/static/k8erc7p132hvfvd06i9qdzei71318i0u"
 ROOT_DIR=$PWD;
 DATASRC="$DATASET_DOWNLOAD_DIR/$DATASET_DIR_NAME"; # Used for creating TESLA tfrecords only
 RECORDS="$ROOT_DIR/records";
