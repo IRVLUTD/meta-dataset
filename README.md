@@ -242,7 +242,16 @@ bash scripts/__test_joint_segmentation.sh \
 Please cite the following if you incorporate our work.
 
 ```bibtex
-Coming soon...
+@misc{https://doi.org/10.48550/arxiv.2207.03333,
+  doi = {10.48550/ARXIV.2207.03333},
+  url = {https://arxiv.org/abs/2207.03333},
+  author = {P, Jishnu Jaykumar and Chao, Yu-Wei and Xiang, Yu},
+  keywords = {Computer Vision and Pattern Recognition (cs.CV), Artificial Intelligence (cs.AI), Machine Learning (cs.LG), Robotics (cs.RO), FOS: Computer and information sciences, FOS: Computer and information sciences},
+  title = {FewSOL: A Dataset for Few-Shot Object Learning in Robotic Environments},
+  publisher = {arXiv},
+  year = {2022},
+  copyright = {Creative Commons Attribution 4.0 International}
+}
 ```
 
 # Contact
