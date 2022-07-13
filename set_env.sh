@@ -1,6 +1,25 @@
-export CUDA_VISIBLE_DEVICES="0";
-export ROOT_DIR=$PWD;
-export DATASRC="$ROOT_DIR/data";
-export RECORDS="$ROOT_DIR/records";
-export SPLITS="$ROOT_DIR/meta_dataset/dataset_conversion";
-export EXPROOT=$ROOT_DIR/experiment_output;
+source usr.env
+
+# Reference: https://github.com/google-research/meta-dataset/blob/main/doc/reproducing_best_results.md#training-and-evaluating-on-all-datasets
+ulimit -u 10000
+
+DATASET_URL="https://utdallas.box.com/shared/static/k8erc7p132hvfvd06i9qdzei71318i0u"
+ROOT_DIR=$PWD;
+DATASRC="$DATASET_DOWNLOAD_DIR/$DATASET_DIR_NAME"; # Used for creating TESLA tfrecords only
+RECORDS="$ROOT_DIR/records";
+SPLITS="$ROOT_DIR/meta_dataset/dataset_conversion";
+EXPROOT="$ROOT_DIR/experiment_output/${DATASET_DIR_NAME}${suffix}";
+
+# append to .env file to recover the info
+# if environment variables are lost
+echo "BS"=$BS > .env
+echo "SPLITS"=$SPLITS >> .env
+echo "EXPROOT"=$EXPROOT >> .env
+echo "DATASRC"=$DATASRC >> .env
+echo "RECORDS"=$RECORDS >> .env
+echo "ROOT_DIR"=$ROOT_DIR >> .env
+
+# echo "DATASET_URL=$DATASET_URL" >> .env
+echo "DATASET_DIR_NAME"=$DATASET_DIR_NAME >> .env
+echo "DATASET_DOWNLOAD_DIR=$DATASET_DOWNLOAD_DIR" >> .env
+echo "UNCOMPRESSED_DATASET_DIR_NAME=$UNCOMPRESSED_DATASET_DIR_NAME" >> .env

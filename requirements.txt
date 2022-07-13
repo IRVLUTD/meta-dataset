@@ -11,3 +11,8 @@ tensorflow-datasets
 gdown
 gsutil
 simclr
+tqdm
+#pycairo
+matplotlib
+opencv-python
+

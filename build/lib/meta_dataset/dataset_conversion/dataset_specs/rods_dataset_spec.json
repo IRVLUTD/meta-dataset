@@ -1,0 +1,8 @@
+{
+    "name": "rods",
+    "superclasses_per_split": {
+      "TRAIN": 100,
+      "VALID": 25,
+      "TEST": 52
+    }
+}
