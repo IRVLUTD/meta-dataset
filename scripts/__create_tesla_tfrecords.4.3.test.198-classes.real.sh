@@ -16,7 +16,7 @@ mv $RECORDS $RECORDS.bak.$timestamp
 
 export DATASRC="$DATASET_DOWNLOAD_DIR/$UNCOMPRESSED_DATASET_DIR_NAME"
 
-cd $DATASRC; rm test_data; ln -s test_data.2300.gt.4.3.198-classes-without-query test_data; cd $ROOT_DIR;
+cd $DATASRC; rm test_data; ln -s test_data.gt.4.3.198-classes-without-query test_data; cd $ROOT_DIR;
 
 python -m meta_dataset.dataset_conversion.convert_datasets_to_records \
 	--dataset=tesla --splits_root=$SPLITS --required_sets=$required_sets \
