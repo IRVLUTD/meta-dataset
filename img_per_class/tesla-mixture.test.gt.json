@@ -1,0 +1,276 @@
+{
+  "name": "tesla",
+  "classes_per_split": {
+    "TRAIN": 0,
+    "VALID": 0,
+    "TEST": 52
+  },
+  "total_query": 2300,
+  "images_per_class": {
+    "0": {
+      "support": 27,
+      "query": 68
+    },
+    "1": {
+      "support": 36,
+      "query": 112
+    },
+    "2": {
+      "support": 18,
+      "query": 54
+    },
+    "3": {
+      "support": 18,
+      "query": 34
+    },
+    "4": {
+      "support": 18,
+      "query": 12
+    },
+    "5": {
+      "support": 18,
+      "query": 26
+    },
+    "6": {
+      "support": 45,
+      "query": 12
+    },
+    "7": {
+      "support": 18,
+      "query": 36
+    },
+    "8": {
+      "support": 36,
+      "query": 252
+    },
+    "9": {
+      "support": 9,
+      "query": 38
+    },
+    "10": {
+      "support": 18,
+      "query": 14
+    },
+    "11": {
+      "support": 18,
+      "query": 18
+    },
+    "12": {
+      "support": 18,
+      "query": 22
+    },
+    "13": {
+      "support": 18,
+      "query": 18
+    },
+    "14": {
+      "support": 9,
+      "query": 18
+    },
+    "15": {
+      "support": 27,
+      "query": 102
+    },
+    "16": {
+      "support": 9,
+      "query": 18
+    },
+    "17": {
+      "support": 27,
+      "query": 38
+    },
+    "18": {
+      "support": 9,
+      "query": 18
+    },
+    "19": {
+      "support": 9,
+      "query": 26
+    },
+    "20": {
+      "support": 18,
+      "query": 52
+    },
+    "21": {
+      "support": 18,
+      "query": 48
+    },
+    "22": {
+      "support": 18,
+      "query": 22
+    },
+    "23": {
+      "support": 27,
+      "query": 40
+    },
+    "24": {
+      "support": 18,
+      "query": 21
+    },
+    "25": {
+      "support": 27,
+      "query": 104
+    },
+    "26": {
+      "support": 45,
+      "query": 44
+    },
+    "27": {
+      "support": 9,
+      "query": 16
+    },
+    "28": {
+      "support": 18,
+      "query": 68
+    },
+    "29": {
+      "support": 9,
+      "query": 48
+    },
+    "30": {
+      "support": 18,
+      "query": 31
+    },
+    "31": {
+      "support": 9,
+      "query": 14
+    },
+    "32": {
+      "support": 9,
+      "query": 46
+    },
+    "33": {
+      "support": 27,
+      "query": 16
+    },
+    "34": {
+      "support": 9,
+      "query": 24
+    },
+    "35": {
+      "support": 9,
+      "query": 16
+    },
+    "36": {
+      "support": 27,
+      "query": 92
+    },
+    "37": {
+      "support": 45,
+      "query": 76
+    },
+    "38": {
+      "support": 9,
+      "query": 16
+    },
+    "39": {
+      "support": 36,
+      "query": 60
+    },
+    "40": {
+      "support": 18,
+      "query": 80
+    },
+    "41": {
+      "support": 9,
+      "query": 28
+    },
+    "42": {
+      "support": 9,
+      "query": 20
+    },
+    "43": {
+      "support": 9,
+      "query": 14
+    },
+    "44": {
+      "support": 9,
+      "query": 22
+    },
+    "45": {
+      "support": 18,
+      "query": 128
+    },
+    "46": {
+      "support": 18,
+      "query": 20
+    },
+    "47": {
+      "support": 36,
+      "query": 38
+    },
+    "48": {
+      "support": 36,
+      "query": 60
+    },
+    "49": {
+      "support": 27,
+      "query": 54
+    },
+    "50": {
+      "support": 18,
+      "query": 24
+    },
+    "51": {
+      "support": 9,
+      "query": 22
+    }
+  },
+  "class_names": {
+    "0": "apple",
+    "1": "ball",
+    "2": "banana",
+    "3": "baseball_ball",
+    "4": "bell_pepper",
+    "5": "binder",
+    "6": "bowl",
+    "7": "bulb_box",
+    "8": "cereal_box",
+    "9": "chocolate_banana_box",
+    "10": "clamp",
+    "11": "coffee_can",
+    "12": "cracker_box",
+    "13": "flashlight",
+    "14": "foam_brick",
+    "15": "food_bag",
+    "16": "football",
+    "17": "glue_stick",
+    "18": "golf_ball",
+    "19": "instant_noodle_packet",
+    "20": "jello_box",
+    "21": "keyboard",
+    "22": "lego_block",
+    "23": "lemon",
+    "24": "lime",
+    "25": "marker",
+    "26": "mug",
+    "27": "mustard_bottle",
+    "28": "orange",
+    "29": "peach",
+    "30": "pear",
+    "31": "pitcher",
+    "32": "potato",
+    "33": "power_drill",
+    "34": "pringles_can",
+    "35": "rubiks_cube",
+    "36": "shampoo_bottle",
+    "37": "soda_can",
+    "38": "soft_scrub_cleanser_bottle",
+    "39": "soup_can",
+    "40": "sponge",
+    "41": "stapler",
+    "42": "sugar_box",
+    "43": "tennis_ball",
+    "44": "timer",
+    "45": "tissue_box",
+    "46": "tomato",
+    "47": "toothpaste",
+    "48": "towel",
+    "49": "tuna_can",
+    "50": "wood_block",
+    "51": "wood_box"
+  },
+  "path": "/home/jishnu/Documents/github/meta-dataset/records-non-oversampled/tesla-mixture/tesla",
+  "file_pattern": "{}.tfrecords",
+  "__class__": "TeslaDatasetSpecification"
+}

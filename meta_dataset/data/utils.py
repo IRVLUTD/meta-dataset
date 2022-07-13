@@ -15,6 +15,7 @@
 
 # Lint as: python3
 r"""Utils for dumping Meta-Dataset episodes to disk as tfrecords files."""
+from ast import parse
 import collections
 import os
 
