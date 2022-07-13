@@ -300,8 +300,26 @@ python scripts/__create_test_data_for_4.3.real.py <absolute-path>
 ### Step. 13
 Real world setting for JOS-FSC. Checkout `4.3-real-world-exp` branch. Real world experiment setup has been intentionally kept on a different branch as it had different requirements. 
 ```
+# step. 1
 git checkout 4.3-real-world-exp
+
+# step.3: create train data
+# comment lines: 1243-1257 and uncomment lines 1260-1293
+bash scripts/__create_tesla_tfrecords.4.3.train.323-classes.sim+real.sh
+
+# step.4: create test tfrecords
+bash scripts/__create_tesla_tfrecords.4.3.test.198-classes.real.sh
+
+# step.5: place the required cropped object images in $ROOT_DIR/sample_query/ directory
+
+# step.6: real world test
+bash scripts/__test_real_world.sh <model> <gpu_id> <perform_filtration_flag>
+# e.g. bash scripts/__test_real_world.sh "maml" 0 False
 ```
+
+- For `step-13.5`, based on the need of the user any custom script can be written and the resulting cropped objects images can be stored in `$ROOT_DIR/sample_query/` directory. `Step-13.6` uses images in `$ROOT_DIR/sample_query/` directory. 
+-  `scripts/create_test_data_for_4.3.real.py` is used for our real world setting . A fetch mobile manipulator takes an image of object placed a table top in our lab and [segmentation](https://yuxng.github.io/Papers/2020/xiang_corl20.pdf) method is used to get object masks. The output of this is used by `scripts/create_test_data_for_4.3.real.py` for cropping objects of interest using the generated object masks. Finally, the cropped images are placed in `$ROOT_DIR/sample_query/` directory. 
+- To use `scripts/create_test_data_for_4.3.real.py`, download output([link](https://utdallas.box.com/v/FewSOL-Real-World-Image-Mat)) of [segmentation](https://yuxng.github.io/Papers/2020/xiang_corl20.pdf) on from our real world setting.
 
 # To run experiments with other datasets
 #### NOTE: 
