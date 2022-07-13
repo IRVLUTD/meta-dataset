@@ -105,11 +105,11 @@ def episode_representation_generator(dataset_spec, split, pool, sampler):
       between episodes.
   """
   chunk_sizes = sampler.compute_chunk_sizes()
-  
   # An episode always starts with a "flush" chunk to allow flushing examples at
   # class epoch boundaries, and contains `len(chunk_sizes) - 1` additional
   # chunks.
   flush_chunk_size, other_chunk_sizes = chunk_sizes[0], chunk_sizes[1:]
+
   class_set = dataset_spec.get_classes(split)
   num_classes = len(class_set)
   placeholder_dataset_id = num_classes
@@ -176,7 +176,6 @@ def episode_representation_generator(dataset_spec, split, pool, sampler):
             itertools.chain(flushed_dataset_indices,
                             *selected_dataset_indices)),
         dtype='int64')
-    
     yield episode_representation
 
 
@@ -210,8 +209,7 @@ class Reader(object):
                read_buffer_size_bytes,
                num_prefetch,
                num_to_take=-1,
-               num_unique_descriptions=0,
-               test_entire_test_set_using_single_episode=False):
+               num_unique_descriptions=0):
     """Initializes a Reader from a source.
 
     The source is identified by dataset_spec and split.
@@ -235,9 +233,6 @@ class Reader(object):
         when running on TPUs as it avoids the use of
         tf.data.Dataset.from_generator. If set to x = 0, no such upper bound on
         number of unique episode descriptions is set.
-      test_entire_test_set_using_single_episode: A boolean flag indicating whether 
-        the test has to be done using a single episode containing all support and 
-        query images of the test set.
     """
     self.dataset_spec = dataset_spec
     self.split = split
@@ -295,6 +290,7 @@ class Reader(object):
 
       example_string_dataset = tf.data.TFRecordDataset(
           filename, buffer_size=self.read_buffer_size_bytes)
+
       # Create a dataset containing only num_to_take elements from
       # example_string_dataset. By default, takes all elements.
       example_string_dataset = example_string_dataset.take(self.num_to_take)
@@ -325,6 +321,7 @@ class Reader(object):
 
     assert len(class_datasets) == self.num_classes
     return class_datasets
+
 
 class EpisodeReaderMixin(object):
   """Mixin class to assemble examples as episodes."""
@@ -400,7 +397,9 @@ class EpisodeReaderMixin(object):
     dataset = dataset.batch(sum(sampler.compute_chunk_sizes()))
     # Overlap batching and episode processing.
     dataset = dataset.prefetch(1)
+
     return dataset
+
 
 class EpisodeReader(Reader, EpisodeReaderMixin):
   """Subclass of Reader assembling the examples as Episodes."""
@@ -523,6 +522,7 @@ class BatchReaderMixin(object):
 
     # Overlap batching and episode processing.
     dataset = dataset.prefetch(1)
+
     return dataset
 
 

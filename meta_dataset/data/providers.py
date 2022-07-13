@@ -116,6 +116,7 @@ class Episode(
   def onehot_query_labels(self):
     return tf.one_hot(self.query_labels, self.way)
 
+
 class EpisodePiece(
     collections.namedtuple(
         'Episode', 'support_images, query_images, support_labels, '

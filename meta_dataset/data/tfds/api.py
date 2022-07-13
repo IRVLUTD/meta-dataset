@@ -114,9 +114,6 @@ def episode_dataset(
       use_bilevel_hierarchy=builder.builder_config.name == 'omniglot')
   chunk_sizes = sampler.compute_chunk_sizes()
 
-  
-
-
   dataset = tf.data.Dataset.choose_from_datasets(
       class_datasets,
       tf.data.Dataset.from_generator(

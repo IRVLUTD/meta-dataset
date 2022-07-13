@@ -1,2 +1,2 @@
-benchmark.train_datasets = 'tesla'
-benchmark.eval_datasets = 'tesla'
+benchmark.train_datasets = 'ilsvrc_2012,aircraft,cu_birds,omniglot,quickdraw,vgg_flower,dtd,fungi'
+benchmark.eval_datasets = 'ilsvrc_2012'

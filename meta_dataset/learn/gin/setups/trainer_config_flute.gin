@@ -1,5 +1,5 @@
 Trainer_flute.num_updates = 640000
-Trainer_flute.batch_size = 1
+Trainer_flute.batch_size = 16
 Trainer_flute.num_eval_episodes = 600
 Trainer_flute.checkpoint_every = 2000
 Trainer_flute.validate_every = 1000
@@ -13,7 +13,7 @@ Trainer_flute.decay_rate = 0.5
 Trainer_flute.learn_rate_scheduler = 'cosine_decay_restarts'
 Trainer_flute.optimizer_type = 'momentum'
 Trainer_flute.meta_batch_size = 8
-Trainer_flute.sample_half_from_imagenet = False # True for combo of imagenet with other datasets
+Trainer_flute.sample_half_from_imagenet = True
 
 Trainer_flute.distribute = False
 # Enable TensorFlow optimizations. It can add a few minutes to the first
@@ -25,14 +25,3 @@ Trainer_flute.pretrained_source = ''
 Trainer_flute.data_config = @DataConfig()
 Trainer_flute.train_episode_config = @train/EpisodeDescriptionConfig()
 Trainer_flute.eval_episode_config = @EpisodeDescriptionConfig()
-
-# UPDATE
-# this is consistent with other datasets as well
-Trainer_flute.visualize_data = False
-
-# visualize few-shot "support" or "query" images 
-Trainer_flute.visualize_image_set = ["support", "query"]
-
-# a boolean flag indicating whether filtration needs 
-# to be performed for tesla dataset
-Trainer_flute.perform_filtration = True

@@ -66,9 +66,8 @@ FLAGS = flags.FLAGS
 
 
 def main(unused_argv):
+  logging.info(FLAGS.output_dir)
   tf.io.gfile.makedirs(FLAGS.output_dir)
-  from meta_dataset.data.utils import debug as d
-  d("DUMP_EPISODE", FLAGS.output_dir)
   gin.parse_config_files_and_bindings(
       FLAGS.gin_config, FLAGS.gin_bindings, finalize_config=True)
   dataset_spec = dataset_spec_lib.load_dataset_spec(
