@@ -1,0 +1,25 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "args": [
+                "--records_root_dir=~/Documents/github/meta-dataset/records/tesla",
+                "--train_checkpoint_dir=~/Documents/github/meta-dataset/checkpoints/prototypical_all",
+                "--summary_dir=~/Documents/github/meta-dataset/summaries/prototypical_all",
+                "--gin_config=meta_dataset/learn/gin/best/prototypical_all.gin",
+                "--gin_bindings=\"Trainer.experiment_name='prototypical_all'\"",
+                "--gin_bindings=\"Trainer.batch_size=\"",
+                "--gin_bindings=\"Trainer.checkpoint_to_restore=''\"",
+                "--gin_bindings=\"Trainer.pretrained_source='scratch'\""
+            ]
+        }
+    ]
+}

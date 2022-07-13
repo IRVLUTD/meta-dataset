@@ -25,7 +25,8 @@ def read_single_example(example_string):
       example_string,
       features={
           'image': tf.FixedLenFeature([], dtype=tf.string),
-          'label': tf.FixedLenFeature([], tf.int64)
+          'label': tf.FixedLenFeature([], tf.int64),
+          'set': tf.FixedLenFeature([], dtype=tf.string)
       })
 
 
@@ -36,6 +37,15 @@ def read_example_and_parse_image(example_string):
   image_decoded.set_shape([None, None, 3])
   parsed_example['image'] = image_decoded
   return parsed_example
+
+
+def get_image(example_string):
+  """Reads the string and decodes the image."""
+  parsed_example = read_single_example(example_string)
+  image_decoded = tf.image.decode_image(parsed_example['image'], channels=3)
+  image_decoded = tf.cast(image_decoded, tf.float32)
+  image_decoded.set_shape([None, None, 3])
+  return  image_decoded
 
 
 @gin.configurable
@@ -78,6 +88,54 @@ class ImageDecoder(object):
       to go beyond this range.
     """
     return self.decode_with_label(example_string)[0]
+  
+  def decode_with_label_and_set(self, example_string):
+    """Processes a single example string.
+
+    Extracts and processes the image, and ignores the label. We assume that the
+    image has three channels.
+
+    Args:
+      example_string: str, an Example protocol buffer.
+    Returns:
+      image_rescaled: the image, resized to `image_size x image_size` and
+        rescaled to [-1, 1]. Note that Gaussian data augmentation may cause
+        values to go beyond this range.
+      label: tf.int
+      set: tf.string
+    """
+    if self.skip_tfexample_decoding:
+      image_decoded = tf.image.decode_image(example_string, channels=3)
+      image_decoded.set_shape([None, None, 3])
+      label = tf.constant(-1, dtype=tf.int32)
+      set = tf.constant("", dtype=tf.string)
+    else:
+      ex_decoded = read_example_and_parse_image(example_string)
+      image_decoded = ex_decoded['image']
+      label = tf.cast(ex_decoded['label'], dtype=tf.int32)
+      set = tf.cast(ex_decoded['set'], dtype=tf.string)
+
+    image_resized = tf.image.resize_images(
+        image_decoded, [self.image_size, self.image_size],
+        method=tf.image.ResizeMethod.BILINEAR,
+        align_corners=True)
+    image_resized = tf.cast(image_resized, tf.float32)
+    image = 2 * (image_resized / 255.0 - 0.5)  # Rescale to [-1, 1].
+
+    if self.data_augmentation is not None:
+      if self.data_augmentation.enable_gaussian_noise:
+        image = image + tf.random_normal(
+            tf.shape(image)) * self.data_augmentation.gaussian_noise_std
+
+      if self.data_augmentation.enable_jitter:
+        j = self.data_augmentation.jitter_amount
+        paddings = tf.constant([[j, j], [j, j], [0, 0]])
+        image = tf.pad(image, paddings, 'REFLECT')
+        image = tf.image.random_crop(image,
+                                     [self.image_size, self.image_size, 3])
+    
+    return image, label, set
+
 
   def decode_with_label(self, example_string):
     """Processes a single example string.
@@ -123,6 +181,97 @@ class ImageDecoder(object):
                                      [self.image_size, self.image_size, 3])
     return image, label
 
+
+# UPDATE: NOT USED, NEED to be tested
+@gin.configurable
+class ImageLabelSetDecoder(object):
+  """Image, Label, Set decoder."""
+  out_type = tf.string
+
+  def __init__(self,
+               image_size=None,
+               data_augmentation=None,
+               skip_tfexample_decoding=False):
+    """Class constructor.
+
+    Args:
+      image_size: int, desired image size. The extracted image will be resized
+        to `[image_size, image_size]`.
+      data_augmentation: A DataAugmentation object with parameters for
+        perturbing the images.
+      skip_tfexample_decoding: bool, if True the example string is treated as
+        an image string and TFExample decoding is skipped. In that case,
+        `decode_with_label` returns a constant placeholder label along with the
+        image.
+    """
+    self.image_size = image_size
+    self.data_augmentation = data_augmentation
+    self.skip_tfexample_decoding = skip_tfexample_decoding
+
+  def __call__(self, example_string):
+    """Processes a single example string.
+
+    Extracts and processes the image, and ignores the label. We assume that the
+    image has three channels.
+
+    Args:
+      example_string: str, an Example protocol buffer.
+
+    Returns:
+      image_rescaled: the image, resized to `image_size x image_size` and
+      rescaled to [-1, 1]. Note that Gaussian data augmentation may cause values
+      to go beyond this range.
+    """
+    return self.decode_with_label_and_set(example_string)[2]
+
+
+  def decode_with_label_and_set(self, example_string):
+    """Processes a single example string.
+
+    Extracts and processes the image, and ignores the label. We assume that the
+    image has three channels.
+
+    Args:
+      example_string: str, an Example protocol buffer.
+
+    Returns:
+      image_rescaled: the image, resized to `image_size x image_size` and
+        rescaled to [-1, 1]. Note that Gaussian data augmentation may cause
+        values to go beyond this range.
+      label: tf.int
+      set: tf.string
+    """
+    if self.skip_tfexample_decoding:
+      image_decoded = tf.image.decode_image(example_string, channels=3)
+      image_decoded.set_shape([None, None, 3])
+      label = tf.constant(-1, dtype=tf.int32)
+      set = tf.constant("", dtype=tf.string)
+    else:
+      ex_decoded = read_example_and_parse_image(example_string)
+      image_decoded = ex_decoded['image']
+      label = tf.cast(ex_decoded['label'], dtype=tf.int32)
+      set = tf.cast(ex_decoded['set'], dtype=tf.string)
+
+    image_resized = tf.image.resize_images(
+        image_decoded, [self.image_size, self.image_size],
+        method=tf.image.ResizeMethod.BILINEAR,
+        align_corners=True)
+    image_resized = tf.cast(image_resized, tf.float32)
+    image = 2 * (image_resized / 255.0 - 0.5)  # Rescale to [-1, 1].
+
+    if self.data_augmentation is not None:
+      if self.data_augmentation.enable_gaussian_noise:
+        image = image + tf.random_normal(
+            tf.shape(image)) * self.data_augmentation.gaussian_noise_std
+
+      if self.data_augmentation.enable_jitter:
+        j = self.data_augmentation.jitter_amount
+        paddings = tf.constant([[j, j], [j, j], [0, 0]])
+        image = tf.pad(image, paddings, 'REFLECT')
+        image = tf.image.random_crop(image,
+                                     [self.image_size, self.image_size, 3])
+    
+    return image, label, set
 
 @gin.configurable
 class FeatureDecoder(object):

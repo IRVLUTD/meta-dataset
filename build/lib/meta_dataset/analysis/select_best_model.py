@@ -336,6 +336,7 @@ def extract_best_from_event_file(event_path, smooth_window, log_details=False):
         'Did not find any validation accuracy tags ({}) in event_path {}'
         .format(' or '.join(VALIDATION_ACCURACY_TAGS), event_path))
     return 0, 0
+  
   if smooth_window > 1:
     valid_accs = moving_average(valid_accs, smooth_window)
   argmax_ind = np.argmax(valid_accs)
