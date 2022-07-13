@@ -807,10 +807,11 @@ class Trainer(object):
           predicted_classes = ",".join(predictions[idx])
           plt.title(predicted_classes)
           plt.plot()
-        # plt.show()
+        print(f"plotting label: {class_label} class_name:{class_name}")
+        plt.show()
 
-        # TODO: remove save as jpg option
-        plt.savefig(f"{prediction_plots_dir}/{title.replace(' ', '_')}.jpg")
+        # uncomment to save as jpg
+        # plt.savefig(f"{prediction_plots_dir}/{title.replace(' ', '_')}.jpg")
 
       logging.info(f"Prediction plots for experiment: {self.experiment_name} are saved in {prediction_plots_dir}")
 

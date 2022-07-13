@@ -24,9 +24,9 @@ if __name__ == "__main__":
 
     cwd = os.getcwd()
     _ = 'real-world-samples'
-    out_dir_path_bg = os.path.join(cwd, _, 'sample_query-w-bg')
-    out_dir_path_wo_bg = os.path.join(cwd, _, 'sample_query-wo-bg')
-    real_objects_wo_bg = os.path.join(cwd, _, 'real_objects_wo_bg')
+    out_dir_path_bg = os.path.join(cwd, _, 'sample_query-w-bg') # with bg
+    out_dir_path_wo_bg = os.path.join(cwd, _, 'sample_query-wo-bg') # without bg 
+    real_objects_wo_bg = os.path.join(cwd, _, 'real_objects_wo_bg') # without bg
 
     for dir in [out_dir_path_bg, out_dir_path_wo_bg, real_objects_wo_bg]:
         if not os.path.exists(dir):
@@ -59,7 +59,6 @@ if __name__ == "__main__":
             try:
                 cv2.imwrite(os.path.join(out_dir_path_bg, cropped_img_name), cropped_img)
                 cv2.imwrite(os.path.join(out_dir_path_wo_bg, cropped_img_name_wo_bg), cropped_img_without_bg)
-                # TODO: remove follwing
                 cv2.imwrite(os.path.join(real_objects_wo_bg, cropped_img_name_wo_bg), orig_img_without_bg)
             except:
                 pass

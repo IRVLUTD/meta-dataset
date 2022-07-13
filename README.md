@@ -36,6 +36,8 @@ This is the code for our paper [FewSOL: A Dataset for Few-Shot Object Learning i
   - `<num-validation-episodes>`: Number of validation episodes used during training
   - `<phrase>`: If pretrained backbone is used then "-using-pretrained-backbone" else ""
   - `<backbone>`: alias of the backbone used in [c67dd2b](https://github.com/google-research/meta-dataset/commit/c67dd2bb66fb2a4ce7e4e9906878e13d9b851eb5)
+  - Distributed training has not been tested port tesla code changes.
+- **NOTE**: Since the point of investigation was the TESLA (FewSOL) dataset, multi source ([pipeline.make_multisource_episode_pipeline](meta_dataset/data/pipeline.py)) data pipeline  has not been tested. Please use single source ([pipeline.make_one_source_episode_pipeline](meta_dataset/data/pipeline.py)) data pipeline.
 
 # Alias
 - **FewSOL** has been nicknamed `TESLA` in the codebase. This is due to the fact that at the start of the project, the name of the dataset was not decided and FewSOL was finalized as it promptly describes its purpose. Hence, when referring to any code related to FewSOL search for `TESLA, Tesla, tesla` keywords in the codebase. (If you are curious, `TESLA` stands for mul**T**i-view RGB-D dataset for f**E**w-**S**hot **L**e**A**rning)
@@ -243,7 +245,16 @@ python scripts/__create_test_data_for_4.3.real.py <absolute-path>
 Please cite the following if you incorporate our work.
 
 ```bibtex
-Coming soon...
+@misc{https://doi.org/10.48550/arxiv.2207.03333,
+  doi = {10.48550/ARXIV.2207.03333},
+  url = {https://arxiv.org/abs/2207.03333},
+  author = {P, Jishnu Jaykumar and Chao, Yu-Wei and Xiang, Yu},
+  keywords = {Computer Vision and Pattern Recognition (cs.CV), Artificial Intelligence (cs.AI), Machine Learning (cs.LG), Robotics (cs.RO), FOS: Computer and information sciences, FOS: Computer and information sciences},
+  title = {FewSOL: A Dataset for Few-Shot Object Learning in Robotic Environments},
+  publisher = {arXiv},
+  year = {2022},
+  copyright = {Creative Commons Attribution 4.0 International}
+}
 ```
 
 # Contact

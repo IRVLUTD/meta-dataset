@@ -27,8 +27,7 @@ do
 
     if test "$pretrained_source" = "imagenet"
     then
-        # TODO: make the script compatible for using pretrained backbones
-        PATH_PREFIX="${ROOT_DIR}/experiment_output/pretrained-backbones" #/best_pretrain_imagenet"
+        PATH_PREFIX="${ROOT_DIR}/experiment_output/pretrained-backbones"
         __phrase="pretrain_imagenet_${backbone}"
         if test "$backbone" = "resnet34_ctx"
         then
@@ -61,7 +60,6 @@ do
         --gin_bindings="Trainer.perform_filtration=$perform_filtration" \
         --gin_bindings="Trainer.checkpoint_to_restore='${checkpoint_to_restore}'" \
         --gin_bindings="Trainer.pretrained_source='${pretrained_source}'"
-        # --gin_bindings="Trainer.checkpoint_every=1000"
 
     elif test "$backbone" = "resnet34" # for tuning learning rate else train loss: NaN
     then
@@ -81,7 +79,6 @@ do
         --gin_bindings="Trainer.perform_filtration=$perform_filtration" \
         --gin_bindings="Trainer.checkpoint_to_restore='${checkpoint_to_restore}'" \
         --gin_bindings="Trainer.pretrained_source='${pretrained_source}'"
-        # --gin_bindings="Trainer.checkpoint_every=1000"
     else
         model="${EXPNAME}${chkpt_suffix}${pretrained_phrase}-${backbone}"
         python -m meta_dataset.train \
@@ -98,6 +95,5 @@ do
         --gin_bindings="Trainer.perform_filtration=$perform_filtration" \
         --gin_bindings="Trainer.checkpoint_to_restore='${checkpoint_to_restore}'" \
         --gin_bindings="Trainer.pretrained_source='${pretrained_source}'"
-        # --gin_bindings="Trainer.checkpoint_every=1000"
     fi
 done

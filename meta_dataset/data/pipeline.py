@@ -254,8 +254,6 @@ def simclr_augment(image_batch, blur=False):
 def process_episode(example_strings, class_ids, dataset_name, data_split, 
                     perform_filtration, chunk_sizes, image_size, 
                     support_decoder, query_decoder, simclr_episode_fraction):
-  # TODO: remove data_split, tf.print from this function and also in trainer.py
-  # call to this function
   """Processes an episode.
 
   This function:
@@ -624,7 +622,7 @@ def make_one_source_episode_pipeline(dataset_spec,
 # perform_filtration feature compatibility to the existing codebase. 
 # NOTE: Testing required
 # TODO: Logically and syntactically correct. Test if this works correctly
-# Didn't test as for conducting experiments with tesla only 
+# Didn't test as for conducting experiments with tesla, only 
 # make_one_source_episode_pipeline() was required
 def make_multisource_episode_pipeline(dataset_spec_list,
                                       use_dag_ontology_list,
