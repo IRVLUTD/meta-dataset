@@ -10,7 +10,7 @@ EpisodeDescriptionConfig.max_num_query = 10
 # This should not affect any other experiements.
 EpisodeDescriptionConfig.min_examples_in_class = 0
 EpisodeDescriptionConfig.max_support_set_size = 500
-EpisodeDescriptionConfig.max_support_size_contrib_per_class = 9 #100
+EpisodeDescriptionConfig.max_support_size_contrib_per_class = 100
 EpisodeDescriptionConfig.min_log_weight = -0.69314718055994529  # np.log(0.5)
 EpisodeDescriptionConfig.max_log_weight = 0.69314718055994529  # np.log(2)
 EpisodeDescriptionConfig.ignore_dag_ontology = False

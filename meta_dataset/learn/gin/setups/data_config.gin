@@ -32,3 +32,4 @@ batch/DataAugmentation.enable_jitter = True
 batch/DataAugmentation.jitter_amount = 0
 batch/DataAugmentation.enable_gaussian_noise = True
 batch/DataAugmentation.gaussian_noise_std = 0.0
+

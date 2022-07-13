@@ -136,19 +136,7 @@ def linear_classifier(embeddings, num_classes, cosine_classifier,
 
     with tf.control_dependencies([init_op]):
       # Apply weight normalization.
-      
-      # UPDATE due to 
-      # error:
-      # File "/workspace/meta_dataset/models/functional_classifiers.py", line 139, in linear_classifier
-      # w_fc *= g / tf.sqrt(tf.reduce_sum(tf.square(w_fc), [0]))
-      # File "/usr/local/lib/python3.8/dist-packages/tensorflow/python/ops/resource_variable_ops.py", line 1491, in __imul__
-      # raise RuntimeError("`var *= value` with `tf.Variable`s is not "
-      # RuntimeError: `var *= value` with `tf.Variable`s is not supported. Use `var.assign(var * value)` to modify the variable, 
-      # or `out = var * value` if you need to get a new output Tensor.
-      # default MD line w_fc *= g / tf.sqrt(tf.reduce_sum(tf.square(w_fc), [0]))
-      
-      w_fc.assign(w_fc * g / tf.sqrt(tf.reduce_sum(tf.square(w_fc), [0])))
-      
+      w_fc *= g / tf.sqrt(tf.reduce_sum(tf.square(w_fc), [0]))
       # Forward pass through the layer defined by w_fc and b_fc.
       logits = linear_classifier_forward_pass(embeddings, w_fc, b_fc,
                                               cosine_classifier,

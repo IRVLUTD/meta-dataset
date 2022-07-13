@@ -352,125 +352,6 @@ class DatasetSpecification(
     return ret_dict
 
 
-
-# UPDATE: Created using DatasetSpecification
-class TeslaDatasetSpecification(
-    collections.namedtuple('TeslaDatasetSpecification',
-                           ('name, classes_per_split, images_per_class, '
-                            'class_names, path, file_pattern'))):
-  """The specification of a dataset.
-    Args:
-      name: string, the name of the dataset.
-      classes_per_split: a dict specifying the number of classes allocated to
-        each split.
-      images_per_class: a dict mapping each class id to its number of support
-      and query images.
-        Usually, the number of images is an integer, but if the dataset has
-        'train' and 'test' example-level splits (or "pools"), then it is a dict
-        mapping a string (the pool) to an integer indicating how many examples
-        are in that pool. E.g., the number of images could be {'train': 
-        {"support": 5923, "query": 1235}, 'test': {'support': 980, 'query': 456}}.
-      class_names: a dict mapping each class id to the corresponding class name.
-      path: the path to the dataset's files.
-      file_pattern: a string representing the naming pattern for each class's
-        file. This string should be either '{}.tfrecords' or '{}_{}.tfrecords'.
-        The first gap will be replaced by the class id in both cases, while in
-        the latter case the second gap will be replaced with by a shard index,
-        or one of 'train', 'valid' or 'test'. This offers support for multiple
-        shards of a class' images if a class is too large, that will be merged
-        later into a big pool for sampling, as well as different splits that
-        will be treated as disjoint pools for sampling the support versus query
-        examples of an episode.
-  """
-
-  def initialize(self, restricted_classes_per_split=None):
-    """Initializes a DatasetSpecification.
-
-    Args:
-      restricted_classes_per_split: A dict that specifies for each split, a
-        number to restrict its classes to. This number must be no greater than
-        the total number of classes of that split. By default this is None and
-        no restrictions are applied (all classes are used).
-
-    Raises:
-      ValueError: Invalid file_pattern provided.
-    """
-    # Check that the file_pattern adheres to one of the allowable forms
-    if self.file_pattern not in ['{}.tfrecords', '{}_{}.tfrecords']:
-      raise ValueError('file_pattern must be either "{}.tfrecords" or '
-                       '"{}_{}.tfrecords" to support shards or splits.')
-    if restricted_classes_per_split is not None:
-      _check_validity_of_restricted_classes_per_split(
-          restricted_classes_per_split, self.classes_per_split)
-      # Apply the restriction.
-      for split, restricted_num_classes in restricted_classes_per_split.items():
-        self.classes_per_split[split] = restricted_num_classes
-
-  def get_total_images_per_class(self, class_id=None, pool=None):
-    """Returns the total number of images for the specified class.
-
-    Args:
-      class_id: The class whose number of images will be returned. If this is
-        None, it is assumed that the dataset has the same number of images for
-        each class.
-      pool: A string ('train' or 'test', optional) indicating which
-        example-level split to select, if the current dataset has them.
-
-    Raises:
-      ValueError: when
-        - no class_id specified and yet there is class imbalance, or
-        - no pool specified when there are example-level splits, or
-        - pool is specified but there are no example-level splits, or
-        - incorrect value for pool.
-      RuntimeError: the DatasetSpecification is out of date (missing info).
-    """
-    
-    num_images = self.images_per_class[class_id]['support'] + self.images_per_class[class_id]['query']
-    return num_images
-
-  def get_classes(self, split):
-    """Gets the sequence of class labels for a split.
-
-    Labels are returned ordered and without gaps.
-
-    Args:
-      split: A Split, the split for which to get classes.
-
-    Returns:
-      The sequence of classes for the split.
-
-    Raises:
-      ValueError: An invalid split was specified.
-    """
-    return get_classes(split, self.classes_per_split)
-
-  def to_dict(self):
-    """Returns a dictionary for serialization to JSON.
-
-    Each member is converted to an elementary type that can be serialized to
-    JSON readily.
-    """
-    # Start with the dict representation of the namedtuple
-    ret_dict = self._asdict()
-    # Add the class name for reconstruction when deserialized
-    ret_dict['__class__'] = self.__class__.__name__
-    # Convert Split enum instances to their name (string)
-    ret_dict['classes_per_split'] = {
-        split.name: count
-        for split, count in six.iteritems(ret_dict['classes_per_split'])
-    }
-    # Convert binary class names to unicode strings if necessary
-    class_names = {}
-    for class_id, name in six.iteritems(ret_dict['class_names']):
-      if isinstance(name, six.binary_type):
-        name = name.decode()
-      elif isinstance(name, np.integer):
-        name = six.text_type(name)
-      class_names[class_id] = name
-    ret_dict['class_names'] = class_names
-    return ret_dict
-
-
 class BiLevelDatasetSpecification(
     collections.namedtuple('BiLevelDatasetSpecification',
                            ('name, superclasses_per_split, '
@@ -824,16 +705,15 @@ def as_dataset_spec(dct):
 
   Returns:
     Depending on the '__class__' key of the dictionary, a DatasetSpecification,
-    HierarchicalDatasetSpecification, TeslaDatasetSpecification
-    or BiLevelDatasetSpecification. Defaults to returning `dct`.
+    HierarchicalDatasetSpecification, or BiLevelDatasetSpecification. Defaults
+    to returning `dct`.
   """
   if '__class__' not in dct:
     return dct
 
   if dct['__class__'] not in ('DatasetSpecification',
                               'HierarchicalDatasetSpecification',
-                              'BiLevelDatasetSpecification',
-                              'TeslaDatasetSpecification'):
+                              'BiLevelDatasetSpecification'):
     return dct
 
   def _key_to_int(dct):
@@ -861,28 +741,6 @@ def as_dataset_spec(dct):
       images_per_class[int(class_id)] = n_images
 
     return DatasetSpecification(
-        name=dct['name'],
-        classes_per_split=_key_to_split(dct['classes_per_split']),
-        images_per_class=images_per_class,
-        class_names=_key_to_int(dct['class_names']),
-        path=dct['path'],
-        file_pattern=dct['file_pattern'])
-    
-  elif dct['__class__'] == 'TeslaDatasetSpecification':
-    images_per_class = {}
-
-    for class_id, n_images_set_dict in six.iteritems(dct['images_per_class']):
-      # If n_images is a dict, it maps each class ID to a string->int
-      # dictionary containing the size of each pool.
-
-      n_images = {
-            # Convert the number of classes in each set to int.
-            set: int(set_size) for set, set_size in six.iteritems(n_images_set_dict)
-      }
-        
-      images_per_class[int(class_id)] = n_images
-
-    return TeslaDatasetSpecification(
         name=dct['name'],
         classes_per_split=_key_to_split(dct['classes_per_split']),
         images_per_class=images_per_class,
@@ -951,9 +809,8 @@ def load_dataset_spec(dataset_records_path, convert_from_pkl=False):
       dataset_spec.pkl file to JSON.
 
   Returns:
-    A DatasetSpecification, BiLevelDatasetSpecification, 
-    TeslaDatasetSpecification or HierarchicalDatasetSpecification, 
-    depending on the dataset.
+    A DatasetSpecification, BiLevelDatasetSpecification, or
+      HierarchicalDatasetSpecification, depending on the dataset.
 
   Raises:
     RuntimeError: If no suitable dataset_spec file is found in directory

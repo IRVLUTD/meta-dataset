@@ -243,10 +243,7 @@ class Trainer(object):
       eval_episode_config,
       data_config,
       distribute,
-      enable_tf_optimizations,
-      visualize_data,
-      visualize_image_set,
-      perform_filtration):
+      enable_tf_optimizations):
     # pyformat: disable
     """Initializes a Trainer.
 
@@ -335,10 +332,6 @@ class Trainer(object):
       enable_tf_optimizations: Enable TensorFlow optimizations. It can add a
         few minutes to the first calls to session.run(), but decrease memory
         usage.
-      visualize_data: bool indicating whether to visualize data before training.
-      visualize_image_set: "support", "query" or ""
-      perform_filtration: A boolean flag indicating whether filtration needs 
-      to be performed for tesla dataset
 
     Raises:
       RuntimeError: If requested to meta-learn the initialization of the linear
@@ -374,12 +367,6 @@ class Trainer(object):
     self.sample_half_from_imagenet = sample_half_from_imagenet
     self.num_gpus = num_gpus
     self.enable_tf_optimizations = enable_tf_optimizations
-
-    self.visualize_data = visualize_data
-    self.visualize_image_set = visualize_image_set
-    self.perform_filtration = perform_filtration
-    self.DATA = None
-    self.data_spec = None
     if self.sample_half_from_imagenet and self.is_training and (
         len(train_dataset_list) == 1 or train_dataset_list[0] != 'ilsvrc_2012'):
       raise ValueError('Since `sample_half_from_imagenet` is True, expected '
@@ -744,7 +731,6 @@ class Trainer(object):
           self.data_initializeable_iterators.append(data)
       else:
         data = lambda: data_src
-        self.DATA = data_src
         regularizer = self.learners[split].compute_regularizer
 
       def run(data_local):
@@ -804,107 +790,6 @@ class Trainer(object):
     res['class_ids'] = class_ids_
     res['query_targets'] = query_targets_
     return res
-  
-  def convert_to_pseudo_original_form(self, image):
-    image = (((image/2) + 0.5) * 255.0).astype(np.uint8)
-    return image
-
-  def get_data_and_label(self, image_set, limit=50):
-    data_iterator = self.DATA.make_one_shot_iterator()
-    count, total = 0, 0
-    imgs, labels, class_names = [], [], []
-    
-    with tf.Session() as sess:
-      while count < limit:
-        try:
-          data = sess.run(data_iterator.get_next())
-          if image_set == "support":
-            im = data.support_images
-            lbl = data.support_labels
-            cls_id = data.support_class_ids
-          else:
-            im = data.query_images
-            lbl = data.query_labels
-            cls_id = data.query_class_ids
-          
-          img_list_len = len(im)
-          only_see_first_img_of_episode = False
-          is_first_access = True
-          
-          if only_see_first_img_of_episode:
-            total += 1
-            if img_list_len:
-              count += 1
-              imgs.append(self.convert_to_pseudo_original_form(im[0]))
-              class_names.append(cls_id[0])
-              labels.append(lbl[0])
-          else:
-            sum = total + img_list_len
-            if sum > limit:
-              if is_first_access:
-                im = im[:limit]
-                cls_id = cls_id[:limit]
-                lbl = lbl[:limit]
-                img_list_len = limit
-                is_first_access=False
-              else:
-                break
-            total += img_list_len
-            if img_list_len:
-              count += img_list_len
-              imgs.extend(self.convert_to_pseudo_original_form(im))
-              class_names.extend(cls_id)
-              labels.extend(lbl)
-              print(f"{image_set} : {count}/{total}")
-            #   break
-        except tf.errors.OutOfRangeError:
-          break
-    return (imgs, labels, class_names)
-
-  def visualize(self, split):
-    gui_backend = [
-        'GTK3Agg', 'GTK3Cairo', 'GTK4Agg', 
-        'GTK4Cairo', 'MacOSX', 'nbAgg', 
-        'QtAgg', 'QtCairo', 'Qt5Agg', 
-        'Qt5Cairo', 'TkAgg', 'TkCairo', 
-        'WebAgg', 'WX', 'WXAgg', 'WXCairo', 
-        'agg', 'cairo', 'pdf', 'pgf', 'ps', 
-        'svg', 'template'
-      ]
-    import matplotlib
-    matplotlib.use(gui_backend[10])
-    import matplotlib.pyplot as plt
-    
-    # setting values to rows and column variables
-    rows, columns = 8, 8
-
-    for image_set in self.visualize_image_set:
-
-      images, labels, class_ids = self.get_data_and_label(image_set, rows*columns)
-
-      # create figure
-      fig = plt.figure(figsize=(10, 7))
-
-      # set window title
-      suffix="-filtered" if self.perform_filtration else ""
-      fig.canvas.set_window_title(f"{split}:{image_set}{suffix}")
-      for idx, im in enumerate(images):
-        try:
-          class_name = self.data_spec.class_names[class_ids[idx]]
-          print(f"plotting label: {idx}, label:{labels[idx]}, class_name:{class_name}")
-          # Adds a subplot at the nth position
-          fig.add_subplot(rows, columns, idx+1)
-        
-          # showing image
-          plt.imshow(im)
-          plt.axis('off')
-          plt.title(f"#{idx+1}; {labels[idx]}:{class_name}")
-          plt.plot()
-        except:
-          pass
-      plt.show()
-      # raise SystemExit("Stopping to see the plots")
-
 
   def create_summary_writer(self):
     """Create summaries and writer."""
@@ -918,9 +803,6 @@ class Trainer(object):
       standard_summaries.append(loss_summary)
       standard_summaries.append(acc_summary)
 
-      if self.visualize_data:
-        self.visualize(split)
-      
     # Add summaries for the way / shot / logits / targets of the learner.
     evaluation_summaries = self.add_eval_summaries()
 
@@ -1023,8 +905,6 @@ class Trainer(object):
 
       dataset_records_path = os.path.join(dataset_records_root, dataset_name)
       data_spec = dataset_spec_lib.load_dataset_spec(dataset_records_path)
-      self.data_spec = data_spec
-
       # Only ImageNet has a DAG ontology.
       has_dag = (dataset_name.startswith('ilsvrc_2012'))
       # Only Omniglot has a bi-level ontology.
@@ -1488,7 +1368,6 @@ class Trainer(object):
             split=dataset_split,
             episode_descr_config=episode_descr_config,
             shuffle_buffer_size=shuffle_buffer_size,
-            perform_filtration = self.perform_filtration,
             read_buffer_size_bytes=read_buffer_size_bytes,
             num_prefetch=num_prefetch,
             image_size=image_size,
@@ -1569,7 +1448,6 @@ class Trainer(object):
           batch_size=batch_size,
           shuffle_buffer_size=shuffle_buffer_size,
           read_buffer_size_bytes=read_buffer_size_bytes,
-          # perform_filtration = self.perform_filtration,
           num_prefetch=num_prefetch,
           image_size=image_shape[0],
           num_to_take=num_per_class[0])
@@ -1617,8 +1495,6 @@ class Trainer(object):
         return batch
 
     if self.sample_half_from_imagenet:
-      # This wouldn't be needed for TESLA as only TESLA woudl be used for
-      # train, val, test
       data_pipeline_imagenet = pipeline.make_one_source_batch_pipeline(
           dataset_spec_list[0],
           split=dataset_split,

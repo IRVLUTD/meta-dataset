@@ -181,38 +181,6 @@ def main(unused_argv):
   # Parse Gin configurations passed to this script.
   parse_cmdline_gin_configurations()
 
-  ##############################################################################################
-  # TODO: Remove logging to file before paper submission
-  # Default shows logs to stdout
-  # This is only used for easy result generation
-  if not FLAGS.is_training: # only for testing purposes
-    def get_log_file_name(ckpt_path, perform_filtration):
-      # /workspace/experiment_output/tesla-unseen-filtered/checkpoints/maml_all-60/model_72000.ckpt
-      ckpt_path_split_list = ckpt_path.split("/")
-      for i in [0,0,0,1]:
-        ckpt_path_split_list.pop(i)
-      ckpt_path_split_list[-1] = ckpt_path_split_list[-1].split(".ckpt")[0]
-      ckpt_path =  f"{'+'.join(ckpt_path_split_list)}-dataset-{os.environ['TESLA_DATASET_VARIANT']}"
-      if perform_filtration:
-        ckpt_path = f"{ckpt_path}-filtered"
-      return ckpt_path
-
-    try:
-      os.mkdir("logs")
-    except:
-      pass
-    ckpt_path = gin.query_parameter('Trainer.checkpoint_to_restore')
-    perform_filtration_bool = gin.query_parameter('Trainer.perform_filtration')
-    logging.get_absl_handler().use_absl_log_file(
-      get_log_file_name(ckpt_path, perform_filtration_bool), "./logs")
-    logging.get_absl_handler().setFormatter(None)
-    logging.info(ckpt_path)
-    logging.info(perform_filtration_bool)
-    logging.info(os.environ['TESLA_DATASET_VARIANT'])
-
-    # raise SystemExit # uncomment to debug
-  ##############################################################################################
-
   if FLAGS.reload_checkpoint_gin_config:
     # Try to reload a previously recorded Gin configuration from an operative
     # Gin configuration file in one of the provided directories.
@@ -265,6 +233,7 @@ def main(unused_argv):
     record_operative_gin_configurations(FLAGS.train_checkpoint_dir)
   elif not FLAGS.is_training and FLAGS.summary_dir:
     record_operative_gin_configurations(FLAGS.summary_dir)
+
   datasets = train_datasets if FLAGS.is_training else eval_datasets
   logging.info('Starting %s for dataset(s) %s...',
                'training' if FLAGS.is_training else 'evaluation', datasets)

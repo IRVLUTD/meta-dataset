@@ -32,6 +32,5 @@ weight_decay = 7e-4
 # Validate on the same datasets as training happens, and in the same order, so
 # that the ground truth source ID can be used for validation-time forward passes
 # without remapping.
-# UPDATE: commented for tesla dataset as it would override all.gin's train/eval datasets
-# benchmark.train_datasets = 'ilsvrc_2012,aircraft,cu_birds,omniglot,quickdraw,vgg_flower,dtd,fungi'
-# benchmark.eval_datasets = 'ilsvrc_2012,aircraft,cu_birds,omniglot,quickdraw,vgg_flower,dtd,fungi'
+benchmark.train_datasets = 'ilsvrc_2012,aircraft,cu_birds,omniglot,quickdraw,vgg_flower,dtd,fungi'
+benchmark.eval_datasets = 'ilsvrc_2012,aircraft,cu_birds,omniglot,quickdraw,vgg_flower,dtd,fungi'
