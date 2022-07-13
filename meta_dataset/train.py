@@ -182,7 +182,7 @@ def main(unused_argv):
   parse_cmdline_gin_configurations()
 
   ##############################################################################################
-  # TODO: Remove logging to file before paper submission
+  # Logging for easy parsing of results
   # Default shows logs to stdout
   # This is only used for easy result generation
   if not FLAGS.is_training: # only for testing purposes
