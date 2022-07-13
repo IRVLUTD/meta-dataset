@@ -1,9 +1,0 @@
-include 'meta_dataset/learn/gin/learners/learner_config.gin'
-Trainer.train_learner_class = @CrossTransformerLearner
-Trainer.eval_learner_class = @CrossTransformerLearner
-Trainer.normalized_gradient_descent = True
-Learner.embedding_fn = 'four_layer_convnet'
-weight_decay = 1e-4
-CrossTransformerLearner.tformer_weight_decay = %weight_decay
-bn.use_ema=True
-Trainer.distribute = False # True by default, made false to ensure that the tesla code works fine
