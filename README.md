@@ -76,9 +76,40 @@ export PYTHONPATH=$PYTHONPATH:$PWD
 ```
 
 # Data and Pretrained Models
-TODO: Download links and other information
+### Data
+**Requirement**: The dataset must be downloaded and uncompressed in `$DATASET_DOWNLOAD_DIR/$UNCOMPRESSED_DATASET_DIR_NAME` directory.
+Using the data and pretrained models can help skip steps-{3, 4, 5.a, 7, 8, 10}. Of course, this comes with an additional effort of manually setting the absolute paths of data and models in the bash scripts. This is required because the directory names of the best models saved online differ from the ones that the bash script is designed to parse. If you create data or train models from your end using the scripts then this is not required.
 
+Tesla-experiment-datasets: [link](https://utdallas.box.com/v/FewSOL-Experiment-Datasets). Unzip and then use 7z tool to decompress the respective data. 
+This is the raw dataset. In order to use the TFRecords, skip to or refer `step 5.b`.
 
+Point any directory with prefix `training_data` and `test_data` to `training_data` and `test_data` directory respectively. Test data containing
+- `gt` represents data with ground truth segmentations
+- `seg` represents data with segmentations from custom segmentation method
+```bash
+# create a backup of training_data and remove the existing one before symbolic creation
+ln -s training_data training_data
+ln -s training_data.sim+real.393 training_data
+
+# create a backup of test_data and remove the existing one before symbolic creation
+ln -s test_data.gt test_data # for FSC and JOS-FSC with ground truth
+ln -s test_data.seg test_data # JOS-FSC with custom segmentation method
+ln -s test_data.gt.198-classes-without-query test_data # for real world JOS-FSC setting 
+```
+
+### Pretrained Models
+Download [link](https://utdallas.box.com/v/FewSOL-Best-FCS-Models). The directory contains:
+- `4.1-and-4.2/` - contains best models used in FSC and JOS-FSC
+- `4.3/` - contains best models used in real world JOS-FSC
+- `Pretrained-Backbones/` - contains pretrained backbones (embedding networks)
+- `checkpoint-bestnum-mapper.pdf` - contains information about best checkpoint number for each model
+
+The absolute path of these models can be set in the test scripts of step-{11, 12}. Set absolute path using `--gin_bindings="Trainer.checkpoint_to_restore` 
+
+If using a pretrained backbone for training, 
+- set `--gin_bindings="Trainer.pretrained_source"` to `imagenet` else `scratch` 
+- use appropriate backbone alias in `--gin_bindings="Learner.embedding_fn$` with `@` prefix. Refer supplementary [pdf](https://irvlutd.github.io/FewSOL/assets/FewSOL_supp.pdf).
+- set `--gin_bindings="Trainer.checkpoint_to_restore"` to pretrained-backbone model path to start training. Once training starts, the trained model checkpoints would be the ones to look out for which would be saved in `$EXPROOT` directory.
 
 # To run experiments with tesla dataset
 ### Step. 1
@@ -93,14 +124,13 @@ source set_env.sh
 ```
 
 ### Step. 3
-Download the TESLA dataset. **NOTE**: make sure that the download directory has ample amount of disk space as the following 2 steps after download will also need additional space.
+Download the [TESLA experiment-dataset](https://utdallas.box.com/v/FewSOL-experiment-datasets) (refer [project-page](https://irvlutd.github.io/FewSOL/#data)). **NOTE**: make sure that the download directory has ample amount of disk space.
 
 ```bash
 # move to DATASET_DOWNLOAD_DIR
 cd $DATASET_DOWNLOAD_DIR
 
-# download dataset
-curl -L $DATASET_URL --output Experiment-Dataset.zip
+# download dataset using DATASET_URL
 
 # unzip to TESLA directory: this might take a while
 unzip Experiment-Dataset.zip -d $DATASET_DOWNLOAD_DIR/$UNCOMPRESSED_DATASET_DIR_NAME
@@ -113,10 +143,10 @@ Create TESLA test data variants.
 python scripts/__select_and_create_test_classes_for_variants.py
 ```
 
-### Step. 5 
-Create TFRecords from raw data. This step is optional.
-Download TFRecords used in our experiments from [https://utdallas.box.com/v/FewSOL-Experiment-TFRecords](https://utdallas.box.com/v/FewSOL-Experiment-TFRecords)
+**Note**: The tesla variants should point to `records/tesla`. Create a symbolic link for the tesla-variant directory and link it to `records/tesla`. `Step 5.*` takes cares of this. This is just for information.
 
+### Step. 5.a
+Create TFRecords from raw data. This step is optional. Skip to step. 5.b to download the TFRecords.
 ```bash
 bash scripts/__create_tesla_tfrecords.sh <boolean-to-oversample-support-set-images> <required-sets>
 # E.g. bash scripts/__create_tesla_tfrecords.sh True/False "TRAIN,VALID,TEST"
@@ -124,6 +154,41 @@ bash scripts/__create_tesla_tfrecords.sh <boolean-to-oversample-support-set-imag
 - For `<required-sets>` use CAPITAL LETTERS and don't use spaces. Based on the requirement, `<required-sets>` can be used to create TFRecords of the desired set. This save tfrecord formation time and disk space.
   - Possible values: {`'TRAIN'`, `'VALID'`, `'TEST'`, `'TRAIN,VALID'`, `'VALID,TEST'`, `'TRAIN,VALID'`, `'TRAIN,VALID,TEST'`}
 - In order to oversample the support set, use `True` for `<boolean-to-oversample-support-set-images>`.
+
+**Default**: 
+- Image filter threshold is `15px`. 
+- Set `<boolean-to-oversample-support-set-images>` to `True` and `False` for FSC and JOS-FSC experiments respectively. 
+- See supplementary [pdf](https://irvlutd.github.io/FewSOL/assets/FewSOL_supp.pdf) for details. 
+
+To create tfrecords for experiments in section 4.3 (Real world setting for JOS-FSC).
+```bash
+# for training
+bash scripts/__create_tesla_tfrecords.4.3.train.323-classes.sim+real.sh
+
+# for testing
+bash scripts/__create_tesla_tfrecords.4.3.test.198-classes.real.sh
+```
+**Default**: 
+- Image filter threshold is `1px`.
+- there is no support set oversampling, i.e. `<boolean-to-oversample-support-set-images>`=`False`. 
+- See supplementary [pdf](https://irvlutd.github.io/FewSOL/assets/FewSOL_supp.pdf) for details.
+
+
+### Step. 5.b 
+Download [TFRecords](https://utdallas.box.com/v/FewSOL-Experiment-TFRecords) used in our experiments.
+**Note**: The TFRecord directory should point to *records* and *records-non-oversampled* directory depending on the experiment. At a time, absolute path of either of these two directories will be set in **RECORDS** env variable. The code snippet below shows experiment -> record-directory-name mapping. Symbolic links can help. The scripts will take care of the rest. The prefix 4.*. indicates the tfrecords for experiments mentioned in section 4.1 , 4.2 and 4.3 of the our paper[1] respectively.
+```bash
+# remove existing before linking
+rm records; 
+ln -s 4.1.tfrecords records
+ln -s 4.3.train.sim+real.323.classes records
+
+# remove existing before linking
+rm records-non-oversampled; 
+ln -s 4.2.GT.tfrecords records-non-oversampled
+ln -s 4.2.segmentation.tfrecords records-non-oversampled
+ln -s 4.3.test.real.198.classes-without-query records-non-oversampled
+```
 
 ### Step. 6
 Get the best hyperparameters from [arxiv_v2_dev](https://github.com/google-research/meta-dataset/tree/arxiv_v2_dev)
@@ -148,6 +213,7 @@ bash scripts/__baseline_and_pretraining_on_imagenet.sh  <models> <gpu-ids> <resn
 # e.g. bash scripts/__baseline_and_pretraining_on_imagenet.sh  "resnet/resnet34" "0"  "4/8/16/32/None"
 ```
 - Use `max-stride=16` for **CrossTransformers** and `None` elsewhere.
+- This command doesn't require `_ctx` suffix as `max_stride` parameter in itself is sufficient for the logic to work, `None` is the default.
 
 
 ### Step. 9 
@@ -218,7 +284,7 @@ bash scripts/__logs_filter.sh
 ```
 
 ### Step. 12
-Test joint object segmentation and few shot classification
+Test joint object segmentation and few shot classification.
 **NOTE**: Link the appropriate tfrecords dir to records-non-oversampled before running
 
 ```bash
@@ -231,7 +297,11 @@ bash scripts/__test_joint_segmentation.sh \
 python scripts/__create_test_data_for_4.3.real.py <absolute-path>
 ```
 
-#### TODO: Write about real-world testing and other details about tfrecords structure and creation. sample_query directory and how can anyone else use a custom script to generate sample queries from real world. We have JOS+FSC.
+### Step. 13
+Real world setting for JOS-FSC. Checkout `4.3-real-world-exp` branch. Real world experiment setup has been intentionally kept on a different branch as it had different requirements. 
+```
+git checkout 4.3-real-world-exp
+```
 
 # To run experiments with other datasets
 #### NOTE: 
