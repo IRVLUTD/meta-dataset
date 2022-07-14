@@ -224,7 +224,7 @@ bash scripts/__select_best_pretrained_backbone_models.sh
 
 
 ### Note
-Apart from pre-training backbones, **CrossTransformer** models need `_ctx` suffix with backbone alias when given as an argument to scripts inside `scripts/` directory. E.g. `resnet34_ctx`. Only `resnet34` has been used with **CrossTransformers** in our experiments.
+Apart from pre-training backbones, **CrossTransformer** models need `_ctx` suffix with backbone alias when given as an argument to shell scripts inside `scripts/` directory. E.g. `resnet34_ctx`. Only `resnet34` has been used with **CrossTransformers** in our experiments.
 
 ### Step. 10
 Train TESLA. For all other md-datasets, always set `<perform-filtration-flag>` as `False`.
