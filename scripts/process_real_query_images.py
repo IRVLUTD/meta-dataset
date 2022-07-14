@@ -10,6 +10,22 @@ tf.disable_eager_execution()
 from meta_dataset.dataset_conversion.dataset_to_records \
     import get_example
 
+
+"""
+This script reads query images from sample_query/ dir and 
+transform to bytes and write to 0.tfrecords
+
+All sample query images become the part of 0.tfrecords
+All other *.tfrecords are void of query images, i.e. contain support images only
+
+This is helpful as the output is predicted object class names.
+No metric calculation is done.
+
+Since only 32 objects are used, top-1 and top-5 accuracy 
+for the real world testing is calculated manually.
+"""
+
+
 def load_and_process_image(path):
     """Process the image living at path if necessary.
     Args:

@@ -6,6 +6,14 @@ import numpy as np
 from scipy.io import loadmat
 
 
+'''
+This script uses mat files generated from 
+custom segementation method(https://yuxng.github.io/Papers/2020/xiang_corl20.pdf)
+It uses the generated segmentation masks to crop the object of interest and saves
+the cropped images to sample_query/ directory.
+'''
+
+
 def crop(mask, orig_img):
     '''
     Crop masked segment of original image
