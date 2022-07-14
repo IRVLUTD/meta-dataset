@@ -20,7 +20,7 @@ This is the code for our paper [FewSOL: A Dataset for Few-Shot Object Learning i
     - ```bash
       docker run --gpus all -id --rm -v <cloned-meta-dataset-dir-path>:/workspace --workdir=/workspace --name fewsol nvcr.io/nvidia/tensorflow:21.12-tf1-py3
       ```
-    - TODO: Link setup Setup the environment using instructions in [Setup](#setup) 
+    - **Required**: Setup the environment using instructions in [Setup](#setup) 
 - Alternatively, Docker Image: [irvlutd/meta-datatset-fewsol](https://hub.docker.com/r/irvlutd/meta-datatset-fewsol)[3] can be used as well. It's build upon [2] and contains all the packages for conducting the experiments. Use `latest` tag for image without models.
     - ```bash
       docker run --gpus all -id --rm -v <cloned-meta-dataset-dir-path>:/workspace --workdir=/workspace --name fewsol irvlutd/meta-datatset-fewsol:latest
@@ -38,6 +38,7 @@ This is the code for our paper [FewSOL: A Dataset for Few-Shot Object Learning i
   - `<backbone>`: alias of the backbone used in [c67dd2b](https://github.com/google-research/meta-dataset/commit/c67dd2bb66fb2a4ce7e4e9906878e13d9b851eb5)
   - Distributed training has not been tested port tesla code changes.
 - **NOTE**: Since the point of investigation was the TESLA (FewSOL) dataset, multi source ([pipeline.make_multisource_episode_pipeline](meta_dataset/data/pipeline.py)) data pipeline  has not been tested. Please use single source ([pipeline.make_one_source_episode_pipeline](meta_dataset/data/pipeline.py)) data pipeline.
+- Wherever `#UPDATE` comment exists, it means that the any code snippet following it has been written or modified for introducing Tesla (FewSOL) into the codebase. This would be helpful inorder to incorporate any new changes into the codebase pertaining to Tesla or any other new dataset.
 
 # Alias
 - **FewSOL** has been nicknamed `TESLA` in the codebase. This is due to the fact that at the start of the project, the name of the dataset was not decided and FewSOL was finalized as it promptly describes its purpose. Hence, when referring to any code related to FewSOL search for `TESLA, Tesla, tesla` keywords in the codebase. (If you are curious, `TESLA` stands for mul**T**i-view RGB-D dataset for f**E**w-**S**hot **L**e**A**rning)
@@ -346,7 +347,6 @@ Please cite the following if you incorporate our work.
 ```
 
 # Contact
-Following 3 options are available for any clarification, comments or suggestions
-- Join the [discussion forum](https://github.com/IRVLUTD/meta-dataset/discussions/). TODO: create a discussion forum.
+Following options are available for any clarification, comments or suggestions
 - Create an [issue](https://github.com/IRVLUTD/meta-dataset/issues).
 - Contact [Jishnu](https://jishnujayakumar.github.io/).
