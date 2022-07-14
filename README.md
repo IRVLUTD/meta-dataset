@@ -214,8 +214,7 @@ bash scripts/__baseline_and_pretraining_on_imagenet.sh  <models> <gpu-ids> <resn
 # e.g. bash scripts/__baseline_and_pretraining_on_imagenet.sh  "resnet/resnet34" "0"  "4/8/16/32/None"
 ```
 - Use `max-stride=16` for **CrossTransformers** and `None` elsewhere.
-- This command doesn't require `_ctx` suffix as `max_stride` parameter in itself is sufficient for the logic to work, `None` is the default.
-
+- This command doesn't require `_ctx` suffix for `resnet34_ctx` as `max_stride` parameter in itself is sufficient for the logic to work for **CrossTransformers**, `None` is the default. For the rest use the predefined backbone aliases as mentioned in supplementary [pdf](https://irvlutd.github.io/FewSOL/assets/FewSOL_supp.pdf).
 
 ### Step. 9 
 Select best pre-trained backbones.
@@ -223,6 +222,9 @@ Select best pre-trained backbones.
 bash scripts/__select_best_pretrained_backbone_models.sh
 ```
 
+
+### Note
+Apart from pre-training backbones, **CrossTransformer** models need `_ctx` suffix with backbone alias when given as an argument to scripts inside `scripts/` directory. E.g. `resnet34_ctx`. Only `resnet34` has been used with **CrossTransformers** in our experiments.
 
 ### Step. 10
 Train TESLA. For all other md-datasets, always set `<perform-filtration-flag>` as `False`.
