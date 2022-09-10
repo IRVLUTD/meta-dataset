@@ -346,6 +346,4 @@ Please cite the following if you incorporate our work.
 ```
 
 # Contact
-Following options are available for any clarification, comments or suggestions
-- Create an [issue](https://github.com/IRVLUTD/meta-dataset/issues).
-- Contact [Jishnu](https://jishnujayakumar.github.io/).
+Contact [Jishnu](https://jishnujayakumar.github.io/) for any clarification, comments or suggestions.
